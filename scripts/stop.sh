@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 PROJECT_PATH="/home/ec2-user/egg-market"
-PROJECT_NAME="demo"
+PROJECT_NAME="eggmarket"
 PROJECT_VERSION="0.0.1-SNAPSHOT"
 DEPLOY_LOG="$PROJECT_PATH/deploy.log"
 
