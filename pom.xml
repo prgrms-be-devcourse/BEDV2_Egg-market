@@ -88,6 +88,11 @@
       <groupId>org.flywaydb</groupId>
       <version>8.5.12</version>
     </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.11.0</version>
+    </dependency>
   </dependencies>
   <description>eggmarket</description>
   <groupId>com.devcourse</groupId>
