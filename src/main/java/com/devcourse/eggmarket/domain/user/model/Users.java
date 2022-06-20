@@ -1,6 +1,5 @@
-package com.devcourse.eggmarket.users.entity;
+package com.devcourse.eggmarket.domain.user.entity;
 
-import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
