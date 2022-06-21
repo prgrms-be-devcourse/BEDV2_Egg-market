@@ -12,11 +12,12 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 @Entity
-@NoArgsConstructor()
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "users")
 public class Users extends BaseEntity {
   @Id
