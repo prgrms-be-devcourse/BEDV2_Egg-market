@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "users")
-public class Users extends BaseEntity {
+public class User extends BaseEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
@@ -47,7 +47,7 @@ public class Users extends BaseEntity {
   private String role;
 
   @Builder
-  public Users(String phoneNumber, String nickName, String password, float mannerTemperature,
+  public User(String phoneNumber, String nickName, String password, float mannerTemperature,
       String imagePath, String role) {
     
     if (mannerTemperature <= 0){

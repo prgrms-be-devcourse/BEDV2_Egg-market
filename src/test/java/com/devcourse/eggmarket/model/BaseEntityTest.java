@@ -2,7 +2,7 @@ package com.devcourse.eggmarket.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.devcourse.eggmarket.domain.user.model.Users;
+import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.repository.UserRepository;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.AfterEach;
@@ -27,7 +27,7 @@ class BaseEntityTest {
   void user_test() {
     // given
     LocalDateTime now = LocalDateTime.of(2022, 6, 20, 0, 0, 0);
-    Users user = Users.builder()
+    User user = User.builder()
         .nickName("mark")
         .password("Password1!")
         .phoneNumber("01012345678")
@@ -35,7 +35,7 @@ class BaseEntityTest {
         .build();
 
     // when
-    Users savedUser = userRepository.save(user);
+    User savedUser = userRepository.save(user);
 
     // then
     assertThat(savedUser.getCreatedAt()).isAfter(now);
@@ -46,17 +46,17 @@ class BaseEntityTest {
   @DisplayName("유저 update Auditing 테스트")
   void user_update_test() {
     // given
-    Users user = Users.builder()
+    User user = User.builder()
         .nickName("mark")
         .password("Password1!")
         .phoneNumber("01012345678")
         .role("USER")
         .build();
-    Users savedUser = userRepository.save(user);
+    User savedUser = userRepository.save(user);
 
     // when
     savedUser.changeNickName("egg");
-    Users changedUser = userRepository.save(savedUser);
+    User changedUser = userRepository.save(savedUser);
 
     // then
     assertThat(changedUser.getUpdatedAt()).isAfter(changedUser.getCreatedAt());
