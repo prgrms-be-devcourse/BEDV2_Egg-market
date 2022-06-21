@@ -47,15 +47,21 @@ public class User extends BaseEntity {
   @Enumerated(EnumType.STRING)
   private UserRole role;
 
-  @Builder
-  public User(final String phoneNumber, final String nickName, final String password, final String imagePath, final String role) {
+  public User(Long id, String phoneNumber, String nickName, String password,
+      float mannerTemperature,
+      String imagePath, UserRole role) {
+    this.id = id;
     this.phoneNumber = phoneNumber;
     this.nickName = nickName;
     this.password = password;
+    this.mannerTemperature = mannerTemperature;
     this.imagePath = imagePath;
-    this.role = UserRole.valueOf(role);
+    this.role = role;
+  }
 
-    this.mannerTemperature = DEFAULT_TEMP;
+  @Builder
+  public User(final String phoneNumber, final String nickName, final String password, final String imagePath, final String role) {
+    this(null, phoneNumber,nickName,password,DEFAULT_TEMP,imagePath,UserRole.valueOf(role));
   }
 
   public void changeNickName(String nickName) {
