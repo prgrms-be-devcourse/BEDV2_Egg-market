@@ -46,11 +46,11 @@ public class Post extends BaseEntity {
   private Category category;
 
   @ManyToOne
-  @JoinColumn(name = "user_id")
+  @JoinColumn(name = "seller_id")
   private User seller;
 
   @ManyToOne
-  @JoinColumn(name = "user_id")
+  @JoinColumn(name = "buyer_id")
   private User buyer;
 
   protected Post(String title,
@@ -94,6 +94,14 @@ public class Post extends BaseEntity {
 
   public Category getCategory() {
     return category;
+  }
+
+  public User getSeller() {
+    return seller;
+  }
+
+  public User getBuyer() {
+    return buyer;
   }
 
   public void updatePrice(int price) {
