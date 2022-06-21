@@ -26,7 +26,7 @@ class ImageLocalPathPropertiesTest {
     @DisplayName("설정 정보로부터 포스트 이미지 저장경로를 생성한다")
     public void postFilePath() {
         String basePath = imageLocalPathProperties.getBase();
-        String postPath = imageLocalPathProperties.getType().getPost();
+        String postPath = imageLocalPathProperties.postImagePath();
         String concatenated = FilenameUtils.concat(basePath, postPath);
 
         String postImagePath = imageLocalPathProperties.postImagePath();
