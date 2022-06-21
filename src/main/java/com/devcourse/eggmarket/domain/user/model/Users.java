@@ -22,26 +22,22 @@ import lombok.NoArgsConstructor;
 public class Users extends BaseEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  private int id;
+  private Long id;
 
   @Column(name = "phone_number", nullable = false, unique = true, length = 15)
   @NotBlank
   private String phoneNumber;
 
   @Column(name = "nick_name", nullable = false, unique = true, length = 12)
-  @Size(min = 3, max = 12)
   @NotBlank
   private String nickName;
 
   @Column(name = "password", nullable = false, length = 64)
-  @Size(min = 8 ,max = 64 )
-  @Pattern(regexp = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\\W]).{8,64})")
   @NotBlank
   private String password;
 
   @Column(name = "manner_temperature", nullable = false)
   @NotNull
-  @Positive
   private float mannerTemperature;
 
   @Column(name = "image_path")
