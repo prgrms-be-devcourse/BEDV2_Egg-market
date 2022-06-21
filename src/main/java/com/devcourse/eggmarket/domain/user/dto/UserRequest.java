@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserRequest {
   public record Save(
       @NotBlank(message = "전화번호는 필수값입니다.")
+      @Pattern(regexp = "\\d{1,15}")
       String phoneNumber,
       @NotBlank(message = "닉네임은 필수값입니다.")
       @Size(min = 3, max = 12)
@@ -24,6 +25,7 @@ public class UserRequest {
 
   public record Update(
       @NotBlank(message = "전화번호는 필수값입니다.")
+      @Pattern(regexp = "\\d{1,15}")
       String phoneNumber,
       @NotBlank(message = "닉네임은 필수값입니다.")
       @Size(min = 3, max = 12)
