@@ -57,7 +57,7 @@ public class PostImage implements Image {
     }
 
     public String pathTobeStored(String basePath) {
-        String storedName = this.appendExtension(
+        String storedName = this.extensionAppendedPath(
             String.join(
                 DELIMITER,
                 Long.toString(id),
@@ -67,7 +67,7 @@ public class PostImage implements Image {
         return FilenameUtils.concat(basePath, storedName);
     }
 
-    private String appendExtension(String fileName) {
-        return String.join(EXTENSION_SEPARATOR, fileName, this.extension);
+    private String extensionAppendedPath(String fileNameWithoutExtension) {
+        return String.join(EXTENSION_SEPARATOR, fileNameWithoutExtension, this.extension);
     }
 }
