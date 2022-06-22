@@ -20,3 +20,8 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.MySQL8Dialect
         query.in_clause_parameter_padding: true
+image:
+  base: ${user.dir}
+  type:
+    post: post
+    profile: profile
