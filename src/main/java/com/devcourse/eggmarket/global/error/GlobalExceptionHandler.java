@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
 //       TODO: Logging 추가
         final ErrorCode errorCode = e.getErrorCode();
         final ErrorResponse response = ErrorResponse.of(errorCode);
-        return new ResponseEntity<>(response, response.getStatus());
+        return new ResponseEntity<>(response, errorCode.getStatus());
     }
 
     @ExceptionHandler(Exception.class)
