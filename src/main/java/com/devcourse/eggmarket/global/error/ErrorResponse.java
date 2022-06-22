@@ -1,5 +1,6 @@
-package com.devcourse.eggmarket.global.exception;
+package com.devcourse.eggmarket.global.error;
 
+import com.devcourse.eggmarket.global.error.exception.ErrorCode;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,5 +20,17 @@ public class ErrorResponse {
 
     public static ErrorResponse of(final ErrorCode code) {
         return new ErrorResponse(code);
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public HttpStatus getStatus() {
+        return status;
+    }
+
+    public String getCode() {
+        return code;
     }
 }

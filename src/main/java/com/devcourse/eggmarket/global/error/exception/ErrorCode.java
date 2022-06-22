@@ -1,11 +1,15 @@
-package com.devcourse.eggmarket.global.exception;
+package com.devcourse.eggmarket.global.error.exception;
 
 import org.springframework.http.HttpStatus;
 
 public enum ErrorCode {
 
     // global error
-    INVALID_INPUT("G01", "Invalid Input Value", HttpStatus.BAD_REQUEST);
+    INVALID_INPUT("G01", "Invalid Input Value", HttpStatus.BAD_REQUEST),
+    ENTITY_NOT_FOUND("G02", "Entity Not Found", HttpStatus.BAD_REQUEST),
+    INTERNAL_SERVER_ERROR("G03", "Server Error", HttpStatus.INTERNAL_SERVER_ERROR),
+    METHOD_NOT_ALLOWED("G04", "Method Not Allowed", HttpStatus.METHOD_NOT_ALLOWED);
+
 
     private final String code;
     private final String message;
