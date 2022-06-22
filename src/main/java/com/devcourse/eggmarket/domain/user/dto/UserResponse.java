@@ -8,4 +8,6 @@ public record UserResponse(
     float mannerTemperature,
     MultipartFile profileImage,
     String role
-) {}
+) {
+
+}
