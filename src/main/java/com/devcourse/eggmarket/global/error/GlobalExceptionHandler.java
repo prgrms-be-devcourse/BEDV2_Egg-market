@@ -4,7 +4,6 @@ import com.devcourse.eggmarket.global.error.exception.BusinessException;
 import com.devcourse.eggmarket.global.error.exception.ErrorCode;
 import javax.validation.ConstraintViolationException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -17,14 +16,6 @@ public class GlobalExceptionHandler {
 //       TODO: Logging 추가
         final ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_INPUT);
         return ResponseEntity.badRequest().body(response);
-    }
-
-    @ExceptionHandler(ConstraintViolationException.class)
-    protected ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportedException(
-        HttpRequestMethodNotSupportedException e) {
-//       TODO: Logging 추가
-        final ErrorResponse response = ErrorResponse.of(ErrorCode.METHOD_NOT_ALLOWED);
-        return new ResponseEntity<>(response, response.getStatus());
     }
 
     @ExceptionHandler(BusinessException.class)
