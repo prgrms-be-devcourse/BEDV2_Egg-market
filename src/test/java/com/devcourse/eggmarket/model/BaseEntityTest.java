@@ -14,53 +14,53 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class BaseEntityTest {
 
-  @Autowired
-  UserRepository userRepository;
+    @Autowired
+    UserRepository userRepository;
 
-  @AfterEach
-  void cleanUp(){
-    userRepository.deleteAll();
-  }
+    @AfterEach
+    void cleanUp() {
+        userRepository.deleteAll();
+    }
 
-  @Test
-  @DisplayName("유저 Auditing 테스트")
-  void user_test() {
-    // given
-    LocalDateTime now = LocalDateTime.of(2022, 6, 20, 0, 0, 0);
-    User user = User.builder()
-        .nickName("mark")
-        .password("Password1!")
-        .phoneNumber("01012345678")
-        .role("USER")
-        .build();
+    @Test
+    @DisplayName("유저 Auditing 테스트")
+    void user_test() {
+        // given
+        LocalDateTime now = LocalDateTime.of(2022, 6, 20, 0, 0, 0);
+        User user = User.builder()
+            .nickName("mark")
+            .password("Password1!")
+            .phoneNumber("01012345678")
+            .role("USER")
+            .build();
 
-    // when
-    User savedUser = userRepository.save(user);
+        // when
+        User savedUser = userRepository.save(user);
 
-    // then
-    assertThat(savedUser.getCreatedAt()).isAfter(now);
-    assertThat(savedUser.getUpdatedAt()).isAfter(now);
-  }
+        // then
+        assertThat(savedUser.getCreatedAt()).isAfter(now);
+        assertThat(savedUser.getUpdatedAt()).isAfter(now);
+    }
 
-  @Test
-  @DisplayName("유저 update Auditing 테스트")
-  void user_update_test() {
-    // given
-    User user = User.builder()
-        .nickName("mark")
-        .password("Password1!")
-        .phoneNumber("01012345678")
-        .role("USER")
-        .build();
-    User savedUser = userRepository.save(user);
+    @Test
+    @DisplayName("유저 update Auditing 테스트")
+    void user_update_test() {
+        // given
+        User user = User.builder()
+            .nickName("mark")
+            .password("Password1!")
+            .phoneNumber("01012345678")
+            .role("USER")
+            .build();
+        User savedUser = userRepository.save(user);
 
-    // when
-    savedUser.changeNickName("egg");
-    User changedUser = userRepository.save(savedUser);
+        // when
+        savedUser.changeNickName("egg");
+        User changedUser = userRepository.save(savedUser);
 
-    // then
-    assertThat(changedUser.getUpdatedAt()).isAfter(changedUser.getCreatedAt());
-  }
+        // then
+        assertThat(changedUser.getUpdatedAt()).isAfter(changedUser.getCreatedAt());
+    }
 
 }
 
