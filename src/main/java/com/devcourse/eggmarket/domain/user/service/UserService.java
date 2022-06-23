@@ -6,11 +6,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface UserService extends UserDetailsService {
 
-  public UserResponse save(UserRequest.Save userRequest);
+    UserResponse save(UserRequest.Save userRequest);
 
-  public UserResponse getById(Long id);
+    UserResponse getById(Long id);
 
-  public UserResponse update(Long id, UserRequest.Update userRequest);
+    UserResponse update(Long id, UserRequest.Update userRequest);
 
-  public boolean deleteById(Long id);
+    boolean deleteById(Long id);
 }

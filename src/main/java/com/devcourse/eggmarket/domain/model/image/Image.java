@@ -1,11 +1,10 @@
 package com.devcourse.eggmarket.domain.model.image;
 
-import java.io.InputStream;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface Image {
 
-    InputStream getContents();
+    byte[] getContents();
 
     String pathTobeStored(String basePath);
 
