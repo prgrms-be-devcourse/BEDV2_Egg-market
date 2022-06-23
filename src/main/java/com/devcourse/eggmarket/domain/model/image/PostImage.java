@@ -11,26 +11,26 @@ public class PostImage implements Image {
     private static final String DELIMITER = "_";
     private static final String EXTENSION_SEPARATOR = ".";
     private final ImageType type;
-    private final InputStream inputStream;
+    private final byte[] bytes;
     private final String fileName;
     private final String extension;
     private final int order; // 이미지 순서
     private final long id; // 판매글 id
 
-    private PostImage(ImageType type, InputStream inputStream, String extension, int order,
+    private PostImage(ImageType type, byte[] bytes, String extension, int order,
         String fileName,
         long id) {
         this.type = type;
-        this.inputStream = inputStream;
+        this.bytes = bytes;
         this.extension = extension;
         this.fileName = fileName;
         this.order = order;
         this.id = id;
     }
 
-    private PostImage(ImageType type, InputStream inputStream, int order, String fileName,
+    private PostImage(ImageType type, byte[] bytes, int order, String fileName,
         long id) {
-        this(type, inputStream, FilenameUtils.getExtension(fileName), order, fileName, id);
+        this(type, bytes, FilenameUtils.getExtension(fileName), order, fileName, id);
     }
 
     public static PostImage toImage(long postId, MultipartFile file, int img_order) {
@@ -39,7 +39,8 @@ public class PostImage implements Image {
         }
 
         try (InputStream inputStream = file.getInputStream()) {
-            return new PostImage(ImageType.POST, inputStream, img_order, file.getOriginalFilename(),
+            return new PostImage(ImageType.POST, inputStream.readAllBytes(), img_order,
+                file.getOriginalFilename(),
                 postId);
         } catch (IOException e) {
             throw new InvalidFileException("판매글에 업로드된 파일을 읽어오는데 실패하였습니다", e);
@@ -47,8 +48,8 @@ public class PostImage implements Image {
     }
 
     @Override
-    public InputStream getContents() {
-        return this.inputStream;
+    public byte[] getContents() {
+        return this.bytes;
     }
 
     @Override
