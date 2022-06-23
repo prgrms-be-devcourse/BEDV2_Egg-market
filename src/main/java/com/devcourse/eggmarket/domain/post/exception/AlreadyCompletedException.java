@@ -1,8 +1,10 @@
 package com.devcourse.eggmarket.domain.post.exception;
 
-public class AlreadyCompletedException extends PurchaseInfoException {
+import com.devcourse.eggmarket.global.error.exception.InvalidValueException;
 
-  public AlreadyCompletedException(String message) {
-    super(message);
-  }
+public class AlreadyCompletedException extends InvalidValueException {
+
+    public AlreadyCompletedException(String message) {
+        super(message);
+    }
 }

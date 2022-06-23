@@ -8,17 +8,17 @@ import org.springframework.data.domain.Pageable;
 
 public interface PostService {
 
-  Long save(Save request);
+    Long save(Save request);
 
-  Long updatePost(Long id, PostRequest.UpdatePost request);
+    Long updatePost(Long id, PostRequest.UpdatePost request);
 
-  Long updatePurchaseInfo(PostRequest.UpdatePurchaseInfo request);
+    Long updatePurchaseInfo(PostRequest.UpdatePurchaseInfo request);
 
-  boolean deleteById(Long id);
+    boolean deleteById(Long id);
 
-  PostResponse getById(Long id);
+    PostResponse getById(Long id);
 
-  List<PostResponse> getAll(Pageable pageable);
+    List<PostResponse> getAll(Pageable pageable);
 
-  List<PostResponse> getAllByCategory(Pageable pageable, String category);
+    List<PostResponse> getAllByCategory(Pageable pageable, String category);
 }
