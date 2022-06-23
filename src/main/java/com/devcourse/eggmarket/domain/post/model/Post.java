@@ -55,7 +55,7 @@ public class Post extends BaseEntity {
   @JoinColumn(name = "buyer_id")
   private User buyer;
 
-  protected Post(String title,
+  private Post(String title,
       String content,
       Category category,
       int price,

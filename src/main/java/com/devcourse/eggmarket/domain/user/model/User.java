@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "users")
 public class User extends BaseEntity {
 
-  public static final float DEFAULT_TEMP = 36.5F;
+  private static final float DEFAULT_TEMP = 36.5F;
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
