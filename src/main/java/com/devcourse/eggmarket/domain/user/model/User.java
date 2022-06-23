@@ -9,11 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -22,7 +17,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "users")
 public class User extends BaseEntity {
-  public static final float DEFAULT_TEMP = 36.5F;
+
+  private static final float DEFAULT_TEMP = 36.5F;
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -43,7 +39,7 @@ public class User extends BaseEntity {
   @Column(name = "image_path")
   private String imagePath;
 
-  @Column(name = "role",nullable = false)
+  @Column(name = "role", nullable = false)
   @Enumerated(EnumType.STRING)
   private UserRole role;
 
@@ -60,13 +56,41 @@ public class User extends BaseEntity {
   }
 
   @Builder
-  public User(final String phoneNumber, final String nickName, final String password, final String imagePath, final String role) {
-    this(null, phoneNumber,nickName,password,DEFAULT_TEMP,imagePath,UserRole.valueOf(role));
+  public User(final String phoneNumber, final String nickName, final String password,
+      final String imagePath, final String role) {
+    this(null, phoneNumber, nickName, password, DEFAULT_TEMP, imagePath, UserRole.valueOf(role));
   }
 
   public void changeNickName(String nickName) {
     this.nickName = nickName;
   }
 
+  public Long getId() {
+    return id;
+  }
+
+  public String getPhoneNumber() {
+    return phoneNumber;
+  }
+
+  public String getNickName() {
+    return nickName;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public float getMannerTemperature() {
+    return mannerTemperature;
+  }
+
+  public String getImagePath() {
+    return imagePath;
+  }
+
+  public UserRole getRole() {
+    return role;
+  }
 }
 
