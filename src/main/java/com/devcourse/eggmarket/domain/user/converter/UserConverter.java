@@ -29,12 +29,11 @@ public class UserConverter {
             .build();
     }
 
-    public UserResponse convertToUserResponse(User user, MultipartFile image) {
+    public UserResponse convertToUserResponse(User user) {
         return UserResponse.builder()
             .id(user.getId())
             .nickName(user.getNickName())
             .mannerTemperature(user.getMannerTemperature())
-            .profileImage(image)
             .role(user.getRole().toString())
             .build();
     }

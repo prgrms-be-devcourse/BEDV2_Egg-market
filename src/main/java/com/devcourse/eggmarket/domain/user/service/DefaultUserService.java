@@ -39,7 +39,7 @@ public class DefaultUserService implements UserService {
         User user = userRepository.save(userConverter.saveToUser(userRequest));
         Image image = ProfileImage.toImage(user.getId(), userRequest.profileImage());
         user.setImagePath(imageUpload.upload(image));
-        return userConverter.convertToUserResponse(user, userRequest.profileImage());
+        return userConverter.convertToUserResponse(user);
     }
 
     @Override
