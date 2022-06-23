@@ -25,7 +25,7 @@ public class LocalImageUpload implements ImageUpload {
         String path = imgPath(image);
 
         try {
-            FileUtils.copyInputStreamToFile(image.getContents(), new File(path));
+            FileUtils.writeByteArrayToFile(new File(path), image.getContents());
         } catch (IOException e) {
             throw new ImageFileUploadException(e);
         }
