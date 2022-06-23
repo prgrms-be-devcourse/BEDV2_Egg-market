@@ -5,7 +5,9 @@ public class PostExceptionMessage {
   private PostExceptionMessage() {
   }
 
-  public static final String ALREADY_REGISTERED_USER = "이미 구매자가 등록된 게시글입니다.\n현재 등록된 구매자 닉네임 : ";
+  public static final String ALREADY_COMPLETED = "이미 판매 완료된 게시글입니다";
+
+  public static final String NOT_EXIST_BUYER = "구매자를 입력해주세요";
 
   public static final String NOT_BLANK_TITLE = "제목을 입력 해주세요";
 

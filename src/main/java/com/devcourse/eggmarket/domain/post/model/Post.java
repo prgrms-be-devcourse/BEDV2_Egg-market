@@ -1,9 +1,11 @@
 package com.devcourse.eggmarket.domain.post.model;
 
-import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage.ALREADY_REGISTERED_USER;
+import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage.ALREADY_COMPLETED;
+import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage.NOT_EXIST_BUYER;
 
 import com.devcourse.eggmarket.domain.model.BaseEntity;
-import com.devcourse.eggmarket.domain.post.exception.DuplicateBuyerException;
+import com.devcourse.eggmarket.domain.post.exception.AlreadyCompletedException;
+import com.devcourse.eggmarket.domain.post.exception.NotExistBuyerException;
 import com.devcourse.eggmarket.domain.user.model.User;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -116,18 +118,25 @@ public class Post extends BaseEntity {
     this.content = content;
   }
 
-  public void updatePostStatus(PostStatus postStatus) {
-    this.postStatus = postStatus;
-  }
-
   public void updateCategory(Category category) {
     this.category = category;
   }
 
-  public void setBuyer(User user) {
-    if (this.buyer != null) {
-      throw new DuplicateBuyerException(ALREADY_REGISTERED_USER + this.buyer.getNickName());
+  private void checkAlreadyCompleted() {
+    if (this.postStatus == PostStatus.COMPLETED) {
+      throw new AlreadyCompletedException(ALREADY_COMPLETED);
     }
-    this.buyer = user;
+  }
+
+  private void checkNotExistBuyer(User buyer) {
+    if (buyer == null) {
+      throw new NotExistBuyerException(NOT_EXIST_BUYER);
+    }
+  }
+  public void updatePurchaseInfo(PostStatus postStatus, User buyer) {
+    checkAlreadyCompleted();
+    checkNotExistBuyer(buyer);
+    this.postStatus = postStatus;
+    this.buyer = buyer;
   }
 }
