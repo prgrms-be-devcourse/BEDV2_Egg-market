@@ -9,11 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -22,51 +17,83 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "users")
 public class User extends BaseEntity {
-  public static final float DEFAULT_TEMP = 36.5F;
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private Long id;
+    private static final float DEFAULT_TEMP = 36.5F;
 
-  @Column(name = "phone_number", nullable = false, unique = true, length = 15)
-  private String phoneNumber;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
-  @Column(name = "nick_name", nullable = false, unique = true, length = 12)
-  private String nickName;
+    @Column(name = "phone_number", nullable = false, unique = true, length = 15)
+    private String phoneNumber;
 
-  @Column(name = "password", nullable = false, length = 64)
-  private String password;
+    @Column(name = "nick_name", nullable = false, unique = true, length = 12)
+    private String nickName;
 
-  @Column(name = "manner_temperature", nullable = false)
-  private float mannerTemperature;
+    @Column(name = "password", nullable = false, length = 64)
+    private String password;
 
-  @Column(name = "image_path")
-  private String imagePath;
+    @Column(name = "manner_temperature", nullable = false)
+    private float mannerTemperature;
 
-  @Column(name = "role",nullable = false)
-  @Enumerated(EnumType.STRING)
-  private UserRole role;
+    @Column(name = "image_path")
+    private String imagePath;
 
-  public User(Long id, String phoneNumber, String nickName, String password,
-      float mannerTemperature,
-      String imagePath, UserRole role) {
-    this.id = id;
-    this.phoneNumber = phoneNumber;
-    this.nickName = nickName;
-    this.password = password;
-    this.mannerTemperature = mannerTemperature;
-    this.imagePath = imagePath;
-    this.role = role;
-  }
+    @Column(name = "role", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 
-  @Builder
-  public User(final String phoneNumber, final String nickName, final String password, final String imagePath, final String role) {
-    this(null, phoneNumber,nickName,password,DEFAULT_TEMP,imagePath,UserRole.valueOf(role));
-  }
+    public User(Long id, String phoneNumber, String nickName, String password,
+        float mannerTemperature,
+        String imagePath, UserRole role) {
+        this.id = id;
+        this.phoneNumber = phoneNumber;
+        this.nickName = nickName;
+        this.password = password;
+        this.mannerTemperature = mannerTemperature;
+        this.imagePath = imagePath;
+        this.role = role;
+    }
 
-  public void changeNickName(String nickName) {
-    this.nickName = nickName;
-  }
+    @Builder
+    public User(final String phoneNumber, final String nickName, final String password,
+        final String imagePath, final String role) {
+        this(null, phoneNumber, nickName, password, DEFAULT_TEMP, imagePath, UserRole.valueOf(role));
+    }
 
+    public void changeNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public void setImagePath(String imagePath){
+        this.imagePath = imagePath;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public float getMannerTemperature() {
+        return mannerTemperature;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
 }
-
