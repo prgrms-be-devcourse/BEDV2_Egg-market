@@ -43,7 +43,7 @@ public class PostImage implements Image {
                 file.getOriginalFilename(),
                 postId);
         } catch (IOException e) {
-            throw new InvalidFileException("판매글에 업로드된 파일을 읽어오는데 실패하였습니다", e);
+            throw new InvalidFileException("판매글에 업로드된 파일을 읽어오는데 실패하였습니다");
         }
     }
 

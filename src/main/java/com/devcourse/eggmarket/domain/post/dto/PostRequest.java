@@ -20,56 +20,54 @@ import javax.validation.constraints.Size;
 
 public class PostRequest {
 
-  public record Save(
-      @NotBlank(message = NOT_BLANK_TITLE)
-      @Size(min = 1, max = 255, message = NOT_VALID_RANGE_TITLE)
-      String title,
+    public record Save(
+        @NotBlank(message = NOT_BLANK_TITLE)
+        @Size(min = 1, max = 255, message = NOT_VALID_RANGE_TITLE)
+        String title,
 
-      @NotBlank(message = NOT_BLANK_CONTENT)
-      @Size(min = 1, max = 1024, message = NOT_VALID_RANGE_CONTENT)
-      String content,
+        @NotBlank(message = NOT_BLANK_CONTENT)
+        @Size(min = 1, max = 1024, message = NOT_VALID_RANGE_CONTENT)
+        String content,
 
-      @PositiveOrZero(message = NOT_NEGATIVE_PRICE)
-      int price,
+        @PositiveOrZero(message = NOT_NEGATIVE_PRICE)
+        int price,
 
-      @NotBlank(message = NOT_BLANK_CATEGORY)
-      @Size(min = 1, max = 20, message = NOT_VALID_RANGE_CATEGORY)
-      String category
-  ) {
+        @NotBlank(message = NOT_BLANK_CATEGORY)
+        @Size(min = 1, max = 20, message = NOT_VALID_RANGE_CATEGORY)
+        String category
+    ) {
 
-  }
+    }
 
-  public record UpdatePost(
-      @NotBlank(message = NOT_BLANK_TITLE)
-      @Size(min = 1, max = 255, message = NOT_VALID_RANGE_TITLE)
-      String title,
+    public record UpdatePost(
+        @NotBlank(message = NOT_BLANK_TITLE)
+        @Size(min = 1, max = 255, message = NOT_VALID_RANGE_TITLE)
+        String title,
 
-      @NotBlank(message = NOT_BLANK_CONTENT)
-      @Size(min = 1, max = 1024, message = NOT_VALID_RANGE_CONTENT)
-      String content,
+        @NotBlank(message = NOT_BLANK_CONTENT)
+        @Size(min = 1, max = 1024, message = NOT_VALID_RANGE_CONTENT)
+        String content,
 
-      @PositiveOrZero(message = NOT_NEGATIVE_PRICE)
-      int price,
+        @PositiveOrZero(message = NOT_NEGATIVE_PRICE)
+        int price,
 
-      @NotBlank(message = NOT_BLANK_CATEGORY)
-      @Size(min = 1, max = 20, message = NOT_VALID_RANGE_CATEGORY)
-      String category
+        @NotBlank(message = NOT_BLANK_CATEGORY)
+        @Size(min = 1, max = 20, message = NOT_VALID_RANGE_CATEGORY)
+        String category
+    ) {
 
-  ) {
+    }
 
-  }
+    public record UpdatePurchaseInfo(
+        @NotBlank(message = NOT_BLANK_POST_STATUS)
+        @Size(min = 1, max = 20, message = NOT_VALID_RANGE_POST_STATUS)
+        String postStatus,
 
-  public record UpdatePurchaseInfo(
-      @NotBlank(message = NOT_BLANK_POST_STATUS)
-      @Size(min = 1, max = 20, message = NOT_VALID_RANGE_POST_STATUS)
-      String postStatus,
+        @NotNull(message = NOT_NULL_USER)
+        @Size(min = 3, max = 12, message = NOT_VALID_RANGE_USER)
+        String buyerNickName
+    ) {
 
-      @NotNull(message = NOT_NULL_USER)
-      @Size(min = 3, max = 12, message = NOT_VALID_RANGE_USER)
-      String buyerNickName
-
-  ) {
-
-  }
+    }
 }
 

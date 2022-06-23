@@ -1,8 +1,10 @@
 package com.devcourse.eggmarket.domain.post.exception;
 
-public class NotExistBuyerException extends PurchaseInfoException{
+import com.devcourse.eggmarket.global.error.exception.EntityNotFoundException;
 
-  public NotExistBuyerException(String message) {
-    super(message);
-  }
+public class NotExistBuyerException extends EntityNotFoundException {
+
+    public NotExistBuyerException(String message) {
+        super(message);
+    }
 }
