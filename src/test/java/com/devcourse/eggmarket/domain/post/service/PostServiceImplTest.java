@@ -2,6 +2,7 @@ package com.devcourse.eggmarket.domain.post.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 
 import com.devcourse.eggmarket.domain.post.converter.PostConverter;
@@ -10,8 +11,6 @@ import com.devcourse.eggmarket.domain.post.dto.PostRequest.Save;
 import com.devcourse.eggmarket.domain.post.model.Category;
 import com.devcourse.eggmarket.domain.post.model.Post;
 import com.devcourse.eggmarket.domain.post.repository.PostRepository;
-import com.devcourse.eggmarket.domain.stub.PostStub;
-import com.devcourse.eggmarket.domain.stub.UserStub;
 import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.service.UserService;
 import org.junit.jupiter.api.DisplayName;
@@ -39,10 +38,21 @@ class PostServiceImplTest {
     @Test
     @DisplayName("판매글 생성 테스트")
     void saveTest() {
-        PostRequest.Save request = PostStub.writeRequest();
+        PostRequest.Save request = new Save("title", "content", 1000, "BEAUTY");
         String loginUser = "test";
-        User seller = UserStub.entity();
-        Post want = PostStub.entity(seller);
+        User seller = User.builder()
+            .nickName("test")
+            .password("asdfg123!@")
+            .phoneNumber("01000000000")
+            .role("USER")
+            .build();
+        Post want = Post.builder()
+            .title("title")
+            .content("content")
+            .price(1000)
+            .category(Category.BEAUTY)
+            .seller(seller)
+            .build();
 
         doReturn(seller)
             .when(userService)
@@ -54,30 +64,6 @@ class PostServiceImplTest {
             .when(postRepository)
             .save(any(Post.class));
 
-    assertThat(postService.save(request, loginUser)).isEqualTo(want.getId());
-}
-
-    @Test
-    @DisplayName("판매글 업데이트 테스트")
-    void updatePostTest() {
-        PostRequest.UpdatePost request = PostStub.updatePostRequest();
-        String loginUser = "test";
-        User seller = UserStub.entity();
-        Post post = PostStub.entity(seller);
-        Post updatePost = PostStub.updatedEntity(seller);
-
-
-    }
-
-    @Test
-    @DisplayName("판매글 업데이트시 전달받은 판매글 ID가 존재하지 않을 경우 예외 발생")
-    void updatePostInvalidIdTest() {
-
-    }
-
-    @Test
-    @DisplayName("현재 판매글의 판매자 ID와 로그인 사용자의 ID가 다른 경우 예뵈 발생")
-    void updatePostNotMatchedSellerTest() {
-
+        assertThat(postService.save(request, loginUser)).isEqualTo(want.getId());
     }
 }

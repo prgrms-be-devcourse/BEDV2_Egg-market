@@ -1,13 +1,8 @@
 package com.devcourse.eggmarket.domain.post.service;
 
-import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage.NOT_EXIST_POST;
-import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage.NOT_MATCHED_SELLER_POST;
-
 import com.devcourse.eggmarket.domain.post.converter.PostConverter;
 import com.devcourse.eggmarket.domain.post.dto.PostRequest;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse;
-import com.devcourse.eggmarket.domain.post.exception.NotExistPostException;
-import com.devcourse.eggmarket.domain.post.exception.NotMatchedSellerException;
 import com.devcourse.eggmarket.domain.post.model.Post;
 import com.devcourse.eggmarket.domain.post.repository.PostRepository;
 import com.devcourse.eggmarket.domain.user.model.User;
@@ -46,16 +41,8 @@ public class PostServiceImpl implements PostService {
 
     @Transactional
     @Override
-    public Long updatePost(Long id, PostRequest.UpdatePost request, String loginUser) {
-        Post post = postRepository.findById(id)
-            .orElseThrow(() -> new NotExistPostException(NOT_EXIST_POST, id));
-        Long loginUserId = userService.getUser(loginUser).getId();
-        Long sellerId = post.getSeller().getId();
-        if (!(sellerId.equals(loginUserId))) {
-            throw new NotMatchedSellerException(NOT_MATCHED_SELLER_POST, sellerId, loginUserId);
-        }
-        postConverter.updateToPost(request, post);
-        return post.getId();
+    public Long updatePost(Long id, PostRequest.UpdatePost request) {
+        return null;
     }
 
     @Transactional

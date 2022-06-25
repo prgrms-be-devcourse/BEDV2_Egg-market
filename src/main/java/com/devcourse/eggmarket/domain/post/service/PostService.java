@@ -11,7 +11,7 @@ public interface PostService {
 
     Long save(Save request, String loginUser);
 
-    Long updatePost(Long id, PostRequest.UpdatePost request, String loginUser);
+    Long updatePost(Long id, PostRequest.UpdatePost request);
 
     Long updatePurchaseInfo(PostRequest.UpdatePurchaseInfo request);
 
