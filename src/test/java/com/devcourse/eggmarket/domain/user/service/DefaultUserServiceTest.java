@@ -121,4 +121,20 @@ class DefaultUserServiceTest {
         assertThat(userId).isEqualTo(user.getId());
     }
 
+    @Test
+    void getUserName() {
+        //Given
+        UserRequest.FindNickName userRequest = UserRequest.FindNickName.builder()
+            .phoneNumber(user.getPhoneNumber()).build();
+
+        UserResponse.FindNickName expectResult = UserResponse.FindNickName.builder()
+            .nickName(user.getNickName()).build();
+
+        //When
+        UserResponse.FindNickName result = userService.getUserName(userRequest);
+
+        //Then
+        assertThat(result).usingRecursiveComparison().isEqualTo(expectResult);
+    }
+
 }

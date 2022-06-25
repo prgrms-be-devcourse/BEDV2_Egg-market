@@ -39,4 +39,10 @@ public class UserConverter {
             .build();
     }
 
+    public UserResponse.FindNickName convertToUserFindNickName(User user){
+        return UserResponse.FindNickName.builder()
+            .nickName(user.getNickName())
+            .build();
+    }
+
 }

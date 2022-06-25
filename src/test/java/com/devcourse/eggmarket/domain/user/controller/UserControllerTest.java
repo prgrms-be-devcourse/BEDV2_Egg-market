@@ -8,6 +8,7 @@ import com.devcourse.eggmarket.domain.user.dto.UserRequest;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest.Login;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest.Save;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
+import com.devcourse.eggmarket.domain.user.dto.UserResponse.FindNickName;
 import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.repository.UserRepository;
 import com.devcourse.eggmarket.domain.user.service.UserService;
@@ -165,6 +166,62 @@ class UserControllerTest {
 
         //Then
         assertThat(signOutResult).isEqualTo(userResponse.id().toString());
+    }
 
+    @Test
+    void getUserName() throws Exception{
+        //Given
+        UserRequest.FindNickName userRequest = UserRequest.FindNickName.builder()
+            .phoneNumber(user.getPhoneNumber()).build();
+
+        UserResponse.FindNickName expectResult = UserResponse.FindNickName.builder()
+            .nickName(user.getNickName()).build();
+
+        //When
+        MvcResult result = mockMvc.perform(post("/users/findNickName")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(userRequest)))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        UserResponse.FindNickName findResult = objectMapper
+            .readValue(result.getResponse().getContentAsString(), getFindNickNameTypeReference());
+
+        //Then
+        assertThat(findResult).usingRecursiveComparison().isEqualTo(expectResult);
+    }
+
+    private TypeReference<UserResponse.FindNickName> getFindNickNameTypeReference() {
+        return new TypeReference<FindNickName>() {
+            @Override
+            public Type getType() {
+                return super.getType();
+            }
+
+            @Override
+            public int compareTo(TypeReference<FindNickName> o) {
+                return super.compareTo(o);
+            }
+
+            @Override
+            public int hashCode() {
+                return super.hashCode();
+            }
+
+            @Override
+            public boolean equals(Object obj) {
+                return super.equals(obj);
+            }
+
+            @Override
+            protected Object clone() throws CloneNotSupportedException {
+                return super.clone();
+            }
+
+            @Override
+            public String toString() {
+                return super.toString();
+            }
+        };
     }
 }

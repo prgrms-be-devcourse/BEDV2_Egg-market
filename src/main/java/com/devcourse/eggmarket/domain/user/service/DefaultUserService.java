@@ -4,12 +4,15 @@ import com.devcourse.eggmarket.domain.model.image.Image;
 import com.devcourse.eggmarket.domain.model.image.ImageUpload;
 import com.devcourse.eggmarket.domain.model.image.ProfileImage;
 import com.devcourse.eggmarket.domain.user.converter.UserConverter;
+import com.devcourse.eggmarket.domain.user.dto.UserRequest;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest.Save;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest.Update;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
+import com.devcourse.eggmarket.domain.user.dto.UserResponse.FindNickName;
 import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.repository.UserRepository;
 import java.util.Collections;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -81,6 +84,16 @@ public class DefaultUserService implements UserService {
     public Long delete(User user) {
         userRepository.delete(user);
         return user.getId();
+    }
+
+    @Override
+    public FindNickName getUserName(UserRequest.FindNickName userRequest) {
+        Optional<User> foundUser = userRepository.findByPhoneNumber(userRequest.phoneNumber());
+        if (foundUser.isEmpty()){
+            throw new NoSuchElementException("해당 핸드폰 번호를 가진 유저는 존재하지 않습니다.");
+        }
+
+        return userConverter.convertToUserFindNickName(foundUser.get());
     }
 
 

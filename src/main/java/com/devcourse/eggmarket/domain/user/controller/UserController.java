@@ -66,7 +66,9 @@ public class UserController {
         return userId;
     }
 
-//    @PostMapping("/users/findNickName")
-//    public
+    @PostMapping("/users/findNickName")
+    public UserResponse.FindNickName findNickName(@RequestBody UserRequest.FindNickName userRequest){
+        return userService.getUserName(userRequest);
+    }
 
 }

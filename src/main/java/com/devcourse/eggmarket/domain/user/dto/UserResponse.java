@@ -12,8 +12,18 @@ public class UserResponse {
         String role,
         String imagePath
     ) {
+
         @Builder
         public Basic {
+        }
+    }
+
+    public record FindNickName(
+        String nickName
+    ) {
+
+        @Builder
+        public FindNickName {
         }
     }
 
