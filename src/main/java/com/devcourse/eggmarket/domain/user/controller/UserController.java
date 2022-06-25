@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,15 +44,13 @@ public class UserController {
     @PostMapping("/login")
     public boolean login(@RequestBody UserRequest.Login userRequest, HttpServletRequest request) {
         SecurityContext securityContext = SecurityContextHolder.getContext();
-        UserDetails user = userService.loadUserByUsername(userRequest.nickName());
-        if (!passwordEncoder.matches(userRequest.password(), user.getPassword())) {
+        UserDetails userDetails = userService.loadUserByUsername(userRequest.nickName());
+
+        if (!passwordEncoder.matches(userRequest.password(), userDetails.getPassword())) {
             throw new IllegalArgumentException();
         }
-        securityContext.setAuthentication(
-            new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities()));
-        HttpSession session = request.getSession(true);
-        session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-            securityContext);
+
+        createNewSession(request, userDetails, securityContext);
         return true;
     }
 
@@ -60,16 +59,44 @@ public class UserController {
         User user = userService.getUser(authentication);
         Long userId = userService.delete(user);
 
+        deleteSession(request);
+
+        return userId;
+    }
+
+    private void deleteSession(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
         }
-        return userId;
     }
 
     @GetMapping ("/users/nickName")
     public UserResponse.FindNickName findNickName(@RequestParam String phoneNumber){
         return userService.getUserName(phoneNumber);
+    }
+
+    @PatchMapping("/users/password")
+    public boolean changePassword(HttpServletRequest request, Authentication authentication, @RequestBody UserRequest.ChangePassword userRequest){
+        User user = userService.getUser(authentication);
+        boolean result = userService.updatePassword(user, userRequest);
+
+        deleteSession(request);
+
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        UserDetails userDetails = userService.loadUserByUsername(user.getNickName());
+
+        createNewSession(request, userDetails, securityContext);
+
+        return result;
+    }
+
+    private void createNewSession(HttpServletRequest request, UserDetails userDetails, SecurityContext securityContext) {
+        securityContext.setAuthentication(
+            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities()));
+        HttpSession newSession = request.getSession(true);
+        newSession.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+            securityContext);
     }
 
 }

@@ -1,22 +1,17 @@
 package com.devcourse.eggmarket.domain.user.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
-import com.devcourse.eggmarket.domain.user.converter.UserConverter;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest;
-import com.devcourse.eggmarket.domain.user.dto.UserRequest.Login;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest.Save;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse.FindNickName;
 import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.repository.UserRepository;
 import com.devcourse.eggmarket.domain.user.service.UserService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.lang.reflect.Type;
-import javax.servlet.http.HttpSession;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +24,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.test.web.servlet.MockMvc;
@@ -37,10 +31,9 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -169,14 +162,14 @@ class UserControllerTest {
     }
 
     @Test
-    void getUserName() throws Exception{
+    void getUserName() throws Exception {
         //Given
         UserResponse.FindNickName expectResult = UserResponse.FindNickName.builder()
             .nickName(user.getNickName()).build();
 
         //When
         MvcResult result = mockMvc.perform(get("/users/nickName")
-        .param("phoneNumber", user.getPhoneNumber()))
+            .param("phoneNumber", user.getPhoneNumber()))
             .andExpect(status().isOk())
             .andReturn();
 
@@ -185,6 +178,34 @@ class UserControllerTest {
 
         //Then
         assertThat(findResult).usingRecursiveComparison().isEqualTo(expectResult);
+    }
+
+    @Test
+    void changePassword() throws Exception {
+        //Given
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        UserDetails userDetails = userService.loadUserByUsername(user.getNickName());
+        securityContext.setAuthentication(
+            new UsernamePasswordAuthenticationToken(userDetails, null,
+                userDetails.getAuthorities()));
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+            securityContext);
+
+        UserRequest.ChangePassword userRequest = UserRequest.ChangePassword.builder()
+            .newPassword("NewPass!1").build();
+
+        //When
+        MvcResult result = mockMvc.perform(patch("/users/password")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(userRequest)))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        String updateResult = result.getResponse().getContentAsString();
+
+        //Then
+        assertThat(updateResult).isEqualTo("true");
     }
 
     private TypeReference<UserResponse.FindNickName> getFindNickNameTypeReference() {

@@ -134,4 +134,16 @@ class DefaultUserServiceTest {
         assertThat(result).usingRecursiveComparison().isEqualTo(expectResult);
     }
 
+    @Test
+    void updatePassword(){
+        //Given
+        UserRequest.ChangePassword userRequest = UserRequest.ChangePassword.builder().newPassword("NewPass!1").build();
+
+        //When
+        boolean result = userService.updatePassword(user,userRequest);
+
+        //Then
+        assertThat(result).isTrue();
+    }
+
 }

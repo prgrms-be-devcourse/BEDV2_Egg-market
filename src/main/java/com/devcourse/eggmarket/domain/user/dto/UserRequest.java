@@ -63,4 +63,14 @@ public class UserRequest {
 
     }
 
+    public record ChangePassword(
+        @NotBlank(message = "비밀번호는 필수값입니다.")
+        @Size(min = 8, max = 64)
+        @Pattern(regexp = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\\W]).{8,64})")
+        String newPassword
+    ) {
+        @Builder
+        public ChangePassword {
+        }
+    }
 }

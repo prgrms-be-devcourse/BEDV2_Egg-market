@@ -5,6 +5,7 @@ import com.devcourse.eggmarket.domain.model.image.ImageUpload;
 import com.devcourse.eggmarket.domain.model.image.ProfileImage;
 import com.devcourse.eggmarket.domain.user.converter.UserConverter;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest;
+import com.devcourse.eggmarket.domain.user.dto.UserRequest.ChangePassword;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest.Save;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest.Update;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
@@ -18,6 +19,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.session.SessionAuthenticationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -94,6 +97,15 @@ public class DefaultUserService implements UserService {
         }
 
         return userConverter.convertToUserFindNickName(foundUser.get());
+    }
+
+    @Override
+    @Transactional
+    public boolean updatePassword(User user, UserRequest.ChangePassword userRequest) {
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        user.changePassword(passwordEncoder.encode(userRequest.newPassword()));
+        userRepository.save(user);
+        return true;
     }
 
 
