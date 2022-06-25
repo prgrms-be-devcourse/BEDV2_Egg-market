@@ -171,16 +171,12 @@ class UserControllerTest {
     @Test
     void getUserName() throws Exception{
         //Given
-        UserRequest.FindNickName userRequest = UserRequest.FindNickName.builder()
-            .phoneNumber(user.getPhoneNumber()).build();
-
         UserResponse.FindNickName expectResult = UserResponse.FindNickName.builder()
             .nickName(user.getNickName()).build();
 
         //When
-        MvcResult result = mockMvc.perform(post("/users/findNickName")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(userRequest)))
+        MvcResult result = mockMvc.perform(get("/users/nickName")
+        .param("phoneNumber", user.getPhoneNumber()))
             .andExpect(status().isOk())
             .andReturn();
 

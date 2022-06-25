@@ -63,14 +63,4 @@ public class UserRequest {
 
     }
 
-
-    public record FindNickName(
-        @NotBlank(message = "전화번호는 필수값입니다.")
-        @Pattern(regexp = "\\d{1,15}")
-        String phoneNumber
-    ) {
-        @Builder
-        public FindNickName {
-        }
-    }
 }

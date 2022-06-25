@@ -19,5 +19,5 @@ public interface UserService extends UserDetailsService {
 
     Long delete(User user);
 
-    UserResponse.FindNickName getUserName(UserRequest.FindNickName userRequest);
+    UserResponse.FindNickName getUserName(String phoneNumber);
 }

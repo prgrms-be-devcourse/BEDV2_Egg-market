@@ -87,8 +87,8 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public FindNickName getUserName(UserRequest.FindNickName userRequest) {
-        Optional<User> foundUser = userRepository.findByPhoneNumber(userRequest.phoneNumber());
+    public FindNickName getUserName(String phoneNumber) {
+        Optional<User> foundUser = userRepository.findByPhoneNumber(phoneNumber);
         if (foundUser.isEmpty()){
             throw new NoSuchElementException("해당 핸드폰 번호를 가진 유저는 존재하지 않습니다.");
         }
