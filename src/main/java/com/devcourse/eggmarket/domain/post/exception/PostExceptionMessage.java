@@ -30,4 +30,8 @@ public class PostExceptionMessage {
     public static final String NOT_NULL_USER = "유저 닉네임을 입력 해주세요";
 
     public static final String NOT_VALID_RANGE_USER = "닉네임은 3 ~ 12자 이어야 합니다";
+
+    public static final String NOT_VALID_CATEGORY = "잘못 된 카테고리 입니다";
+
+    public static final String NOT_VALID_POST_STATUS = "잘못 된 판매 상태 입니다";
 }
