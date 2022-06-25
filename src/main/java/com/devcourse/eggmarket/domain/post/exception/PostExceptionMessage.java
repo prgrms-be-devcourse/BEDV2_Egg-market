@@ -34,4 +34,8 @@ public class PostExceptionMessage {
     public static final String NOT_VALID_CATEGORY = "잘못 된 카테고리 입니다";
 
     public static final String NOT_VALID_POST_STATUS = "잘못 된 판매 상태 입니다";
+
+    public static final String NOT_EXIST_POST = "존재하지 않는 판매글 입니다. 조회한 판매글 번호 : ";
+
+    public static final String NOT_MATCHED_SELLER_POST = "판매자와 로그인 유저가 다릅니다. 판매자, 로그인 유저 : ";
 }
