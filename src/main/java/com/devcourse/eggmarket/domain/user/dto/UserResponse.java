@@ -7,7 +7,8 @@ public record UserResponse(
     Long id,
     String nickName,
     float mannerTemperature,
-    String role
+    String role,
+    String imagePath
 ) {
 
     @Builder

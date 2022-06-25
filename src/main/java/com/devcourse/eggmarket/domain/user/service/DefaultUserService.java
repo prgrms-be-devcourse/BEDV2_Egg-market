@@ -10,6 +10,7 @@ import com.devcourse.eggmarket.domain.user.dto.UserResponse;
 import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.repository.UserRepository;
 import java.util.Collections;
+import java.util.Optional;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -37,20 +38,38 @@ public class DefaultUserService implements UserService {
     @Transactional
     public UserResponse save(Save userRequest) {
         User user = userRepository.save(userConverter.saveToUser(userRequest));
-        Image image = ProfileImage.toImage(user.getId(), userRequest.profileImage());
-        user.setImagePath(imageUpload.upload(image));
+        if (userRequest.profileImage() != null) {
+            Image image = ProfileImage.toImage(user.getId(), userRequest.profileImage());
+            user.setImagePath(imageUpload.upload(image));
+        }
         return userConverter.convertToUserResponse(user);
     }
 
     @Override
-    public UserResponse getById(Long id) {
+    public UserResponse getByUsername(String userName) {
+        Optional<User> user = userRepository.findByNickName(userName);
+        if (user.isEmpty()) {
+            throw new IllegalArgumentException("해당 닉네임을 가진 사용자가 존재하지 않습니다");
+        }
+
+        return userConverter.convertToUserResponse(user.get());
+    }
+
+    @Override
+    public UserResponse update(String userName, Update userRequest) {
         return null;
     }
 
     @Override
-    public UserResponse update(Long id, Update userRequest) {
-        return null;
+    public User getUser(String userName) {
+        Optional<User> user = userRepository.findByNickName(userName);
+        if (user.isEmpty()) {
+            throw new IllegalArgumentException("해당 닉네임을 가진 사용자가 존재하지 않습니다");
+        }
+
+        return user.get();
     }
+
 
     @Override
     public boolean deleteById(Long id) {

@@ -35,6 +35,7 @@ public class UserConverter {
             .nickName(user.getNickName())
             .mannerTemperature(user.getMannerTemperature())
             .role(user.getRole().toString())
+            .imagePath(user.getImagePath())
             .build();
     }
 

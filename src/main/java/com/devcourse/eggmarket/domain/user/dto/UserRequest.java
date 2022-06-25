@@ -48,4 +48,17 @@ public class UserRequest {
     ) {
 
     }
+
+    public record Login(
+        @NotBlank(message = "닉네임은 필수값입니다.")
+        @Size(min = 3, max = 12)
+        String nickName,
+
+        @NotBlank(message = "비밀번호는 필수값입니다.")
+        @Size(min = 8, max = 64)
+        @Pattern(regexp = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\\W]).{8,64})")
+        String password
+    ) {
+
+    }
 }

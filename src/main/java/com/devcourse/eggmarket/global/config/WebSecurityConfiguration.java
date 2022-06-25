@@ -63,8 +63,6 @@ public class WebSecurityConfiguration {
             .authorizeRequests()
             .anyRequest().permitAll()
             .and()
-            .formLogin()
-            .and()
             .csrf().disable()
             .httpBasic()
             .and()
