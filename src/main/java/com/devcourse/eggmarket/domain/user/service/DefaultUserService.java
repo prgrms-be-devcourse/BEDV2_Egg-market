@@ -11,9 +11,11 @@ import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.repository.UserRepository;
 import java.util.Collections;
 import java.util.Optional;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.authentication.session.SessionAuthenticationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,8 +63,12 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public User getUser(String userName) {
-        Optional<User> user = userRepository.findByNickName(userName);
+    public User getUser(Authentication authentication) {
+        if (authentication == null) {
+            throw new SessionAuthenticationException("Login을 먼저 진행해주세요");
+        }
+
+        Optional<User> user = userRepository.findByNickName(authentication.getName());
         if (user.isEmpty()) {
             throw new IllegalArgumentException("해당 닉네임을 가진 사용자가 존재하지 않습니다");
         }
@@ -70,11 +76,13 @@ public class DefaultUserService implements UserService {
         return user.get();
     }
 
-
     @Override
-    public boolean deleteById(Long id) {
-        return false;
+    @Transactional
+    public Long delete(User user) {
+        userRepository.delete(user);
+        return user.getId();
     }
+
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

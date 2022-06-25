@@ -6,11 +6,17 @@ import com.devcourse.eggmarket.domain.user.dto.UserRequest;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
 import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.repository.UserRepository;
+import javax.servlet.http.HttpSession;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -94,7 +100,12 @@ class DefaultUserServiceTest {
     @Test
     void getUser() {
         //When
-        User foundUser = userService.getUser(user.getNickName());
+        UserDetails userDetails = userService.loadUserByUsername(user.getNickName());
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        securityContext.setAuthentication(
+            new UsernamePasswordAuthenticationToken(userDetails, null,
+                userDetails.getAuthorities()));
+        User foundUser = userService.getUser(securityContext.getAuthentication());
 
         //Then
         assertThat(foundUser).usingRecursiveComparison()
@@ -103,6 +114,11 @@ class DefaultUserServiceTest {
 
     @Test
     void deleteById() {
+        //When
+        Long userId = userService.delete(user);
+
+        //Then
+        assertThat(userId).isEqualTo(user.getId());
     }
 
 }

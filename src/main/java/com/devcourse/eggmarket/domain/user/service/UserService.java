@@ -3,6 +3,7 @@ package com.devcourse.eggmarket.domain.user.service;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
 import com.devcourse.eggmarket.domain.user.model.User;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface UserService extends UserDetailsService {
@@ -13,7 +14,7 @@ public interface UserService extends UserDetailsService {
 
     UserResponse update(String userName, UserRequest.Update userRequest);
 
-    User getUser(String userName);
+    User getUser(Authentication authentication);
 
-    boolean deleteById(Long id);
+    Long delete(User user);
 }
