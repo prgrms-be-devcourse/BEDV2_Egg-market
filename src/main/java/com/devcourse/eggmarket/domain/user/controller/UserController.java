@@ -35,7 +35,7 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public UserResponse signUp(UserRequest.Save request) {
+    public UserResponse.Basic signUp(UserRequest.Save request) {
         return userService.save(request);
     }
 
@@ -65,5 +65,8 @@ public class UserController {
         }
         return userId;
     }
+
+//    @PostMapping("/users/findNickName")
+//    public
 
 }

@@ -29,8 +29,8 @@ public class UserConverter {
             .build();
     }
 
-    public UserResponse convertToUserResponse(User user) {
-        return UserResponse.builder()
+    public UserResponse.Basic convertToUserResponseBasic(User user) {
+        return UserResponse.Basic.builder()
             .id(user.getId())
             .nickName(user.getNickName())
             .mannerTemperature(user.getMannerTemperature())

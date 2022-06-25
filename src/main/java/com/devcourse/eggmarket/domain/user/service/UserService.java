@@ -8,9 +8,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface UserService extends UserDetailsService {
 
-    UserResponse save(UserRequest.Save userRequest);
+    UserResponse.Basic save(UserRequest.Save userRequest);
 
-    UserResponse getByUsername(String userName);
+    UserResponse.Basic getByUsername(String userName);
 
     UserResponse update(String userName, UserRequest.Update userRequest);
 

@@ -58,7 +58,7 @@ class DefaultUserServiceTest {
             .role("USER")
             .build();
 
-        UserResponse expectResponse = UserResponse.builder()
+        UserResponse.Basic expectResponse = UserResponse.Basic.builder()
             .nickName(newUser.getNickName())
             .mannerTemperature(36.5F)
             .role(newUser.getRole().toString())
@@ -68,7 +68,7 @@ class DefaultUserServiceTest {
             newUser.getNickName(), newUser.getPassword(), false, null);
 
         //When
-        UserResponse result = userService.save(saveRequest);
+        UserResponse.Basic result = userService.save(saveRequest);
 
         //Then
         assertThat(result).usingRecursiveComparison().ignoringFields("id")
@@ -79,14 +79,14 @@ class DefaultUserServiceTest {
     @Test
     void getByUsername() {
         //Given
-        UserResponse expectResponse = UserResponse.builder()
+        UserResponse.Basic expectResponse = UserResponse.Basic.builder()
             .nickName(user.getNickName())
             .mannerTemperature(36.5F)
             .role(user.getRole().toString())
             .build();
 
         //When
-        UserResponse result = userService.getByUsername(user.getNickName());
+        UserResponse.Basic result = userService.getByUsername(user.getNickName());
 
         //Then
         assertThat(result).usingRecursiveComparison().ignoringFields("id")

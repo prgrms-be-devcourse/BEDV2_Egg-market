@@ -38,23 +38,23 @@ public class DefaultUserService implements UserService {
 
     @Override
     @Transactional
-    public UserResponse save(Save userRequest) {
+    public UserResponse.Basic save(Save userRequest) {
         User user = userRepository.save(userConverter.saveToUser(userRequest));
         if (userRequest.profileImage() != null) {
             Image image = ProfileImage.toImage(user.getId(), userRequest.profileImage());
             user.setImagePath(imageUpload.upload(image));
         }
-        return userConverter.convertToUserResponse(user);
+        return userConverter.convertToUserResponseBasic(user);
     }
 
     @Override
-    public UserResponse getByUsername(String userName) {
+    public UserResponse.Basic getByUsername(String userName) {
         Optional<User> user = userRepository.findByNickName(userName);
         if (user.isEmpty()) {
             throw new IllegalArgumentException("해당 닉네임을 가진 사용자가 존재하지 않습니다");
         }
 
-        return userConverter.convertToUserResponse(user.get());
+        return userConverter.convertToUserResponseBasic(user.get());
     }
 
     @Override

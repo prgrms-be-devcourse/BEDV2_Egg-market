@@ -3,7 +3,6 @@ package com.devcourse.eggmarket.domain.user.controller;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.devcourse.eggmarket.domain.user.WithMockCustomUser;
 import com.devcourse.eggmarket.domain.user.converter.UserConverter;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest.Login;
@@ -61,7 +60,7 @@ class UserControllerTest {
     private UserRepository userRepository;
 
     User user;
-    UserResponse userResponse;
+    UserResponse.Basic userResponse;
 
     @BeforeEach
     void setUp(WebApplicationContext webApplicationContext) {
@@ -122,7 +121,7 @@ class UserControllerTest {
     @Test
     void login() throws Exception {
         //Given
-        UserResponse expectResponse = UserResponse.builder()
+        UserResponse.Basic expectResponse = UserResponse.Basic.builder()
             .nickName(user.getNickName())
             .mannerTemperature(36.5F)
             .role(user.getRole().toString())
@@ -167,73 +166,5 @@ class UserControllerTest {
         //Then
         assertThat(signOutResult).isEqualTo(userResponse.id().toString());
 
-    }
-
-    private TypeReference<UserResponse> getUserResponseTypeReference() {
-        return new TypeReference<UserResponse>() {
-            @Override
-            public Type getType() {
-                return super.getType();
-            }
-
-            @Override
-            public int compareTo(TypeReference<UserResponse> o) {
-                return super.compareTo(o);
-            }
-
-            @Override
-            public int hashCode() {
-                return super.hashCode();
-            }
-
-            @Override
-            public boolean equals(Object obj) {
-                return super.equals(obj);
-            }
-
-            @Override
-            protected Object clone() throws CloneNotSupportedException {
-                return super.clone();
-            }
-
-            @Override
-            public String toString() {
-                return super.toString();
-            }
-        };
-    }
-
-    private TypeReference<User> getTypeReference() {
-        return new TypeReference<User>() {
-            @Override
-            public Type getType() {
-                return super.getType();
-            }
-
-            @Override
-            public int compareTo(TypeReference<User> o) {
-                return super.compareTo(o);
-            }
-
-            @Override
-            public int hashCode() {
-                return super.hashCode();
-            }
-
-            @Override
-            public boolean equals(Object obj) {
-                return super.equals(obj);
-            }
-
-            @Override
-            protected Object clone() throws CloneNotSupportedException {
-                return super.clone();
-            }
-
-            @Override
-            public String toString() {
-                return super.toString();
-            }
-        };
     }
 }
