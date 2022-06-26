@@ -1,6 +1,8 @@
 package com.devcourse.eggmarket.domain.post.api;
 
 import com.devcourse.eggmarket.domain.post.dto.PostRequest;
+import com.devcourse.eggmarket.domain.post.dto.PostResponse;
+import com.devcourse.eggmarket.domain.post.service.PostAttentionService;
 import com.devcourse.eggmarket.domain.post.service.PostService;
 import java.net.URI;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +21,12 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 public class PostController {
 
     private final PostService postService;
+    private final PostAttentionService postAttentionService;
 
-    public PostController(PostService postService) {
+    public PostController(PostService postService,
+        PostAttentionService postAttentionService) {
         this.postService = postService;
+        this.postAttentionService = postAttentionService;
     }
 
     @PostMapping
@@ -59,5 +64,13 @@ public class PostController {
     ResponseEntity<Void> delete(@PathVariable Long id, Authentication authentication) {
         postService.deleteById(id, authentication.getName());
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/attention")
+    ResponseEntity<PostResponse.PostLikeCount> attention(@PathVariable("id") Long postId,
+        Authentication authentication) {
+        return ResponseEntity.ok(
+            postAttentionService.toggleAttention(authentication.getName(), postId)
+        );
     }
 }

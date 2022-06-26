@@ -3,7 +3,10 @@ package com.devcourse.eggmarket.domain.post.dto;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PostResponse {
 
     public record SinglePost(
@@ -20,6 +23,10 @@ public class PostResponse {
         boolean likeOfMe,
         List<String> imagePaths
     ) {
+
+    }
+
+    public record PostLikeCount(int likeCount) {
 
     }
 }
