@@ -1,9 +1,10 @@
 package com.devcourse.eggmarket.domain.post.converter;
 
 import com.devcourse.eggmarket.domain.post.dto.PostRequest;
-import com.devcourse.eggmarket.domain.post.dto.PostRequest.UpdatePost;
+import com.devcourse.eggmarket.domain.post.dto.PostRequest.UpdatePurchaseInfo;
 import com.devcourse.eggmarket.domain.post.model.Category;
 import com.devcourse.eggmarket.domain.post.model.Post;
+import com.devcourse.eggmarket.domain.post.model.PostStatus;
 import com.devcourse.eggmarket.domain.user.model.User;
 import org.springframework.stereotype.Component;
 
@@ -25,5 +26,13 @@ public class PostConverter {
         post.updateContent(request.content());
         post.updatePrice(request.price());
         post.updateCategory(Category.valueOf(request.category()));
+    }
+
+    public void updateToPurchase(UpdatePurchaseInfo request, Post post,
+        User buyer) {
+        post.updatePurchaseInfo(
+            PostStatus.valueOf(request.postStatus()),
+            buyer
+        );
     }
 }

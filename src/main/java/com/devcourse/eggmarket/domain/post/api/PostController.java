@@ -37,11 +37,20 @@ public class PostController {
             .body(postId);
     }
 
-    @PatchMapping("{id}")
-    ResponseEntity<Long> update(@RequestBody PostRequest.UpdatePost request,
+    @PatchMapping("/{id}/post")
+    ResponseEntity<Long> updatePost(@RequestBody PostRequest.UpdatePost request,
         Authentication authentication,
         @PathVariable Long id) {
         Long postId = postService.updatePost(id, request, authentication.getName());
+
+        return ResponseEntity.ok(postId);
+    }
+
+    @PatchMapping("/{id}/purchase")
+    ResponseEntity<Long> updatePurchase(@RequestBody PostRequest.UpdatePurchaseInfo request,
+        Authentication authentication,
+        @PathVariable Long id) {
+        Long postId = postService.updatePurchaseInfo(id, request, authentication.getName());
 
         return ResponseEntity.ok(postId);
     }

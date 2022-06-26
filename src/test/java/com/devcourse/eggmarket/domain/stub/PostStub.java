@@ -59,6 +59,11 @@ public class PostStub {
             .build();
     }
 
-
+    public static PostRequest.UpdatePurchaseInfo updatePurchaseInfo() {
+        return new PostRequest.UpdatePurchaseInfo(
+            "COMPLETED",
+            "test"
+        );
+    }
 }
 

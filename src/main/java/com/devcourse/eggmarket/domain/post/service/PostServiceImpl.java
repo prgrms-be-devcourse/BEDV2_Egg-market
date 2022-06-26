@@ -5,6 +5,7 @@ import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage
 
 import com.devcourse.eggmarket.domain.post.converter.PostConverter;
 import com.devcourse.eggmarket.domain.post.dto.PostRequest;
+import com.devcourse.eggmarket.domain.post.dto.PostRequest.UpdatePurchaseInfo;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse;
 import com.devcourse.eggmarket.domain.post.exception.NotExistPostException;
 import com.devcourse.eggmarket.domain.post.exception.NotMatchedSellerException;
@@ -66,9 +67,13 @@ public class PostServiceImpl implements PostService {
 
     @Transactional
     @Override
-    public Long updatePurchaseInfo(PostRequest.UpdatePurchaseInfo request) {
-        return null;
+    public Long updatePurchaseInfo(Long id, UpdatePurchaseInfo request, String loginUser) {
+        Post post = checkPostWriter(id, loginUser);
+        User buyer = userService.getUser(request.buyerNickName());
+        postConverter.updateToPurchase(request, post, buyer);
+        return post.getId();
     }
+
 
     @Transactional
     @Override
