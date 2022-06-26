@@ -131,4 +131,33 @@ class PostServiceImplTest {
 //        assertThatExceptionOfType(NotMatchedSellerException.class)
 //            .isThrownBy(() -> postService.updatePost(id, request, loginUser));
     }
+
+    @Test
+    @DisplayName("판매글 삭제 테스트")
+    void deleteTest() {
+//        Long request = 1L;
+
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 ID를 삭제 시도시 예외 발생 테스트")
+    void deleteInvalidIdTest() {
+        Long request = -1L;
+        String loginUser = "test";
+
+        doThrow(new NotExistPostException(NOT_EXIST_POST, request))
+            .when(postRepository)
+            .findById(request);
+
+        assertThatExceptionOfType(NotExistPostException.class)
+            .isThrownBy(() -> postService.deleteById(request, loginUser));
+    }
+
+    @Test
+    @DisplayName("판매자와 로그인 유저가 다를 경우 예외 발생 테스트")
+    void deleteNotMatchedTest() {
+//        Long request = 1L;
+//        Long userId = 2L;
+
+    }
 }

@@ -6,6 +6,7 @@ import com.devcourse.eggmarket.domain.post.dto.PostResponse;
 import com.devcourse.eggmarket.domain.user.model.User;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 
 public interface PostService {
 
@@ -15,7 +16,7 @@ public interface PostService {
 
     Long updatePurchaseInfo(PostRequest.UpdatePurchaseInfo request);
 
-    boolean deleteById(Long id);
+    void deleteById(Long id, String loginUser);
 
     PostResponse getById(Long id);
 
