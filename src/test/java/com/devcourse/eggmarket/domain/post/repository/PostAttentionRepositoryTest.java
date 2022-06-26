@@ -14,51 +14,40 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-public class PostRepositoryTest {
+class PostAttentionRepositoryTest {
 
     @Autowired
-    private UserRepository userRepository;
+    public PostAttentionRepository postAttentionRepository;
 
     @Autowired
-    private PostRepository postRepository;
+    public UserRepository userRepository;
 
     @Autowired
-    private PostAttentionRepository postAttentionRepository;
+    public PostRepository postRepository;
 
-    private User writer;
-    private User notWriter;
+    private User writerLikedOwnPost;
     private Post post;
 
     @BeforeEach
     void setUp() {
-        writer = User.builder()
+        writerLikedOwnPost = User.builder()
             .phoneNumber("123456789")
             .nickName("user01")
             .password("User01234*")
             .role("USER")
             .build();
 
-        notWriter = User.builder()
-            .phoneNumber("123456780")
-            .nickName("user02")
-            .password("User01234*")
-            .role("USER")
-            .build();
-
         post = Post.builder()
-            .price(1000)
-            .content("content01")
-            .category(Category.BEAUTY)
             .title("title01")
-            .seller(writer)
+            .content("content01")
+            .seller(writerLikedOwnPost)
+            .price(1000)
+            .category(Category.BEAUTY)
             .build();
 
-        PostAttention postAttention = new PostAttention(post, notWriter);
-
-        userRepository.save(writer);
-        userRepository.save(notWriter);
+        userRepository.save(writerLikedOwnPost);
         postRepository.save(post);
-        postAttentionRepository.save(postAttention);
+        postAttentionRepository.save(new PostAttention(post, writerLikedOwnPost));
     }
 
     @AfterEach
@@ -69,11 +58,12 @@ public class PostRepositoryTest {
     }
 
     @Test
-    @DisplayName("조회해 온 포스트 엔티티에 대한 관심개수를 알 수 있다")
-    public void attentionCount() {
-        Post foundPost = postRepository.findById(this.post.getId()).get();
+    @DisplayName("Post 와 로그인 사용자 정보를 통해 해당 사용자가 해당 게시글에 관심목록으로 추가했는지 여부를 알 수 있다")
+    public void findPostAttentionByPostAndUser() {
+        boolean present = postAttentionRepository.findByPostIdAndUserId(post.getId(),
+                writerLikedOwnPost.getId())
+            .isPresent();
 
-        Assertions.assertThat(foundPost.getAttentionCount())
-            .isEqualTo(1);
+        Assertions.assertThat(present).isTrue();
     }
 }
