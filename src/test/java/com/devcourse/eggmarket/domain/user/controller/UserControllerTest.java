@@ -7,6 +7,7 @@ import com.devcourse.eggmarket.domain.user.dto.UserRequest.Save;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest.Update;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse.FindNickName;
+import com.devcourse.eggmarket.domain.user.dto.UserResponse.MannerTemperature;
 import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.repository.UserRepository;
 import com.devcourse.eggmarket.domain.user.service.UserService;
@@ -211,7 +212,7 @@ class UserControllerTest {
     }
 
     @Test
-    void update() throws Exception{
+    void update() throws Exception {
         //Given
         SecurityContext securityContext = SecurityContextHolder.getContext();
         UserDetails userDetails = userService.loadUserByUsername(user.getNickName());
@@ -222,8 +223,9 @@ class UserControllerTest {
         session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
             securityContext);
 
-        UserRequest.Update userRequest = new Update("01011111111", "updateNick",null);
-        UserResponse.Update expectResponse = new UserResponse.Update(null, userRequest.phoneNumber(), userRequest.nickName(), user.getImagePath());
+        UserRequest.Update userRequest = new Update("01011111111", "updateNick", null);
+        UserResponse.Update expectResponse = new UserResponse.Update(null,
+            userRequest.phoneNumber(), userRequest.nickName(), user.getImagePath());
 
         //When
         MvcResult result = mockMvc.perform(put("/users")
@@ -235,10 +237,32 @@ class UserControllerTest {
         UserResponse.Update updateResult = objectMapper
             .readValue(result.getResponse().getContentAsString(), getUpdateTypeReference());
 
+        //Then
+        assertThat(updateResult).usingRecursiveComparison().ignoringFields("id")
+            .isEqualTo(expectResponse);
+
+    }
+
+    @Test
+    void getMannerTemperature() throws Exception {
+        //Given
+        UserResponse.MannerTemperature expectResponse = UserResponse.MannerTemperature.builder()
+            .id(1L)
+            .nickName(user.getNickName())
+            .mannerTemperature(user.getMannerTemperature())
+            .build();
+
+        //When
+        MvcResult result = mockMvc.perform(get("/users/mannerTemperature")
+            .param("id", "1"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        UserResponse.MannerTemperature mannerTempResult = objectMapper
+            .readValue(result.getResponse().getContentAsString(), getMannerTempTypeReference());
 
         //Then
-        assertThat(updateResult).usingRecursiveComparison().ignoringFields("id").isEqualTo(expectResponse);
-
+        assertThat(mannerTempResult).usingRecursiveComparison().isEqualTo(expectResponse);
     }
 
     private TypeReference<UserResponse.FindNickName> getFindNickNameTypeReference() {
@@ -275,7 +299,7 @@ class UserControllerTest {
         };
     }
 
-    private TypeReference<UserResponse.Update> getUpdateTypeReference(){
+    private TypeReference<UserResponse.Update> getUpdateTypeReference() {
         return new TypeReference<UserResponse.Update>() {
             @Override
             public Type getType() {
@@ -284,6 +308,40 @@ class UserControllerTest {
 
             @Override
             public int compareTo(TypeReference<UserResponse.Update> o) {
+                return super.compareTo(o);
+            }
+
+            @Override
+            public int hashCode() {
+                return super.hashCode();
+            }
+
+            @Override
+            public boolean equals(Object obj) {
+                return super.equals(obj);
+            }
+
+            @Override
+            protected Object clone() throws CloneNotSupportedException {
+                return super.clone();
+            }
+
+            @Override
+            public String toString() {
+                return super.toString();
+            }
+        };
+    }
+
+    public TypeReference<UserResponse.MannerTemperature> getMannerTempTypeReference() {
+        return new TypeReference<MannerTemperature>() {
+            @Override
+            public Type getType() {
+                return super.getType();
+            }
+
+            @Override
+            public int compareTo(TypeReference<MannerTemperature> o) {
                 return super.compareTo(o);
             }
 

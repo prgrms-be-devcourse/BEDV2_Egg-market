@@ -4,6 +4,7 @@ import com.devcourse.eggmarket.domain.model.image.ImageUpload;
 import com.devcourse.eggmarket.domain.model.image.ProfileImage;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
+import com.devcourse.eggmarket.domain.user.dto.UserResponse.MannerTemperature;
 import com.devcourse.eggmarket.domain.user.model.User;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -39,13 +40,13 @@ public class UserConverter {
             .build();
     }
 
-    public UserResponse.FindNickName convertToUserFindNickName(User user){
+    public UserResponse.FindNickName convertToUserFindNickName(User user) {
         return UserResponse.FindNickName.builder()
             .nickName(user.getNickName())
             .build();
     }
 
-    public UserResponse.Update convertToUpdate(User user){
+    public UserResponse.Update convertToUpdate(User user) {
         return UserResponse.Update.builder()
             .id(user.getId())
             .phoneNumber(user.getPhoneNumber())
@@ -54,4 +55,11 @@ public class UserConverter {
             .build();
     }
 
+    public UserResponse.MannerTemperature convertToMannerTemp(User user) {
+        return UserResponse.MannerTemperature.builder()
+            .id(user.getId())
+            .nickName(user.getNickName())
+            .mannerTemperature(user.getMannerTemperature())
+            .build();
+    }
 }

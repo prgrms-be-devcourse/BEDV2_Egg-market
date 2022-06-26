@@ -11,6 +11,7 @@ import com.devcourse.eggmarket.domain.user.dto.UserRequest.Update;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse.Basic;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse.FindNickName;
+import com.devcourse.eggmarket.domain.user.dto.UserResponse.MannerTemperature;
 import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.repository.UserRepository;
 import java.util.Collections;
@@ -69,7 +70,8 @@ public class DefaultUserService implements UserService {
     @Override
     @Transactional
     public UserResponse.Update update(User user, Update userRequest) {
-        if (!user.getPhoneNumber().equals(userRequest.phoneNumber()) && userRequest.phoneNumber() != null) {
+        if (!user.getPhoneNumber().equals(userRequest.phoneNumber())
+            && userRequest.phoneNumber() != null) {
             Optional<User> phoneNumberResult = userRepository
                 .findByPhoneNumber(userRequest.phoneNumber());
             if (phoneNumberResult.isPresent()) {
@@ -121,7 +123,7 @@ public class DefaultUserService implements UserService {
     @Override
     public FindNickName getUserName(String phoneNumber) {
         Optional<User> foundUser = userRepository.findByPhoneNumber(phoneNumber);
-        if (foundUser.isEmpty()){
+        if (foundUser.isEmpty()) {
             throw new NoSuchElementException("해당 핸드폰 번호를 가진 유저는 존재하지 않습니다.");
         }
 
@@ -135,6 +137,24 @@ public class DefaultUserService implements UserService {
         user.changePassword(passwordEncoder.encode(userRequest.newPassword()));
         userRepository.save(user);
         return true;
+    }
+
+    @Override
+    public User getUserById(Long userId) {
+        Optional<User> user = userRepository.findById(userId);
+
+        if (user.isEmpty()) {
+            throw new NoSuchElementException("해당 아이디를 가진 유저는 존재하지 않습니다.");
+        }
+
+        return user.get();
+    }
+
+    @Override
+    public MannerTemperature getMannerTemperature(Long userId) {
+        User user = getUserById(userId);
+
+        return userConverter.convertToMannerTemp(user);
     }
 
 

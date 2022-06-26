@@ -97,11 +97,12 @@ class DefaultUserServiceTest {
     @Test
     void update() {
         //Given
-        UserRequest.Update userRequest = new Update("01011111111", "updateNick",null);
-        UserResponse.Update expectResponse = new UserResponse.Update(user.getId(), userRequest.phoneNumber(), userRequest.nickName(), user.getImagePath());
+        UserRequest.Update userRequest = new Update("01011111111", "updateNick", null);
+        UserResponse.Update expectResponse = new UserResponse.Update(user.getId(),
+            userRequest.phoneNumber(), userRequest.nickName(), user.getImagePath());
 
         //When
-        UserResponse.Update result = userService.update(user,userRequest);
+        UserResponse.Update result = userService.update(user, userRequest);
 
         //Then
         assertThat(result).usingRecursiveComparison().isEqualTo(expectResponse);
@@ -146,15 +147,32 @@ class DefaultUserServiceTest {
     }
 
     @Test
-    void updatePassword(){
+    void updatePassword() {
         //Given
-        UserRequest.ChangePassword userRequest = UserRequest.ChangePassword.builder().newPassword("NewPass!1").build();
+        UserRequest.ChangePassword userRequest = UserRequest.ChangePassword.builder()
+            .newPassword("NewPass!1").build();
 
         //When
-        boolean result = userService.updatePassword(user,userRequest);
+        boolean result = userService.updatePassword(user, userRequest);
 
         //Then
         assertThat(result).isTrue();
+    }
+
+    @Test
+    void getMannerTemperature() {
+        //Given
+        UserResponse.MannerTemperature expectResponse = UserResponse.MannerTemperature.builder()
+            .id(1L)
+            .nickName(user.getNickName())
+            .mannerTemperature(user.getMannerTemperature())
+            .build();
+
+        //When
+        UserResponse.MannerTemperature result = userService.getMannerTemperature(1L);
+
+        //Then
+        assertThat(result).usingRecursiveComparison().isEqualTo(expectResponse);
     }
 
 }

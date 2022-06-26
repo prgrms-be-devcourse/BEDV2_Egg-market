@@ -64,6 +64,7 @@ public class UserRequest {
         @Pattern(regexp = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\\W]).{8,64})")
         String newPassword
     ) {
+
         @Builder
         public ChangePassword {
         }

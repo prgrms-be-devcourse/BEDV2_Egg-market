@@ -38,4 +38,16 @@ public class UserResponse {
         public Update {
         }
     }
+
+    public record MannerTemperature(
+        Long id,
+        String nickName,
+        float mannerTemperature
+    ) {
+
+        @Builder
+        public MannerTemperature {
+        }
+    }
+
 }

@@ -72,13 +72,14 @@ public class UserController {
         }
     }
 
-    @GetMapping ("/users/nickName")
-    public UserResponse.FindNickName findNickName(@RequestParam String phoneNumber){
+    @GetMapping("/users/nickName")
+    public UserResponse.FindNickName findNickName(@RequestParam String phoneNumber) {
         return userService.getUserName(phoneNumber);
     }
 
     @PatchMapping("/users/password")
-    public boolean changePassword(HttpServletRequest request, Authentication authentication, @RequestBody UserRequest.ChangePassword userRequest){
+    public boolean changePassword(HttpServletRequest request, Authentication authentication,
+        @RequestBody UserRequest.ChangePassword userRequest) {
         User user = userService.getUser(authentication);
         boolean result = userService.updatePassword(user, userRequest);
 
@@ -92,16 +93,19 @@ public class UserController {
         return result;
     }
 
-    private void createNewSession(HttpServletRequest request, UserDetails userDetails, SecurityContext securityContext) {
+    private void createNewSession(HttpServletRequest request, UserDetails userDetails,
+        SecurityContext securityContext) {
         securityContext.setAuthentication(
-            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities()));
+            new UsernamePasswordAuthenticationToken(userDetails, null,
+                userDetails.getAuthorities()));
         HttpSession newSession = request.getSession(true);
         newSession.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
             securityContext);
     }
 
     @PutMapping("/users")
-    public UserResponse.Update update(HttpServletRequest request, Authentication authentication, @RequestBody UserRequest.Update userRequest){
+    public UserResponse.Update update(HttpServletRequest request, Authentication authentication,
+        @RequestBody UserRequest.Update userRequest) {
         User user = userService.getUser(authentication);
 
         SecurityContext securityContext = SecurityContextHolder.getContext();
@@ -110,6 +114,11 @@ public class UserController {
         createNewSession(request, userDetails, securityContext);
 
         return userService.update(user, userRequest);
+    }
+
+    @GetMapping("/users/mannerTemperature")
+    public UserResponse.MannerTemperature getMannerTemperature(@RequestParam Long id) {
+        return userService.getMannerTemperature(id);
     }
 
 }
