@@ -7,12 +7,17 @@ import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage
 import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage.NOT_BLANK_TITLE;
 import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage.NOT_NEGATIVE_PRICE;
 import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage.NOT_NULL_USER;
+import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage.NOT_VALID_CATEGORY;
+import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage.NOT_VALID_POST_STATUS;
 import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage.NOT_VALID_RANGE_CATEGORY;
 import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage.NOT_VALID_RANGE_CONTENT;
 import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage.NOT_VALID_RANGE_POST_STATUS;
 import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage.NOT_VALID_RANGE_TITLE;
 import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage.NOT_VALID_RANGE_USER;
 
+import com.devcourse.eggmarket.domain.post.model.Category;
+import com.devcourse.eggmarket.domain.post.model.PostStatus;
+import com.devcourse.eggmarket.global.common.ValueOfEnum;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
@@ -34,6 +39,7 @@ public class PostRequest {
 
         @NotBlank(message = NOT_BLANK_CATEGORY)
         @Size(min = 1, max = 20, message = NOT_VALID_RANGE_CATEGORY)
+        @ValueOfEnum(enumClass = Category.class, message = NOT_VALID_CATEGORY)
         String category
     ) {
 
@@ -53,6 +59,7 @@ public class PostRequest {
 
         @NotBlank(message = NOT_BLANK_CATEGORY)
         @Size(min = 1, max = 20, message = NOT_VALID_RANGE_CATEGORY)
+        @ValueOfEnum(enumClass = Category.class, message = NOT_VALID_CATEGORY)
         String category
     ) {
 
@@ -61,6 +68,7 @@ public class PostRequest {
     public record UpdatePurchaseInfo(
         @NotBlank(message = NOT_BLANK_POST_STATUS)
         @Size(min = 1, max = 20, message = NOT_VALID_RANGE_POST_STATUS)
+        @ValueOfEnum(enumClass = PostStatus.class, message = NOT_VALID_POST_STATUS)
         String postStatus,
 
         @NotNull(message = NOT_NULL_USER)
