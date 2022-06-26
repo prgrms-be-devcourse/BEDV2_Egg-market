@@ -83,18 +83,18 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostResponse getById(Long id) {
+    public PostResponse.SinglePost getById(Long id) {
         return null;
     }
 
     @Override
-    public List<PostResponse> getAll(Pageable pageable) {
+    public List<PostResponse.SinglePost> getAll(Pageable pageable) {
         return null;
     }
 
 
     @Override
-    public List<PostResponse> getAllByCategory(Pageable pageable, String category) {
+    public List<PostResponse.SinglePost> getAllByCategory(Pageable pageable, String category) {
         return null;
     }
 }

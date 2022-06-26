@@ -67,7 +67,7 @@ class PostConverterTest {
 
         boolean isLoginUserLikePost = false;
 
-        PostResponse expected = new PostResponse(
+        PostResponse.SinglePost expected = new PostResponse.SinglePost(
             post.getId(),
             new UserResponse(writer.getId(), writer.getNickName(), writer.getMannerTemperature(),
                 writer.getRole().toString(), writer.getImagePath()),
@@ -83,7 +83,7 @@ class PostConverterTest {
             Collections.emptyList()
         );
 
-        PostResponse postResponse = postConverter.singlePost(post, isLoginUserLikePost);
+        PostResponse.SinglePost postResponse = postConverter.singlePost(post, isLoginUserLikePost);
 
         assertThat(postResponse).usingRecursiveComparison().isEqualTo(expected);
 

@@ -39,10 +39,10 @@ public class PostConverter {
         );
     }
 
-    public PostResponse singlePost(Post post, boolean likeOfMe) {
+    public PostResponse.SinglePost singlePost(Post post, boolean likeOfMe) {
         User seller = post.getSeller();
 
-        return new PostResponse(
+        return new PostResponse.SinglePost(
             post.getId(),
             new UserResponse(
                 seller.getId(),
