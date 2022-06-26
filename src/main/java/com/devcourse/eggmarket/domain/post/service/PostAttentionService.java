@@ -1,8 +1,8 @@
 package com.devcourse.eggmarket.domain.post.service;
 
-import com.devcourse.eggmarket.domain.post.dto.PostResponse;
+import com.devcourse.eggmarket.domain.post.dto.PostResponse.PostAttentionCount;
 
 public interface PostAttentionService {
 
-    PostResponse.PostLikeCount toggleAttention(String userName, Long postId);
+    PostAttentionCount toggleAttention(String userName, Long postId);
 }

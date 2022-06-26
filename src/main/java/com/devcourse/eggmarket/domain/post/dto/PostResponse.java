@@ -26,7 +26,7 @@ public class PostResponse {
 
     }
 
-    public record PostLikeCount(int likeCount) {
+    public record PostAttentionCount(int likeCount) {
 
     }
 }

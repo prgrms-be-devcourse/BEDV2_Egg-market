@@ -1,7 +1,6 @@
 package com.devcourse.eggmarket.domain.post.service;
 
-import com.devcourse.eggmarket.domain.post.dto.PostResponse;
-import com.devcourse.eggmarket.domain.post.dto.PostResponse.PostLikeCount;
+import com.devcourse.eggmarket.domain.post.dto.PostResponse.PostAttentionCount;
 import com.devcourse.eggmarket.domain.post.model.Post;
 import com.devcourse.eggmarket.domain.post.model.PostAttention;
 import com.devcourse.eggmarket.domain.post.repository.PostAttentionRepository;
@@ -32,7 +31,7 @@ public class DefaultPostAttentionService implements PostAttentionService {
     }
 
     @Override
-    public PostLikeCount toggleAttention(String userName, Long postId) {
+    public PostAttentionCount toggleAttention(String userName, Long postId) {
         User loginUser = getUser(userName);
 
         Post post = postRepository.findById(postId)
@@ -43,7 +42,7 @@ public class DefaultPostAttentionService implements PostAttentionService {
                 postAttentionRepository.save(new PostAttention(post, loginUser))
             );
 
-        return new PostResponse.PostLikeCount(
+        return new PostAttentionCount(
             postAttentionRepository.countPostLikeByPost(postId)
         );
     }

@@ -1,7 +1,7 @@
 package com.devcourse.eggmarket.domain.post.api;
 
 import com.devcourse.eggmarket.domain.post.dto.PostRequest;
-import com.devcourse.eggmarket.domain.post.dto.PostResponse;
+import com.devcourse.eggmarket.domain.post.dto.PostResponse.PostAttentionCount;
 import com.devcourse.eggmarket.domain.post.service.PostAttentionService;
 import com.devcourse.eggmarket.domain.post.service.PostService;
 import java.net.URI;
@@ -67,7 +67,7 @@ public class PostController {
     }
 
     @PostMapping("/{id}/attention")
-    ResponseEntity<PostResponse.PostLikeCount> attention(@PathVariable("id") Long postId,
+    ResponseEntity<PostAttentionCount> attention(@PathVariable("id") Long postId,
         Authentication authentication) {
         return ResponseEntity.ok(
             postAttentionService.toggleAttention(authentication.getName(), postId)
