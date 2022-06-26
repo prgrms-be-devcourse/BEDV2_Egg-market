@@ -14,7 +14,7 @@ public interface PostService {
 
     Long updatePost(Long id, PostRequest.UpdatePost request, String loginUser);
 
-    Long updatePurchaseInfo(PostRequest.UpdatePurchaseInfo request);
+    Long updatePurchaseInfo(Long id, PostRequest.UpdatePurchaseInfo request, String loginUser);
 
     void deleteById(Long id, String loginUser);
 

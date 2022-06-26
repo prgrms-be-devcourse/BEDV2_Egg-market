@@ -158,6 +158,32 @@ class PostServiceImplTest {
     void deleteNotMatchedTest() {
 //        Long request = 1L;
 //        Long userId = 2L;
+    }
+
+    @Test
+    @DisplayName("판매글 판매상태 업데이트 테스트")
+    void updatePurchaseInfoTest() {
+
+    }
+
+    @Test
+    @DisplayName("판매글 상태 업데이트시 전달받은 판매글 ID가 존재하지 않을 경우 예외 발생")
+    void updatePurchaseInfoInvalidIdTest() {
+        PostRequest.UpdatePurchaseInfo request = PostStub.updatePurchaseInfo();
+        Long invalidId = -1L;
+        String loginUser = "test";
+
+        doThrow(new NotExistPostException(NOT_EXIST_POST, invalidId))
+            .when(postRepository)
+            .findById(invalidId);
+
+        assertThatExceptionOfType(NotExistPostException.class)
+            .isThrownBy(() -> postService.updatePurchaseInfo(invalidId, request, loginUser));
+    }
+
+    @Test
+    @DisplayName("판매글 상태 업데이트시 판매글의 판매자 ID와 로그인 사용자의 ID가 다른 경우 예외 발생")
+    void updatePurchaseInfoNotMatchedSellerTest() {
 
     }
 }
