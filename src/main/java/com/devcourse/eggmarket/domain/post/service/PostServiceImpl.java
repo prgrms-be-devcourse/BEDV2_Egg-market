@@ -14,7 +14,6 @@ import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.service.UserService;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +35,18 @@ public class PostServiceImpl implements PostService {
         this.postConverter = postConverter;
     }
 
+    private Post checkPostWriter(Long postId, String loginUser) {
+        Post post = postRepository.findById(postId)
+            .orElseThrow(() -> new NotExistPostException(NOT_EXIST_POST, postId));
+        Long loginUserId = userService.getUser(loginUser).getId();
+        Long sellerId = post.getSeller().getId();
+        if (!(sellerId.equals(loginUserId))) {
+            throw new NotMatchedSellerException(NOT_MATCHED_SELLER_POST, sellerId, loginUserId);
+        }
+
+        return post;
+    }
+
     @Transactional
     @Override
     public Long save(PostRequest.Save request, String loginUser) {
@@ -48,13 +59,7 @@ public class PostServiceImpl implements PostService {
     @Transactional
     @Override
     public Long updatePost(Long id, PostRequest.UpdatePost request, String loginUser) {
-        Post post = postRepository.findById(id)
-            .orElseThrow(() -> new NotExistPostException(NOT_EXIST_POST, id));
-        Long loginUserId = userService.getUser(loginUser).getId();
-        Long sellerId = post.getSeller().getId();
-        if (!(sellerId.equals(loginUserId))) {
-            throw new NotMatchedSellerException(NOT_MATCHED_SELLER_POST, sellerId, loginUserId);
-        }
+        Post post = checkPostWriter(id, loginUser);
         postConverter.updateToPost(request, post);
         return post.getId();
     }
@@ -67,8 +72,9 @@ public class PostServiceImpl implements PostService {
 
     @Transactional
     @Override
-    public boolean deleteById(Long id) {
-        return false;
+    public void deleteById(Long id, String loginUser) {
+        checkPostWriter(id, loginUser);
+        postRepository.deleteById(id);
     }
 
     @Override
