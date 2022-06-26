@@ -27,4 +27,15 @@ public class UserResponse {
         }
     }
 
+    public record Update(
+        Long id,
+        String phoneNumber,
+        String nickName,
+        String imagePath
+    ) {
+
+        @Builder
+        public Update {
+        }
+    }
 }

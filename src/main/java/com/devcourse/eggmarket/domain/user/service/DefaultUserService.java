@@ -9,12 +9,14 @@ import com.devcourse.eggmarket.domain.user.dto.UserRequest.ChangePassword;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest.Save;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest.Update;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
+import com.devcourse.eggmarket.domain.user.dto.UserResponse.Basic;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse.FindNickName;
 import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.repository.UserRepository;
 import java.util.Collections;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -49,6 +51,7 @@ public class DefaultUserService implements UserService {
         if (userRequest.profileImage() != null) {
             Image image = ProfileImage.toImage(user.getId(), userRequest.profileImage());
             user.setImagePath(imageUpload.upload(image));
+            userRepository.save(user);
         }
         return userConverter.convertToUserResponseBasic(user);
     }
@@ -64,9 +67,35 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public UserResponse update(String userName, Update userRequest) {
-        return null;
+    @Transactional
+    public UserResponse.Update update(User user, Update userRequest) {
+        if (!user.getPhoneNumber().equals(userRequest.phoneNumber()) && userRequest.phoneNumber() != null) {
+            Optional<User> phoneNumberResult = userRepository
+                .findByPhoneNumber(userRequest.phoneNumber());
+            if (phoneNumberResult.isPresent()) {
+                throw new DuplicateKeyException("해당 전화번호는 이미 등록되어 있습니다.");
+            }
+            user.changePhoneNumber(userRequest.phoneNumber());
+        }
+
+        if (!user.getNickName().equals(userRequest.nickName()) && userRequest.nickName() != null) {
+            Optional<User> nickNameResult = userRepository.findByNickName(userRequest.nickName());
+            if (nickNameResult.isPresent()) {
+                throw new DuplicateKeyException("해당 닉네임은 이미 등록되어 있습니다.");
+            }
+            user.changeNickName(userRequest.nickName());
+        }
+
+        if (userRequest.profileImage() != null) {
+            Image image = ProfileImage.toImage(user.getId(), userRequest.profileImage());
+            user.setImagePath(imageUpload.upload(image));
+        }
+
+        userRepository.save(user);
+
+        return userConverter.convertToUpdate(user);
     }
+
 
     @Override
     public User getUser(Authentication authentication) {

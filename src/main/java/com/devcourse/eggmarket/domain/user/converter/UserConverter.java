@@ -45,4 +45,13 @@ public class UserConverter {
             .build();
     }
 
+    public UserResponse.Update convertToUpdate(User user){
+        return UserResponse.Update.builder()
+            .id(user.getId())
+            .phoneNumber(user.getPhoneNumber())
+            .nickName(user.getNickName())
+            .imagePath(user.getImagePath())
+            .build();
+    }
+
 }

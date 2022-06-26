@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.devcourse.eggmarket.domain.user.dto.UserRequest;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest.Save;
+import com.devcourse.eggmarket.domain.user.dto.UserRequest.Update;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse.FindNickName;
 import com.devcourse.eggmarket.domain.user.model.User;
@@ -35,6 +36,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
@@ -208,6 +210,37 @@ class UserControllerTest {
         assertThat(updateResult).isEqualTo("true");
     }
 
+    @Test
+    void update() throws Exception{
+        //Given
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        UserDetails userDetails = userService.loadUserByUsername(user.getNickName());
+        securityContext.setAuthentication(
+            new UsernamePasswordAuthenticationToken(userDetails, null,
+                userDetails.getAuthorities()));
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+            securityContext);
+
+        UserRequest.Update userRequest = new Update("01011111111", "updateNick",null);
+        UserResponse.Update expectResponse = new UserResponse.Update(null, userRequest.phoneNumber(), userRequest.nickName(), user.getImagePath());
+
+        //When
+        MvcResult result = mockMvc.perform(put("/users")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(userRequest)))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        UserResponse.Update updateResult = objectMapper
+            .readValue(result.getResponse().getContentAsString(), getUpdateTypeReference());
+
+
+        //Then
+        assertThat(updateResult).usingRecursiveComparison().ignoringFields("id").isEqualTo(expectResponse);
+
+    }
+
     private TypeReference<UserResponse.FindNickName> getFindNickNameTypeReference() {
         return new TypeReference<FindNickName>() {
             @Override
@@ -217,6 +250,40 @@ class UserControllerTest {
 
             @Override
             public int compareTo(TypeReference<FindNickName> o) {
+                return super.compareTo(o);
+            }
+
+            @Override
+            public int hashCode() {
+                return super.hashCode();
+            }
+
+            @Override
+            public boolean equals(Object obj) {
+                return super.equals(obj);
+            }
+
+            @Override
+            protected Object clone() throws CloneNotSupportedException {
+                return super.clone();
+            }
+
+            @Override
+            public String toString() {
+                return super.toString();
+            }
+        };
+    }
+
+    private TypeReference<UserResponse.Update> getUpdateTypeReference(){
+        return new TypeReference<UserResponse.Update>() {
+            @Override
+            public Type getType() {
+                return super.getType();
+            }
+
+            @Override
+            public int compareTo(TypeReference<UserResponse.Update> o) {
                 return super.compareTo(o);
             }
 

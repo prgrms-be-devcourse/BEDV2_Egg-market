@@ -14,7 +14,7 @@ public interface UserService extends UserDetailsService {
 
     UserResponse.Basic getByUsername(String userName);
 
-    UserResponse update(String userName, UserRequest.Update userRequest);
+    UserResponse.Update update(User user, UserRequest.Update userRequest);
 
     User getUser(Authentication authentication);
 

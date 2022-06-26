@@ -3,6 +3,7 @@ package com.devcourse.eggmarket.domain.user.service;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.devcourse.eggmarket.domain.user.dto.UserRequest;
+import com.devcourse.eggmarket.domain.user.dto.UserRequest.Update;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
 import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.repository.UserRepository;
@@ -95,6 +96,16 @@ class DefaultUserServiceTest {
 
     @Test
     void update() {
+        //Given
+        UserRequest.Update userRequest = new Update("01011111111", "updateNick",null);
+        UserResponse.Update expectResponse = new UserResponse.Update(user.getId(), userRequest.phoneNumber(), userRequest.nickName(), user.getImagePath());
+
+        //When
+        UserResponse.Update result = userService.update(user,userRequest);
+
+        //Then
+        assertThat(result).usingRecursiveComparison().isEqualTo(expectResponse);
+
     }
 
     @Test
