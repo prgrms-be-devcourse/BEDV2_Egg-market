@@ -1,18 +1,22 @@
 package com.devcourse.eggmarket.domain.post.dto;
 
+import com.devcourse.eggmarket.domain.user.dto.UserResponse;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record PostResponse(
     Long id,
-    Long sellerId,
-    Long buyerId,
+    UserResponse seller,
     int price,
     String title,
     String content,
     String postStatus,
     String category,
     LocalDateTime createAt,
-    LocalDateTime updatedAt
+    int attentionCount,
+    int commentCount,
+    boolean likeOfMe,
+    List<String> imagePaths
 ) {
 
 }
