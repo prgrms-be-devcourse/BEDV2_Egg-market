@@ -1,6 +1,7 @@
 package com.devcourse.eggmarket.domain.post.api;
 
 import com.devcourse.eggmarket.domain.post.dto.PostRequest;
+import com.devcourse.eggmarket.domain.post.dto.PostResponse;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse.PostAttentionCount;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse.Posts;
 import com.devcourse.eggmarket.domain.post.service.PostAttentionService;
@@ -81,5 +82,11 @@ public class PostController {
         return ResponseEntity.ok(
             postAttentionService.getAllLikedBy(authentication.getName())
         );
+    }
+
+    @GetMapping("/{id}")
+    ResponseEntity<PostResponse.SinglePost> getPost(@PathVariable Long id, Authentication authentication) {
+        PostResponse.SinglePost response = postService.getById(id, authentication.getName());
+        return ResponseEntity.ok(response);
     }
 }

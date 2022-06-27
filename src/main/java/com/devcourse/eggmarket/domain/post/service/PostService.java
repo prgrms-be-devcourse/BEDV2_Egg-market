@@ -5,6 +5,7 @@ import com.devcourse.eggmarket.domain.post.dto.PostRequest.Save;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 
 public interface PostService {
 
@@ -16,7 +17,7 @@ public interface PostService {
 
     void deleteById(Long id, String loginUser);
 
-    PostResponse.SinglePost getById(Long id);
+    PostResponse.SinglePost getById(Long id, String loginUser);
 
     List<PostResponse.SinglePost> getAll(Pageable pageable);
 

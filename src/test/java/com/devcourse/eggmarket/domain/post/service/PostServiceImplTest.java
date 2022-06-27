@@ -13,9 +13,11 @@ import static org.mockito.Mockito.doThrow;
 
 import com.devcourse.eggmarket.domain.post.converter.PostConverter;
 import com.devcourse.eggmarket.domain.post.dto.PostRequest;
+import com.devcourse.eggmarket.domain.post.dto.PostResponse;
 import com.devcourse.eggmarket.domain.post.exception.NotExistPostException;
 import com.devcourse.eggmarket.domain.post.exception.NotMatchedSellerException;
 import com.devcourse.eggmarket.domain.post.model.Post;
+import com.devcourse.eggmarket.domain.post.repository.PostAttentionRepository;
 import com.devcourse.eggmarket.domain.post.repository.PostRepository;
 import com.devcourse.eggmarket.domain.stub.PostStub;
 import com.devcourse.eggmarket.domain.stub.UserStub;
@@ -43,6 +45,9 @@ class PostServiceImplTest {
 
     @Mock
     PostRepository postRepository;
+
+    @Mock
+    PostAttentionRepository postAttentionRepository;
 
     //TODO 엔티티를 생성하고 ID가 자동으로 할당되지 않아 null 값이 반환되어 id 값의 비교가 불가능
     @Test
@@ -185,5 +190,47 @@ class PostServiceImplTest {
     @DisplayName("판매글 상태 업데이트시 판매글의 판매자 ID와 로그인 사용자의 ID가 다른 경우 예외 발생")
     void updatePurchaseInfoNotMatchedSellerTest() {
 
+    }
+
+    @Test
+    @DisplayName("판매글 ID로 판매글 단일조회 테스트")
+    void getByIdTest() {
+        Long request = 1L;
+        String loginUser = "test";
+        boolean attention = true;
+        User seller = UserStub.entity();
+        Post post = PostStub.entity(seller);
+        PostResponse.SinglePost response = PostStub.singlePostResponse(post);
+
+        doReturn(Optional.of(post))
+            .when(postRepository)
+            .findById(request);
+        doReturn(seller)
+            .when(userService)
+            .getUser(loginUser);
+        doReturn(Optional.of(attention))
+            .when(postAttentionRepository)
+            .findByPostIdAndUserId(request, seller.getId());
+        doReturn(response)
+            .when(postConverter)
+            .singlePost(post, attention, null);
+
+        assertThat(postService.getById(request, loginUser))
+            .usingRecursiveComparison()
+            .isEqualTo(response);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 ID로 판매글 단일 조회시 예외 발생")
+    void getByIdInvalidTest() {
+        Long request = -1L;
+        String loginUser = "test";
+
+        doThrow(new NotExistPostException(NOT_EXIST_POST, request))
+            .when(postRepository)
+            .findById(request);
+
+        assertThatExceptionOfType(NotExistPostException.class)
+            .isThrownBy(() -> postService.getById(request, loginUser));
     }
 }
