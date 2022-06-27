@@ -10,7 +10,7 @@ public class EvaluationConverter {
 
     public Evaluation saveToEvaluation(EvaluationRequest.Save evaluationRequest) {
         return Evaluation.builder()
-            .postId(evaluationRequest.post_id())
+            .postId(evaluationRequest.postId())
             .revieweeId(evaluationRequest.revieweeId())
             .reviewerId(evaluationRequest.reviewerId())
             .score(evaluationRequest.score())
