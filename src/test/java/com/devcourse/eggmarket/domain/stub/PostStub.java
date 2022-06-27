@@ -1,8 +1,11 @@
 package com.devcourse.eggmarket.domain.stub;
 
 import com.devcourse.eggmarket.domain.post.dto.PostRequest;
+import com.devcourse.eggmarket.domain.post.dto.PostResponse;
+import com.devcourse.eggmarket.domain.post.dto.PostResponse.SinglePost;
 import com.devcourse.eggmarket.domain.post.model.Category;
 import com.devcourse.eggmarket.domain.post.model.Post;
+import com.devcourse.eggmarket.domain.user.dto.UserResponse;
 import com.devcourse.eggmarket.domain.user.model.User;
 
 public class PostStub {
@@ -64,6 +67,30 @@ public class PostStub {
         return new PostRequest.UpdatePurchaseInfo(
             "COMPLETED",
             "test"
+        );
+    }
+
+    public static SinglePost singlePostResponse(Post post) {
+        User seller = post.getSeller();
+        return new PostResponse.SinglePost(
+            post.getId(),
+            new UserResponse(
+                seller.getId(),
+                seller.getNickName(),
+                seller.getMannerTemperature(),
+                seller.getRole().name(),
+                seller.getImagePath()
+            ),
+            post.getPrice(),
+            post.getTitle(),
+            post.getContent(),
+            post.getPostStatus().name(),
+            post.getCategory().name(),
+            post.getCreatedAt(),
+            post.getAttentionCount(),
+            0,
+            true,
+            null
         );
     }
 }

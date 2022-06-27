@@ -14,6 +14,7 @@ import com.devcourse.eggmarket.domain.post.exception.NotExistPostException;
 import com.devcourse.eggmarket.domain.post.exception.NotMatchedSellerException;
 import com.devcourse.eggmarket.domain.post.model.Post;
 import com.devcourse.eggmarket.domain.post.model.PostImage;
+import com.devcourse.eggmarket.domain.post.repository.PostAttentionRepository;
 import com.devcourse.eggmarket.domain.post.repository.PostImageRepository;
 import com.devcourse.eggmarket.domain.post.repository.PostRepository;
 import com.devcourse.eggmarket.domain.user.model.User;
@@ -39,16 +40,20 @@ public class PostServiceImpl implements PostService {
 
     private final ImageUpload imageUpload;
 
+    private final PostAttentionRepository postAttentionRepository;
+
     public PostServiceImpl(PostRepository postRepository,
         PostImageRepository postImageRepository,
         UserService userService,
         PostConverter postConverter,
-        ImageUpload imageUpload) {
+        ImageUpload imageUpload,
+        PostAttentionRepository postAttentionRepository) {
         this.postRepository = postRepository;
         this.postImageRepository = postImageRepository;
         this.userService = userService;
         this.postConverter = postConverter;
         this.imageUpload = imageUpload;
+        this.postAttentionRepository = postAttentionRepository;
     }
 
     @Transactional
@@ -99,8 +104,14 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostResponse.SinglePost getById(Long id) {
-        return null;
+    public PostResponse.SinglePost getById(Long id, String loginUser) {
+        Post post = postRepository.findById(id)
+            .orElseThrow(() -> new NotExistPostException(NOT_EXIST_POST, id));
+        User user = userService.getUser(loginUser);
+        boolean attention = postAttentionRepository.findByPostIdAndUserId(id, user.getId())
+            .isPresent();
+
+        return postConverter.singlePost(post, attention, null);
     }
 
     @Override
