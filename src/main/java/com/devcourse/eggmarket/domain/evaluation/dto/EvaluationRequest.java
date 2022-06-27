@@ -5,17 +5,22 @@ import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
+import org.hibernate.validator.constraints.Range;
 
 public class EvaluationRequest {
 
     public record Save(
+
+        @Positive
         Long reviewerId,
 
+        @Positive
         Long revieweeId,
 
-        Long post_id,
+        @Positive
+        Long postId,
 
-        @Positive(message = "점수는 1점에서 5점 사이여야 합니다.")
+        @Range(min = 1, max = 5)
         int score,
 
         @NotBlank(message = NOT_BLANK_CONTENT)
