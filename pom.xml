@@ -4,8 +4,8 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>spring-boot-starter-parent</artifactId>
         <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.7.0</version> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.devcourse</groupId>
@@ -19,13 +19,13 @@
     <dependencies>
 
         <dependency>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
         <dependency>
-            <artifactId>spring-boot-starter-web</artifactId>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
         <dependency>
@@ -41,32 +41,32 @@
         </dependency>
 
         <dependency>
-            <artifactId>mysql-connector-java</artifactId>
             <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
             <scope>runtime</scope>
         </dependency>
 
         <dependency>
-            <artifactId>lombok</artifactId>
             <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
 
         <dependency>
-            <artifactId>spring-boot-starter-test</artifactId>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
 
         <dependency>
-            <artifactId>spring-restdocs-mockmvc</artifactId>
             <groupId>org.springframework.restdocs</groupId>
+            <artifactId>spring-restdocs-mockmvc</artifactId>
             <scope>test</scope>
         </dependency>
 
         <dependency>
-            <artifactId>flyway-core</artifactId>
             <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
             <version>8.5.12</version>
         </dependency>
 
@@ -87,6 +87,7 @@
             <artifactId>spring-security-web</artifactId>
             <version>5.7.1</version>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
@@ -98,11 +99,13 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.asciidoctor</groupId>
                 <artifactId>asciidoctor-maven-plugin</artifactId>
+                <version>1.5.8</version>
                 <dependencies>
                     <dependency>
-                        <artifactId>spring-restdocs-asciidoctor</artifactId>
                         <groupId>org.springframework.restdocs</groupId>
+                        <artifactId>spring-restdocs-asciidoctor</artifactId>
                         <version>${spring-restdocs.version}</version>
                     </dependency>
                 </dependencies>
@@ -119,20 +122,18 @@
                         <phase>prepare-package</phase>
                     </execution>
                 </executions>
-                <groupId>org.asciidoctor</groupId>
-                <version>1.5.8</version>
             </plugin>
             <plugin>
+                <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <excludes>
                         <exclude>
-                            <artifactId>lombok</artifactId>
                             <groupId>org.project-lombok</groupId>
+                            <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
                 </configuration>
-                <groupId>org.springframework.boot</groupId>
             </plugin>
         </plugins>
     </build>
