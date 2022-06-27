@@ -1,7 +1,6 @@
 package com.devcourse.eggmarket.domain.stub;
 
 import com.devcourse.eggmarket.domain.post.dto.PostRequest;
-import com.devcourse.eggmarket.domain.post.dto.PostRequest.UpdatePost;
 import com.devcourse.eggmarket.domain.post.model.Category;
 import com.devcourse.eggmarket.domain.post.model.Post;
 import com.devcourse.eggmarket.domain.user.model.User;
