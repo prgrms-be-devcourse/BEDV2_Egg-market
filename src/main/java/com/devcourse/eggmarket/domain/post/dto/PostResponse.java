@@ -32,7 +32,6 @@ public class PostResponse {
 
     public record PostsElement(
         Long id,
-        UserResponse seller,
         int price,
         String title,
         String postStatus,

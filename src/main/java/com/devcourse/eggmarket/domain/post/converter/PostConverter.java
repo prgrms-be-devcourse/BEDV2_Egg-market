@@ -66,16 +66,8 @@ public class PostConverter {
     }
 
     public PostResponse.PostsElement postsElement(Post post, String imgPath) {
-        User seller = post.getSeller();
-
         return new PostsElement(
             post.getId(),
-            new UserResponse(
-                seller.getId(),
-                seller.getNickName(),
-                seller.getMannerTemperature(),
-                seller.getRole().toString(),
-                seller.getImagePath()),
             post.getPrice(),
             post.getTitle(),
             post.getPostStatus().toString(),
