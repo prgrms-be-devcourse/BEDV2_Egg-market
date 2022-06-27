@@ -32,15 +32,15 @@ public class PostAttention extends BaseEntity {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
+    public PostAttention(Post post, User user) {
+        this(null, post, user);
+    }
+
+    @Builder
     public PostAttention(Long id, Post post, User user) {
         this.id = id;
         this.post = post;
         this.user = user;
-    }
-
-    @Builder
-    public PostAttention(Post post, User user) {
-        this(null, post, user);
     }
 
     public Post getPost() {
