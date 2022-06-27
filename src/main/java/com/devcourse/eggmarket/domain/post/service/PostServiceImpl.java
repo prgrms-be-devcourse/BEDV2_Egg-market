@@ -10,11 +10,14 @@ import com.devcourse.eggmarket.domain.post.dto.PostResponse;
 import com.devcourse.eggmarket.domain.post.exception.NotExistPostException;
 import com.devcourse.eggmarket.domain.post.exception.NotMatchedSellerException;
 import com.devcourse.eggmarket.domain.post.model.Post;
+import com.devcourse.eggmarket.domain.post.model.PostAttention;
+import com.devcourse.eggmarket.domain.post.repository.PostAttentionRepository;
 import com.devcourse.eggmarket.domain.post.repository.PostRepository;
 import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.service.UserService;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,12 +31,16 @@ public class PostServiceImpl implements PostService {
 
     private final PostConverter postConverter;
 
+    private final PostAttentionRepository postAttentionRepository;
+
     public PostServiceImpl(PostRepository postRepository,
         UserService userService,
-        PostConverter postConverter) {
+        PostConverter postConverter,
+        PostAttentionRepository postAttentionRepository) {
         this.postRepository = postRepository;
         this.userService = userService;
         this.postConverter = postConverter;
+        this.postAttentionRepository = postAttentionRepository;
     }
 
     private Post checkPostWriter(Long postId, String loginUser) {
@@ -83,8 +90,14 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostResponse.SinglePost getById(Long id) {
-        return null;
+    public PostResponse.SinglePost getById(Long id, String loginUser) {
+        Post post = postRepository.findById(id)
+            .orElseThrow(() -> new NotExistPostException(NOT_EXIST_POST, id));
+        User user = userService.getUser(loginUser);
+        boolean attention = postAttentionRepository.findByPostIdAndUserId(id, user.getId())
+            .isPresent();
+
+        return postConverter.singlePost(post, attention, null);
     }
 
     @Override
