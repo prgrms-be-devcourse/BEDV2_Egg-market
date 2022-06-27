@@ -16,7 +16,8 @@ public class PostStub {
             "title",
             "content",
             1000,
-            "BEAUTY"
+            "BEAUTY",
+            null
         );
     }
 
@@ -25,7 +26,8 @@ public class PostStub {
             "title",
             "content",
             1000,
-            "FOOD"
+            "FOOD",
+            null
         );
     }
 
