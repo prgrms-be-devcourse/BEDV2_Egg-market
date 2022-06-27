@@ -2,12 +2,14 @@ package com.devcourse.eggmarket.domain.post.api;
 
 import com.devcourse.eggmarket.domain.post.dto.PostRequest;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse.PostAttentionCount;
+import com.devcourse.eggmarket.domain.post.dto.PostResponse.Posts;
 import com.devcourse.eggmarket.domain.post.service.PostAttentionService;
 import com.devcourse.eggmarket.domain.post.service.PostService;
 import java.net.URI;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -71,6 +73,13 @@ public class PostController {
         Authentication authentication) {
         return ResponseEntity.ok(
             postAttentionService.toggleAttention(authentication.getName(), postId)
+        );
+    }
+
+    @GetMapping("/attention")
+    ResponseEntity<Posts> allAttention(Authentication authentication) {
+        return ResponseEntity.ok(
+            postAttentionService.getAllLikedBy(authentication.getName())
         );
     }
 }
