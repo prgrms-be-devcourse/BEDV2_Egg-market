@@ -83,7 +83,8 @@ class PostConverterTest {
             Collections.emptyList()
         );
 
-        PostResponse.SinglePost postResponse = postConverter.singlePost(post, isLoginUserLikePost);
+        PostResponse.SinglePost postResponse = postConverter.singlePost(post, isLoginUserLikePost,
+            Collections.emptyList());
 
         assertThat(postResponse).usingRecursiveComparison().isEqualTo(expected);
 

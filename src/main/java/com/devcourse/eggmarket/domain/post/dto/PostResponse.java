@@ -29,4 +29,21 @@ public class PostResponse {
     public record PostAttentionCount(int likeCount) {
 
     }
+
+    public record PostsElement(
+        Long id,
+        int price,
+        String title,
+        String postStatus,
+        LocalDateTime createdAt,
+        int attentionCount,
+        int commentCount,
+        String imagePath
+    ) {
+
+    }
+
+    public record Posts(List<PostsElement> posts) {
+
+    }
 }

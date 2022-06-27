@@ -3,12 +3,13 @@ package com.devcourse.eggmarket.domain.post.converter;
 import com.devcourse.eggmarket.domain.post.dto.PostRequest;
 import com.devcourse.eggmarket.domain.post.dto.PostRequest.UpdatePurchaseInfo;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse;
+import com.devcourse.eggmarket.domain.post.dto.PostResponse.PostsElement;
 import com.devcourse.eggmarket.domain.post.model.Category;
 import com.devcourse.eggmarket.domain.post.model.Post;
 import com.devcourse.eggmarket.domain.post.model.PostStatus;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
 import com.devcourse.eggmarket.domain.user.model.User;
-import java.util.Collections;
+import java.util.List;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -39,11 +40,12 @@ public class PostConverter {
         );
     }
 
-    public PostResponse.SinglePost singlePost(Post post, boolean likeOfMe) {
+    public PostResponse.SinglePost singlePost(Post post, boolean likeOfMe, List<String> imgPaths) {
         User seller = post.getSeller();
 
         return new PostResponse.SinglePost(
             post.getId(),
+            // TODO : UserConverter 사용 고려 (주의: 순환참조되지 않도록 -> 즉 PostConverter 에서 UserConverter 를 사용한다면 UserConverter 에서는 PostConverter 를 사용하면 안됩니다)
             new UserResponse(
                 seller.getId(),
                 seller.getNickName(),
@@ -57,9 +59,22 @@ public class PostConverter {
             post.getCategory().name(),
             post.getCreatedAt(),
             post.getAttentionCount(),
-            0, // TODO : Comment 개수
+            0, // TODO : Comment 개수 를 post 로부터 받아온다
             likeOfMe,
-            Collections.emptyList()
+            imgPaths
+        );
+    }
+
+    public PostResponse.PostsElement postsElement(Post post, String imgPath) {
+        return new PostsElement(
+            post.getId(),
+            post.getPrice(),
+            post.getTitle(),
+            post.getPostStatus().toString(),
+            post.getCreatedAt(),
+            post.getAttentionCount(),
+            0, // TODO : 커멘트 개수 post 에서 가져오기
+            imgPath
         );
     }
 }
