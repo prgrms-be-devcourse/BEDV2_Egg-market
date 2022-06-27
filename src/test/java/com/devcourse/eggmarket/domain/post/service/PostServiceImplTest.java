@@ -3,11 +3,7 @@ package com.devcourse.eggmarket.domain.post.service;
 import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage.NOT_EXIST_POST;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.in;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 
@@ -15,7 +11,6 @@ import com.devcourse.eggmarket.domain.post.converter.PostConverter;
 import com.devcourse.eggmarket.domain.post.dto.PostRequest;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse;
 import com.devcourse.eggmarket.domain.post.exception.NotExistPostException;
-import com.devcourse.eggmarket.domain.post.exception.NotMatchedSellerException;
 import com.devcourse.eggmarket.domain.post.model.Post;
 import com.devcourse.eggmarket.domain.post.repository.PostAttentionRepository;
 import com.devcourse.eggmarket.domain.post.repository.PostRepository;
@@ -49,7 +44,6 @@ class PostServiceImplTest {
     @Mock
     PostAttentionRepository postAttentionRepository;
 
-    //TODO 엔티티를 생성하고 ID가 자동으로 할당되지 않아 null 값이 반환되어 id 값의 비교가 불가능
     @Test
     @DisplayName("판매글 생성 테스트")
     void saveTest() {
@@ -68,8 +62,8 @@ class PostServiceImplTest {
             .when(postRepository)
             .save(any(Post.class));
 
-    assertThat(postService.save(request, loginUser)).isEqualTo(want.getId());
-}
+        assertThat(postService.save(request, loginUser)).isEqualTo(want.getId());
+    }
 
     //TODO 엔티티를 생성하고 ID가 자동으로 할당되지 않아 null 값이 반환되어 id 값의 비교가 불가능
     @Test

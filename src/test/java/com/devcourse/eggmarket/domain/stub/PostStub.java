@@ -35,6 +35,7 @@ public class PostStub {
 
     public static Post entity(User seller) {
         return Post.builder()
+            .id(1L)
             .title("title")
             .content("content")
             .price(1000)
