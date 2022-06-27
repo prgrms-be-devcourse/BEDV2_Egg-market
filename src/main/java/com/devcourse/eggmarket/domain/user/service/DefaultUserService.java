@@ -7,6 +7,7 @@ import com.devcourse.eggmarket.domain.user.converter.UserConverter;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest.Save;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest.Update;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
+import com.devcourse.eggmarket.domain.user.exception.NotExistUserException;
 import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.repository.UserRepository;
 import java.util.Collections;
@@ -49,7 +50,7 @@ public class DefaultUserService implements UserService {
     public UserResponse getByUsername(String userName) {
         Optional<User> user = userRepository.findByNickName(userName);
         if (user.isEmpty()) {
-            throw new IllegalArgumentException("해당 닉네임을 가진 사용자가 존재하지 않습니다");
+            throw new NotExistUserException();
         }
 
         return userConverter.convertToUserResponse(user.get());
@@ -70,6 +71,10 @@ public class DefaultUserService implements UserService {
         return user.get();
     }
 
+    public User getById(Long userId) {
+        return userRepository.findById(userId)
+            .orElseThrow(NotExistUserException::new);
+    }
 
     @Override
     public boolean deleteById(Long id) {

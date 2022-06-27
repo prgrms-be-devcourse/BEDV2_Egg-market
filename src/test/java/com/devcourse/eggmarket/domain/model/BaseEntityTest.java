@@ -1,4 +1,4 @@
-package com.devcourse.eggmarket.model;
+package com.devcourse.eggmarket.domain.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
