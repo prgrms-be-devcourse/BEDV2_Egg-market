@@ -96,6 +96,7 @@ public class PostServiceImpl implements PostService {
         User user = userService.getUser(loginUser);
         boolean attention = postAttentionRepository.findByPostIdAndUserId(id, user.getId())
             .isPresent();
+
         return postConverter.singlePost(post, attention, null);
     }
 
