@@ -4,6 +4,8 @@ import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 
@@ -11,6 +13,7 @@ import com.devcourse.eggmarket.domain.post.converter.PostConverter;
 import com.devcourse.eggmarket.domain.post.dto.PostRequest;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse;
 import com.devcourse.eggmarket.domain.post.exception.NotExistPostException;
+import com.devcourse.eggmarket.domain.post.exception.NotMatchedSellerException;
 import com.devcourse.eggmarket.domain.post.model.Post;
 import com.devcourse.eggmarket.domain.post.repository.PostAttentionRepository;
 import com.devcourse.eggmarket.domain.post.repository.PostRepository;
@@ -65,29 +68,25 @@ class PostServiceImplTest {
         assertThat(postService.save(request, loginUser)).isEqualTo(want.getId());
     }
 
-    //TODO 엔티티를 생성하고 ID가 자동으로 할당되지 않아 null 값이 반환되어 id 값의 비교가 불가능
     @Test
     @DisplayName("판매글 업데이트 테스트")
     void updatePostTest() {
-//        PostRequest.UpdatePost request = PostStub.updatePostRequest();
-//        Long id = 1L;
-//        String loginUser = "test";
-//        User seller = UserStub.entity();
-//        Post post = PostStub.entity(seller);
-//        Post updatePost = PostStub.updatedEntity(seller);
-//
-//        doReturn(Optional.of(post))
-//            .when(postRepository)
-//            .findById(anyLong());
-//        doReturn(seller)
-//            .when(userService)
-//            .getUser(anyString());
-//        doNothing()
-//            .when(postConverter)
-//            .updateToPost(request, post);
-//
-//        assertThat(postService.updatePost(id, request, loginUser))
-//            .isEqualTo(id);
+        PostRequest.UpdatePost request = PostStub.updatePostRequest();
+        Long id = 1L;
+        String loginUser = "test";
+        User seller = UserStub.entity();
+        Post post = PostStub.entity(seller);
+        Post updatePost = PostStub.updatedEntity(seller);
+
+        doReturn(Optional.of(post))
+            .when(postRepository)
+            .findById(anyLong());
+        doReturn(seller)
+            .when(userService)
+            .getUser(anyString());
+
+        assertThat(postService.updatePost(id, request, loginUser))
+            .isEqualTo(id);
     }
 
     @Test
@@ -105,30 +104,27 @@ class PostServiceImplTest {
             .isThrownBy(() -> postService.updatePost(invalidId, request, loginUser));
     }
 
-    //TODO 엔티티를 생성하고 ID가 자동으로 할당되지 않아 null 값이 반환되어 id 값의 비교가 불가능
     @Test
     @DisplayName("현재 판매글의 판매자 ID와 로그인 사용자의 ID가 다른 경우 예외 발생")
     void updatePostNotMatchedSellerTest() {
-//        PostRequest.UpdatePost request = PostStub.updatePostRequest();
-//        Long id = 1L;
-//        String loginUser = "test";
-//        Long sellerId = 1L;
-//        Long loginUserId = 2L;
-//        User seller = UserStub.entity();
-//        Post post = PostStub.entity(seller);
-//
-//        doReturn(Optional.of(post))
-//            .when(postRepository)
-//            .findById(anyLong());
-//        doReturn(seller)
-//            .when(userService)
-//            .getUser(anyString());
-//        doReturn(loginUserId)
-//            .when(post)
-//            .getId();
+        PostRequest.UpdatePost request = PostStub.updatePostRequest();
+        Long id = 1L;
+        String loginUser = "test";
+        Long sellerId = 1L;
+        Long loginUserId = 2L;
+        User seller = UserStub.entity();
+        User user = UserStub.entity2();
+        Post post = PostStub.entity(seller);
 
-//        assertThatExceptionOfType(NotMatchedSellerException.class)
-//            .isThrownBy(() -> postService.updatePost(id, request, loginUser));
+        doReturn(Optional.of(post))
+            .when(postRepository)
+            .findById(anyLong());
+        doReturn(user)
+            .when(userService)
+            .getUser(anyString());
+
+        assertThatExceptionOfType(NotMatchedSellerException.class)
+            .isThrownBy(() -> postService.updatePost(id, request, loginUser));
     }
 
     @Test
@@ -139,7 +135,7 @@ class PostServiceImplTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 ID를 삭제 시도시 예외 발생 테스트")
+    @DisplayName("존재하지 않는 ID로 판매글 삭제 시도시 예외 발생 테스트")
     void deleteInvalidIdTest() {
         Long request = -1L;
         String loginUser = "test";
@@ -153,7 +149,7 @@ class PostServiceImplTest {
     }
 
     @Test
-    @DisplayName("판매자와 로그인 유저가 다를 경우 예외 발생 테스트")
+    @DisplayName("삭제하려는 판매글의 판매자와 로그인 유저가 다를 경우 예외 발생 테스트")
     void deleteNotMatchedTest() {
 //        Long request = 1L;
 //        Long userId = 2L;
@@ -162,7 +158,22 @@ class PostServiceImplTest {
     @Test
     @DisplayName("판매글 판매상태 업데이트 테스트")
     void updatePurchaseInfoTest() {
+        PostRequest.UpdatePurchaseInfo request = PostStub.updatePurchaseInfo();
+        Long id = 1L;
+        String loginUser = "test";
+        User seller = UserStub.entity();
+        Post post = PostStub.entity(seller);
+        Post updatePost = PostStub.updatedEntity(seller);
 
+        doReturn(Optional.of(post))
+            .when(postRepository)
+            .findById(anyLong());
+        doReturn(seller)
+            .when(userService)
+            .getUser(anyString());
+
+        assertThat(postService.updatePurchaseInfo(id, request, loginUser))
+            .isEqualTo(id);
     }
 
     @Test
@@ -183,7 +194,24 @@ class PostServiceImplTest {
     @Test
     @DisplayName("판매글 상태 업데이트시 판매글의 판매자 ID와 로그인 사용자의 ID가 다른 경우 예외 발생")
     void updatePurchaseInfoNotMatchedSellerTest() {
+        PostRequest.UpdatePurchaseInfo request = PostStub.updatePurchaseInfo();
+        Long id = 1L;
+        String loginUser = "test";
+        Long sellerId = 1L;
+        Long loginUserId = 2L;
+        User seller = UserStub.entity();
+        User user = UserStub.entity2();
+        Post post = PostStub.entity(seller);
 
+        doReturn(Optional.of(post))
+            .when(postRepository)
+            .findById(anyLong());
+        doReturn(user)
+            .when(userService)
+            .getUser(anyString());
+
+        assertThatExceptionOfType(NotMatchedSellerException.class)
+            .isThrownBy(() -> postService.updatePurchaseInfo(id, request, loginUser));
     }
 
     @Test
