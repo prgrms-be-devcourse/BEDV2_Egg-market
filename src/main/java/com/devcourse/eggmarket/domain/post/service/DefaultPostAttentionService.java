@@ -53,13 +53,16 @@ public class DefaultPostAttentionService implements PostAttentionService {
     @Override
     public Posts getAllLikedBy(String userName) {
         return new Posts(
-            postRepository.findAllLikedBy(
-                    getUser(userName).getId()).stream()
+            postRepository.findAllLikedBy(getUserId(userName)).stream()
                 .map(post -> postConverter.postsElement(post, null)) // TODO : 한 개의 이미지 경로 가져오기
                 .collect(Collectors.toList()));
     }
 
     private User getUser(String nickName) {
         return userService.getUser(nickName);
+    }
+
+    private Long getUserId(String nickName) {
+        return this.getUser(nickName).getId();
     }
 }

@@ -13,7 +13,11 @@ public enum ErrorCode {
     USER_NOT_FOUND("U01", "찾을 수 없는 유저입니다.", HttpStatus.BAD_REQUEST),
 
     // eval error
-    SCORE_INPUT_INVALID("E01", "유효하지 않은 점수 입니다.", HttpStatus.BAD_REQUEST);
+    SCORE_INPUT_INVALID("E01", "유효하지 않은 점수 입니다.", HttpStatus.BAD_REQUEST),
+
+    // comment error
+    SOLD_OUT_POST_NOT_ALLOWED_COMMENT_ERROR("C01", "판매 완료된 글에는 댓글을 작성할 수 없습니다",
+        HttpStatus.BAD_REQUEST);
 
     private final String code;
     private final String message;
