@@ -6,8 +6,10 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
 
 import com.devcourse.eggmarket.domain.post.converter.PostConverter;
 import com.devcourse.eggmarket.domain.post.dto.PostRequest;
@@ -110,8 +112,6 @@ class PostServiceImplTest {
         PostRequest.UpdatePost request = PostStub.updatePostRequest();
         Long id = 1L;
         String loginUser = "test";
-        Long sellerId = 1L;
-        Long loginUserId = 2L;
         User seller = UserStub.entity();
         User user = UserStub.entity2();
         Post post = PostStub.entity(seller);
@@ -130,8 +130,26 @@ class PostServiceImplTest {
     @Test
     @DisplayName("판매글 삭제 테스트")
     void deleteTest() {
-//        Long request = 1L;
+        Long request = 1L;
+        String loginUser = "test";
+        User user = UserStub.entity();
+        User seller = UserStub.entity();
+        Post post = PostStub.entity(seller);
 
+        doReturn(Optional.of(post))
+            .when(postRepository)
+            .findById(request);
+        doReturn(user)
+            .when(userService)
+            .getUser(loginUser);
+        doNothing()
+            .when(postRepository)
+            .deleteById(request);
+
+        postService.deleteById(request, loginUser);
+        verify(postRepository).findById(request);
+        verify(userService).getUser(loginUser);
+        verify(postRepository).deleteById(request);
     }
 
     @Test
@@ -151,8 +169,21 @@ class PostServiceImplTest {
     @Test
     @DisplayName("삭제하려는 판매글의 판매자와 로그인 유저가 다를 경우 예외 발생 테스트")
     void deleteNotMatchedTest() {
-//        Long request = 1L;
-//        Long userId = 2L;
+        Long request = 1L;
+        String loginUser = "test";
+        User seller = UserStub.entity();
+        User user = UserStub.entity2();
+        Post post = PostStub.entity(seller);
+
+        doReturn(Optional.of(post))
+            .when(postRepository)
+            .findById(anyLong());
+        doReturn(user)
+            .when(userService)
+            .getUser(anyString());
+
+        assertThatExceptionOfType(NotMatchedSellerException.class)
+            .isThrownBy(() -> postService.deleteById(request, loginUser));
     }
 
     @Test
@@ -197,8 +228,6 @@ class PostServiceImplTest {
         PostRequest.UpdatePurchaseInfo request = PostStub.updatePurchaseInfo();
         Long id = 1L;
         String loginUser = "test";
-        Long sellerId = 1L;
-        Long loginUserId = 2L;
         User seller = UserStub.entity();
         User user = UserStub.entity2();
         Post post = PostStub.entity(seller);
