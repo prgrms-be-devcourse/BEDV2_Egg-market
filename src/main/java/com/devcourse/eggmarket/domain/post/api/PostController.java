@@ -7,15 +7,12 @@ import com.devcourse.eggmarket.domain.post.dto.PostResponse.Posts;
 import com.devcourse.eggmarket.domain.post.model.Category;
 import com.devcourse.eggmarket.domain.post.service.PostAttentionService;
 import com.devcourse.eggmarket.domain.post.service.PostService;
-import com.devcourse.eggmarket.global.common.ValueOfEnum;
 import java.net.URI;
-import javax.validation.Valid;
 import java.util.Optional;
-import javax.validation.constraints.Size;
+import javax.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -28,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
-@Validated
 @RequestMapping("/posts")
 public class PostController {
 
@@ -94,15 +90,20 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<PostResponse.SinglePost> getPost(@PathVariable Long id, Authentication authentication) {
+    ResponseEntity<PostResponse.SinglePost> getPost(@PathVariable Long id,
+        Authentication authentication) {
         PostResponse.SinglePost response = postService.getById(id, authentication.getName());
         return ResponseEntity.ok(response);
     }
 
     @GetMapping
-    ResponseEntity<PostResponse.Posts> getPosts(Pageable pageable) {
+    ResponseEntity<PostResponse.Posts> getPosts(Pageable pageable,
+        @RequestParam Optional<Category> category) {
         return ResponseEntity.ok(
-            postService.getAll(pageable)
+            category.isPresent() ?
+                postService.getAllByCategory(pageable, category.get()) :
+                postService.getAll(pageable)
         );
     }
+
 }

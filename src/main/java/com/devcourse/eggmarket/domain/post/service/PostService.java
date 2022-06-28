@@ -22,5 +22,5 @@ public interface PostService {
 
     PostResponse.Posts getAll(Pageable pageable);
 
-    PostResponse.Posts getAllByCategory(Pageable pageable, String category);
+    PostResponse.Posts getAllByCategory(Pageable pageable, Category category);
 }
