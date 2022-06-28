@@ -6,7 +6,7 @@ import java.io.InputStream;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-public class PostImage implements Image {
+public class PostImageFile implements ImageFile {
 
     private static final String DELIMITER = "_";
     private static final String EXTENSION_SEPARATOR = ".";
@@ -17,7 +17,7 @@ public class PostImage implements Image {
     private final int order; // 이미지 순서
     private final long id; // 판매글 id
 
-    private PostImage(ImageType type, byte[] bytes, String extension, int order,
+    private PostImageFile(ImageType type, byte[] bytes, String extension, int order,
         String fileName,
         long id) {
         this.type = type;
@@ -28,18 +28,18 @@ public class PostImage implements Image {
         this.id = id;
     }
 
-    private PostImage(ImageType type, byte[] bytes, int order, String fileName,
+    private PostImageFile(ImageType type, byte[] bytes, int order, String fileName,
         long id) {
         this(type, bytes, FilenameUtils.getExtension(fileName), order, fileName, id);
     }
 
-    public static PostImage toImage(long postId, MultipartFile file, int img_order) {
-        if (Image.isNotImage(file)) {
+    public static PostImageFile toImage(long postId, MultipartFile file, int img_order) {
+        if (ImageFile.isNotImage(file)) {
             throw new InvalidFileException("유효한 이미지 첨부가 아닙니다"); // 참고로 이미지 크기 오류는 따로 존재합니다
         }
 
         try (InputStream inputStream = file.getInputStream()) {
-            return new PostImage(ImageType.POST, inputStream.readAllBytes(), img_order,
+            return new PostImageFile(ImageType.POST, inputStream.readAllBytes(), img_order,
                 file.getOriginalFilename(),
                 postId);
         } catch (IOException e) {

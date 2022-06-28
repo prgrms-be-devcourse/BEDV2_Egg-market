@@ -1,7 +1,6 @@
 package com.devcourse.eggmarket.domain.stub;
 
 import com.devcourse.eggmarket.domain.post.dto.PostRequest;
-import com.devcourse.eggmarket.domain.post.dto.PostRequest.UpdatePost;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse.SinglePost;
 import com.devcourse.eggmarket.domain.post.model.Category;
@@ -20,7 +19,8 @@ public class PostStub {
             "title",
             "content",
             1000,
-            "BEAUTY"
+            "BEAUTY",
+            null
         );
     }
 
@@ -29,7 +29,8 @@ public class PostStub {
             "title",
             "content",
             1000,
-            "FOOD"
+            "FOOD",
+            null
         );
     }
 

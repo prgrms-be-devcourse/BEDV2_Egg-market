@@ -1,8 +1,8 @@
 package com.devcourse.eggmarket.domain.user.service;
 
-import com.devcourse.eggmarket.domain.model.image.Image;
+import com.devcourse.eggmarket.domain.model.image.ImageFile;
 import com.devcourse.eggmarket.domain.model.image.ImageUpload;
-import com.devcourse.eggmarket.domain.model.image.ProfileImage;
+import com.devcourse.eggmarket.domain.model.image.ProfileImageFile;
 import com.devcourse.eggmarket.domain.user.converter.UserConverter;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest.Save;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest.Update;
@@ -40,8 +40,8 @@ public class DefaultUserService implements UserService {
     public UserResponse save(Save userRequest) {
         User user = userRepository.save(userConverter.saveToUser(userRequest));
         if (userRequest.profileImage() != null) {
-            Image image = ProfileImage.toImage(user.getId(), userRequest.profileImage());
-            user.setImagePath(imageUpload.upload(image));
+            ImageFile imageFile = ProfileImageFile.toImage(user.getId(), userRequest.profileImage());
+            user.setImagePath(imageUpload.upload(imageFile));
         }
         return userConverter.convertToUserResponse(user);
     }

@@ -7,6 +7,7 @@ import com.devcourse.eggmarket.domain.post.dto.PostResponse.Posts;
 import com.devcourse.eggmarket.domain.post.service.PostAttentionService;
 import com.devcourse.eggmarket.domain.post.service.PostService;
 import java.net.URI;
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,7 +34,7 @@ public class PostController {
     }
 
     @PostMapping
-    ResponseEntity<Long> write(@RequestBody PostRequest.Save request,
+    ResponseEntity<Long> write(@Valid PostRequest.Save request,
         Authentication authentication) {
         Long postId = postService.save(request, authentication.getName());
         final URI location = ServletUriComponentsBuilder.fromCurrentRequest()
