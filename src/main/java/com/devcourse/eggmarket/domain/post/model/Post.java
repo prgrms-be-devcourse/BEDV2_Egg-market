@@ -60,6 +60,9 @@ public class Post extends BaseEntity {
     @Formula("(select count(*) from post_attention pa where pa.post_id = id)")
     private int attentionCount;
 
+    @Formula("(select count(*) from comment c where c.post_id = id)")
+    private int commentCount;
+
     private Post(Long id,
         String title,
         String content,
@@ -79,6 +82,10 @@ public class Post extends BaseEntity {
     @Builder
     public Post(Long id, String title, String content, Category category, int price, User seller) {
         this(id, title, content, category, price, PostStatus.SALE, seller);
+    }
+
+    public boolean isAbleToDeal() {
+        return postStatus.equals(PostStatus.SALE);
     }
 
     public Long getId() {
@@ -115,6 +122,10 @@ public class Post extends BaseEntity {
 
     public int getAttentionCount() {
         return attentionCount;
+    }
+
+    public int getCommentCount() {
+        return commentCount;
     }
 
     public void updatePrice(int price) {

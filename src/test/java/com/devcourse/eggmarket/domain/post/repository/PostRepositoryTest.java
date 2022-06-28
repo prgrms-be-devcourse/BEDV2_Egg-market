@@ -29,6 +29,7 @@ public class PostRepositoryTest {
     private User notWriter;
     private Post likedPost1;
     private Post likedPost2;
+    private Post notLikedPost;
 
     @BeforeEach
     void setUp() {
@@ -62,10 +63,19 @@ public class PostRepositoryTest {
             .seller(writer)
             .build();
 
+        notLikedPost = Post.builder()
+            .price(1400)
+            .title("title11")
+            .content("content12")
+            .category(Category.BEAUTY)
+            .seller(writer)
+            .build();
+
         userRepository.save(writer);
         userRepository.save(notWriter);
         postRepository.save(likedPost1);
         postRepository.save(likedPost2);
+        postRepository.save(notLikedPost);
 
         postAttentionRepository.save(new PostAttention(likedPost1, notWriter));
         postAttentionRepository.save(new PostAttention(likedPost2, notWriter));
