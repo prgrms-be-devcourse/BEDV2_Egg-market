@@ -18,23 +18,32 @@ import com.devcourse.eggmarket.domain.post.exception.NotExistPostException;
 import com.devcourse.eggmarket.domain.post.exception.NotMatchedSellerException;
 import com.devcourse.eggmarket.domain.post.model.Post;
 import com.devcourse.eggmarket.domain.post.repository.PostAttentionRepository;
+import com.devcourse.eggmarket.domain.post.repository.PostImageRepository;
 import com.devcourse.eggmarket.domain.post.repository.PostRepository;
 import com.devcourse.eggmarket.domain.stub.PostStub;
 import com.devcourse.eggmarket.domain.stub.UserStub;
 import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.service.UserService;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 @ExtendWith(MockitoExtension.class)
 class PostServiceImplTest {
 
     @InjectMocks
+    @Spy
     PostServiceImpl postService;
 
     @Mock
@@ -48,6 +57,9 @@ class PostServiceImplTest {
 
     @Mock
     PostAttentionRepository postAttentionRepository;
+
+    @Mock
+    PostImageRepository postImageRepository;
 
     @Test
     @DisplayName("판매글 생성 테스트")
@@ -283,5 +295,35 @@ class PostServiceImplTest {
 
         assertThatExceptionOfType(NotExistPostException.class)
             .isThrownBy(() -> postService.getById(request, loginUser));
+    }
+
+    @Test
+    @DisplayName("최신순으로 게시글 조회")
+    void getAllLatestTest() {
+        Pageable request = PageRequest.of(0, 3);
+        PostResponse.Posts response = PostStub.posts();
+
+        doReturn(response)
+            .when(postService)
+            .getAll(request);
+
+        assertThat(postService.getAll(request))
+            .usingRecursiveComparison()
+            .isEqualTo(response);
+    }
+
+    @Test
+    @DisplayName("가격순으로 게시글 조회")
+    void getAllPriceTest() {
+        Pageable request = PageRequest.of(0, 3, Sort.by("price"));
+        PostResponse.Posts response = PostStub.priceSortPosts();
+
+        doReturn(response)
+            .when(postService)
+            .getAll(request);
+
+        assertThat(postService.getAll(request))
+            .usingRecursiveComparison()
+            .isEqualTo(response);
     }
 }

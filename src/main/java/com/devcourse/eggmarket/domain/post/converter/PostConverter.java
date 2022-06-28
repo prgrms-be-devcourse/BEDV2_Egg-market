@@ -78,4 +78,19 @@ public class PostConverter {
         );
 
     }
+
+    public PostResponse.PostsElement convertToPostsElement(Post post) {
+        return new PostsElement(
+            post.getId(),
+            post.getPrice(),
+            post.getTitle(),
+            post.getPostStatus().toString(),
+            post.getCreatedAt(),
+            post.getAttentionCount(),
+            0, // TODO : 커멘트 개수 post 에서 가져오기
+            null
+        );
+
+    }
+
 }

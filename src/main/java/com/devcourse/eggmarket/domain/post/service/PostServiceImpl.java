@@ -10,6 +10,8 @@ import com.devcourse.eggmarket.domain.post.converter.PostConverter;
 import com.devcourse.eggmarket.domain.post.dto.PostRequest;
 import com.devcourse.eggmarket.domain.post.dto.PostRequest.UpdatePurchaseInfo;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse;
+import com.devcourse.eggmarket.domain.post.dto.PostResponse.Posts;
+import com.devcourse.eggmarket.domain.post.dto.PostResponse.PostsElement;
 import com.devcourse.eggmarket.domain.post.exception.NotExistPostException;
 import com.devcourse.eggmarket.domain.post.exception.NotMatchedSellerException;
 import com.devcourse.eggmarket.domain.post.model.Post;
@@ -95,7 +97,6 @@ public class PostServiceImpl implements PostService {
         return post.getId();
     }
 
-
     @Transactional
     @Override
     public void deleteById(Long id, String loginUser) {
@@ -115,13 +116,15 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostResponse.SinglePost> getAll(Pageable pageable) {
-        return null;
+    public PostResponse.Posts getAll(Pageable pageable) {
+        return new Posts(postRepository.findAll(pageable)
+            .map(this::postResponseAddImage)
+            .getContent()
+        );
     }
 
-
     @Override
-    public List<PostResponse.SinglePost> getAllByCategory(Pageable pageable, String category) {
+    public PostResponse.Posts getAllByCategory(Pageable pageable, String category) {
         return null;
     }
 
@@ -174,5 +177,15 @@ public class PostServiceImpl implements PostService {
                 this.order++;
             }
         }
+    }
+
+    private PostsElement postResponseAddImage(Post post) {
+        String path = "";
+
+        List<PostImage> images = postImageRepository.findByPost(post);
+        if (!images.isEmpty()) {
+            path = images.get(0).getImagePath();
+        }
+        return postConverter.postsElement(post, path);
     }
 }
