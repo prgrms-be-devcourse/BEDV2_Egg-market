@@ -118,7 +118,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostResponse.Posts getAll(Pageable pageable) {
         return new Posts(postRepository.findAll(pageable)
-            .map(this::postResponseAddImage)
+            .map(this::postResponseAddThumbnail)
             .getContent()
         );
     }
@@ -179,8 +179,8 @@ public class PostServiceImpl implements PostService {
         }
     }
 
-    private PostsElement postResponseAddImage(Post post) {
-        String path = "";
+    private PostsElement postResponseAddThumbnail(Post post) {
+        String path = null;
 
         List<PostImage> images = postImageRepository.findByPost(post);
         if (!images.isEmpty()) {
