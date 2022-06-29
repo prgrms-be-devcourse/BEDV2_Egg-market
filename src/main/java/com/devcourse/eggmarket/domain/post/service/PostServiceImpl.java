@@ -3,6 +3,7 @@ package com.devcourse.eggmarket.domain.post.service;
 import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage.NOT_EXIST_POST;
 import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage.NOT_MATCHED_SELLER_POST;
 
+import com.devcourse.eggmarket.domain.comment.repository.CommentRepository;
 import com.devcourse.eggmarket.domain.model.image.ImageFile;
 import com.devcourse.eggmarket.domain.model.image.ImageUpload;
 import com.devcourse.eggmarket.domain.model.image.PostImageFile;
@@ -10,6 +11,7 @@ import com.devcourse.eggmarket.domain.post.converter.PostConverter;
 import com.devcourse.eggmarket.domain.post.dto.PostRequest;
 import com.devcourse.eggmarket.domain.post.dto.PostRequest.UpdatePurchaseInfo;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse;
+import com.devcourse.eggmarket.domain.post.exception.InvalidBuyerException;
 import com.devcourse.eggmarket.domain.post.exception.NotExistPostException;
 import com.devcourse.eggmarket.domain.post.exception.NotMatchedSellerException;
 import com.devcourse.eggmarket.domain.post.model.Post;
@@ -19,6 +21,7 @@ import com.devcourse.eggmarket.domain.post.repository.PostImageRepository;
 import com.devcourse.eggmarket.domain.post.repository.PostRepository;
 import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.service.UserService;
+import com.devcourse.eggmarket.global.error.exception.ErrorCode;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +37,8 @@ public class PostServiceImpl implements PostService {
 
     private final PostImageRepository postImageRepository;
 
+    private final CommentRepository commentRepository;
+
     private final UserService userService;
 
     private final PostConverter postConverter;
@@ -44,12 +49,14 @@ public class PostServiceImpl implements PostService {
 
     public PostServiceImpl(PostRepository postRepository,
         PostImageRepository postImageRepository,
+        CommentRepository commentRepository,
         UserService userService,
         PostConverter postConverter,
         ImageUpload imageUpload,
         PostAttentionRepository postAttentionRepository) {
         this.postRepository = postRepository;
         this.postImageRepository = postImageRepository;
+        this.commentRepository = commentRepository;
         this.userService = userService;
         this.postConverter = postConverter;
         this.imageUpload = imageUpload;
@@ -90,9 +97,31 @@ public class PostServiceImpl implements PostService {
     @Override
     public Long updatePurchaseInfo(Long id, UpdatePurchaseInfo request, String loginUser) {
         Post post = checkPostWriter(id, loginUser);
-        User buyer = userService.getUser(request.buyerNickName());
+        User buyer = userService.getById(request.buyerId());
+
+        checkAllowedBuyer(buyer, post);
+
         postConverter.updateToPurchase(request, post, buyer);
         return post.getId();
+    }
+
+    private void checkAllowedBuyer(User buyer, Post post) {
+        checkSellerIsNotBuyer(buyer, post);
+
+        commentRepository.findAllByPost(post).stream()
+            .filter(comment -> comment.getUser().isSameUser(buyer))
+            .findAny()
+            .orElseThrow(() -> new InvalidBuyerException(
+                post.getId() + "판매글의 구매자로 등록할 수 없는 사용자입니다 : " + buyer.getId(),
+                ErrorCode.NOT_ALLOWED_BUYER));
+    }
+
+    private void checkSellerIsNotBuyer(User buyer, Post post) {
+        if (post.getSeller().isSameUser(buyer)) {
+            throw new InvalidBuyerException(
+                post.getId() + "판매글의 구매자로 등록할 수 없는 사용자입니다 : " + buyer.getId(),
+                ErrorCode.NOT_ALLOWED_BUYER);
+        }
     }
 
 
@@ -142,7 +171,6 @@ public class PostServiceImpl implements PostService {
         if (!(sellerId.equals(loginUserId))) {
             throw new NotMatchedSellerException(NOT_MATCHED_SELLER_POST, sellerId, loginUserId);
         }
-
         return post;
     }
 

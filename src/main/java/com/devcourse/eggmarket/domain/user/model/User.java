@@ -109,6 +109,10 @@ public class User extends BaseEntity {
         this.mannerTemperature = updatedMannerTemperature;
     }
 
+    public boolean isSameUser(User user) {
+        return this.id.equals(user.getId());
+    }
+
     private float validTemperatureScope(final float mannerTemperature) {
         if (mannerTemperature < LOWEST_TEMP) {
             return LOWEST_TEMP;

@@ -11,6 +11,8 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
+import com.devcourse.eggmarket.domain.comment.model.Comment;
+import com.devcourse.eggmarket.domain.comment.repository.CommentRepository;
 import com.devcourse.eggmarket.domain.post.converter.PostConverter;
 import com.devcourse.eggmarket.domain.post.dto.PostRequest;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse;
@@ -23,6 +25,7 @@ import com.devcourse.eggmarket.domain.stub.PostStub;
 import com.devcourse.eggmarket.domain.stub.UserStub;
 import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.service.UserService;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,6 +51,9 @@ class PostServiceImplTest {
 
     @Mock
     PostAttentionRepository postAttentionRepository;
+
+    @Mock
+    CommentRepository commentRepository;
 
     @Test
     @DisplayName("판매글 생성 테스트")
@@ -193,8 +199,10 @@ class PostServiceImplTest {
         Long id = 1L;
         String loginUser = "test";
         User seller = UserStub.entity();
+        User buyer = UserStub.entity2();
         Post post = PostStub.entity(seller);
         Post updatePost = PostStub.updatedEntity(seller);
+        List<Comment> comments = List.of(new Comment(post, buyer, "test comment"));
 
         doReturn(Optional.of(post))
             .when(postRepository)
@@ -202,6 +210,12 @@ class PostServiceImplTest {
         doReturn(seller)
             .when(userService)
             .getUser(anyString());
+        doReturn(buyer)
+            .when(userService)
+            .getById(anyLong());
+        doReturn(comments)
+            .when(commentRepository)
+            .findAllByPost(post);
 
         assertThat(postService.updatePurchaseInfo(id, request, loginUser))
             .isEqualTo(id);

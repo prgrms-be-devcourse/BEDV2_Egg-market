@@ -67,7 +67,7 @@ public class PostStub {
     public static PostRequest.UpdatePurchaseInfo updatePurchaseInfo() {
         return new PostRequest.UpdatePurchaseInfo(
             "COMPLETED",
-            "test"
+            2L
         );
     }
 

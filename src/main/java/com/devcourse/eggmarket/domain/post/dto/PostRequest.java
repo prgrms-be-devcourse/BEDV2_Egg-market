@@ -13,7 +13,6 @@ import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage
 import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage.NOT_VALID_RANGE_CONTENT;
 import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage.NOT_VALID_RANGE_POST_STATUS;
 import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage.NOT_VALID_RANGE_TITLE;
-import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage.NOT_VALID_RANGE_USER;
 
 import com.devcourse.eggmarket.domain.post.model.Category;
 import com.devcourse.eggmarket.domain.post.model.PostStatus;
@@ -76,8 +75,7 @@ public class PostRequest {
         String postStatus,
 
         @NotNull(message = NOT_NULL_USER)
-        @Size(min = 3, max = 12, message = NOT_VALID_RANGE_USER)
-        String buyerNickName
+        Long buyerId
     ) {
 
     }

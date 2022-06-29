@@ -46,7 +46,7 @@ public class PostController {
             .body(postId);
     }
 
-    @PatchMapping("/{id}/post")
+    @PatchMapping("/{id}")
     ResponseEntity<Long> updatePost(@RequestBody PostRequest.UpdatePost request,
         Authentication authentication,
         @PathVariable Long id) {
