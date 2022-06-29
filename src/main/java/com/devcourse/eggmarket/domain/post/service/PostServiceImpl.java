@@ -11,9 +11,12 @@ import com.devcourse.eggmarket.domain.post.converter.PostConverter;
 import com.devcourse.eggmarket.domain.post.dto.PostRequest;
 import com.devcourse.eggmarket.domain.post.dto.PostRequest.UpdatePurchaseInfo;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse;
+import com.devcourse.eggmarket.domain.post.dto.PostResponse.Posts;
+import com.devcourse.eggmarket.domain.post.dto.PostResponse.PostsElement;
 import com.devcourse.eggmarket.domain.post.exception.InvalidBuyerException;
 import com.devcourse.eggmarket.domain.post.exception.NotExistPostException;
 import com.devcourse.eggmarket.domain.post.exception.NotMatchedSellerException;
+import com.devcourse.eggmarket.domain.post.model.Category;
 import com.devcourse.eggmarket.domain.post.model.Post;
 import com.devcourse.eggmarket.domain.post.model.PostImage;
 import com.devcourse.eggmarket.domain.post.repository.PostAttentionRepository;
@@ -144,14 +147,19 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostResponse.SinglePost> getAll(Pageable pageable) {
-        return null;
+    public PostResponse.Posts getAll(Pageable pageable) {
+        return new Posts(postRepository.findAll(pageable)
+            .map(this::postResponseAddThumbnail)
+            .getContent()
+        );
     }
 
-
     @Override
-    public List<PostResponse.SinglePost> getAllByCategory(Pageable pageable, String category) {
-        return null;
+    public PostResponse.Posts getAllByCategory(Pageable pageable, Category category) {
+        return new Posts(postRepository.findAllByCategory(pageable, category)
+            .map(this::postResponseAddThumbnail)
+            .getContent()
+        );
     }
 
     private String uploadFile(Post post, ImageFile file) {
@@ -202,5 +210,15 @@ public class PostServiceImpl implements PostService {
                 this.order++;
             }
         }
+    }
+
+    private PostsElement postResponseAddThumbnail(Post post) {
+        String path = null;
+
+        List<PostImage> images = postImageRepository.findByPost(post);
+        if (!images.isEmpty()) {
+            path = images.get(0).getImagePath();
+        }
+        return postConverter.postsElement(post, path);
     }
 }

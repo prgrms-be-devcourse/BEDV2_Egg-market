@@ -2,11 +2,15 @@ package com.devcourse.eggmarket.domain.stub;
 
 import com.devcourse.eggmarket.domain.post.dto.PostRequest;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse;
+import com.devcourse.eggmarket.domain.post.dto.PostResponse.Posts;
+import com.devcourse.eggmarket.domain.post.dto.PostResponse.PostsElement;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse.SinglePost;
 import com.devcourse.eggmarket.domain.post.model.Category;
 import com.devcourse.eggmarket.domain.post.model.Post;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
 import com.devcourse.eggmarket.domain.user.model.User;
+import java.time.LocalDateTime;
+import java.util.List;
 
 public class PostStub {
 
@@ -92,6 +96,80 @@ public class PostStub {
             0,
             true,
             null
+        );
+    }
+
+    public static PostResponse.Posts posts() {
+        return new PostResponse.Posts(
+            List.of(
+                new PostsElement(
+                    1L,
+                    1000,
+                    "title",
+                    "COMPLETED",
+                    LocalDateTime.now(),
+                    0,
+                    0,
+                    null
+                ),
+                new PostsElement(
+                    2L,
+                    500,
+                    "title",
+                    "COMPLETED",
+                    LocalDateTime.now(),
+                    0,
+                    0,
+                    null
+                ),
+                new PostsElement(
+                    1L,
+                    2500,
+                    "title",
+                    "COMPLETED",
+                    LocalDateTime.now(),
+                    0,
+                    0,
+                    null
+                )
+            )
+        );
+    }
+
+    public static Posts priceSortPosts() {
+        return new PostResponse.Posts(
+            List.of(
+                new PostsElement(
+                    2L,
+                    500,
+                    "title",
+                    "COMPLETED",
+                    LocalDateTime.now(),
+                    0,
+                    0,
+                    null
+                ),
+                new PostsElement(
+                    1L,
+                    1000,
+                    "title",
+                    "COMPLETED",
+                    LocalDateTime.now(),
+                    0,
+                    0,
+                    null
+                ),
+                new PostsElement(
+                    3L,
+                    2500,
+                    "title",
+                    "COMPLETED",
+                    LocalDateTime.now(),
+                    0,
+                    0,
+                    null
+                )
+            )
         );
     }
 }
