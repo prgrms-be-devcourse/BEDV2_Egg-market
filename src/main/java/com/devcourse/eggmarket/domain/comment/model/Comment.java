@@ -51,4 +51,8 @@ public class Comment {
     public Long getId() {
         return id;
     }
+
+    public User getUser() {
+        return user;
+    }
 }

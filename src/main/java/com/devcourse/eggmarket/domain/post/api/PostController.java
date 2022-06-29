@@ -9,7 +9,6 @@ import com.devcourse.eggmarket.domain.post.service.PostAttentionService;
 import com.devcourse.eggmarket.domain.post.service.PostService;
 import com.devcourse.eggmarket.global.common.ValueOfEnum;
 import java.net.URI;
-import java.util.Optional;
 import javax.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -53,8 +52,8 @@ public class PostController {
             .body(postId);
     }
 
-    @PatchMapping("/{id}/post")
-    ResponseEntity<Long> updatePost(@RequestBody @Valid PostRequest.UpdatePost request,
+    @PatchMapping("/{id}")
+    ResponseEntity<Long> updatePost(@RequestBody PostRequest.UpdatePost request,
         Authentication authentication,
         @PathVariable Long id) {
         Long postId = postService.updatePost(id, request, authentication.getName());

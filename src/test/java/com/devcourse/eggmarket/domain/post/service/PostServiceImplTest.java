@@ -11,6 +11,8 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
+import com.devcourse.eggmarket.domain.comment.model.Comment;
+import com.devcourse.eggmarket.domain.comment.repository.CommentRepository;
 import com.devcourse.eggmarket.domain.post.converter.PostConverter;
 import com.devcourse.eggmarket.domain.post.dto.PostRequest;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse;
@@ -34,8 +36,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -58,6 +58,9 @@ class PostServiceImplTest {
 
     @Mock
     PostAttentionRepository postAttentionRepository;
+
+    @Mock
+    CommentRepository commentRepository;
 
     @Mock
     PostImageRepository postImageRepository;
@@ -206,8 +209,10 @@ class PostServiceImplTest {
         Long id = 1L;
         String loginUser = "test";
         User seller = UserStub.entity();
+        User buyer = UserStub.entity2();
         Post post = PostStub.entity(seller);
         Post updatePost = PostStub.updatedEntity(seller);
+        List<Comment> comments = List.of(new Comment(post, buyer, "test comment"));
 
         doReturn(Optional.of(post))
             .when(postRepository)
@@ -215,6 +220,12 @@ class PostServiceImplTest {
         doReturn(seller)
             .when(userService)
             .getUser(anyString());
+        doReturn(buyer)
+            .when(userService)
+            .getById(anyLong());
+        doReturn(comments)
+            .when(commentRepository)
+            .findAllByPost(post);
 
         assertThat(postService.updatePurchaseInfo(id, request, loginUser))
             .isEqualTo(id);
