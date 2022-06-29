@@ -76,7 +76,6 @@ public class PostConverter {
             post.getCommentCount(),
             imgPath
         );
-
     }
 
 }

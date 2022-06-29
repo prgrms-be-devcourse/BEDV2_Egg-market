@@ -9,9 +9,8 @@ import com.devcourse.eggmarket.domain.post.service.PostAttentionService;
 import com.devcourse.eggmarket.domain.post.service.PostService;
 import com.devcourse.eggmarket.global.common.ValueOfEnum;
 import java.net.URI;
-import javax.validation.Valid;
 import java.util.Optional;
-import javax.validation.constraints.Size;
+import javax.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -94,15 +93,20 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<PostResponse.SinglePost> getPost(@PathVariable Long id, Authentication authentication) {
+    ResponseEntity<PostResponse.SinglePost> getPost(@PathVariable Long id,
+        Authentication authentication) {
         PostResponse.SinglePost response = postService.getById(id, authentication.getName());
         return ResponseEntity.ok(response);
     }
 
     @GetMapping
-    ResponseEntity<PostResponse.Posts> getPosts(Pageable pageable) {
+    ResponseEntity<PostResponse.Posts> getPosts(Pageable pageable,
+        @RequestParam(required = false) @ValueOfEnum(enumClass = Category.class) String category) {
         return ResponseEntity.ok(
-            postService.getAll(pageable)
+            category != null ?
+                postService.getAllByCategory(pageable, Category.valueOf(category)) :
+                postService.getAll(pageable)
         );
     }
+
 }

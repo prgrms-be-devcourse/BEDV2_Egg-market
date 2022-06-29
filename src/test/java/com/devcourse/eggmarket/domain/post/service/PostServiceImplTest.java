@@ -16,6 +16,7 @@ import com.devcourse.eggmarket.domain.post.dto.PostRequest;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse;
 import com.devcourse.eggmarket.domain.post.exception.NotExistPostException;
 import com.devcourse.eggmarket.domain.post.exception.NotMatchedSellerException;
+import com.devcourse.eggmarket.domain.post.model.Category;
 import com.devcourse.eggmarket.domain.post.model.Post;
 import com.devcourse.eggmarket.domain.post.repository.PostAttentionRepository;
 import com.devcourse.eggmarket.domain.post.repository.PostImageRepository;
@@ -323,6 +324,22 @@ class PostServiceImplTest {
             .getAll(request);
 
         assertThat(postService.getAll(request))
+            .usingRecursiveComparison()
+            .isEqualTo(response);
+    }
+
+    @Test
+    @DisplayName("카테고리로 게시글 조회")
+    void getAllByCategoryTest() {
+        Pageable request = PageRequest.of(0, 3);
+        Category category = Category.DIGITAL;
+        PostResponse.Posts response = PostStub.posts();
+
+        doReturn(response)
+            .when(postService)
+            .getAllByCategory(request, category);
+
+        assertThat(postService.getAllByCategory(request, category))
             .usingRecursiveComparison()
             .isEqualTo(response);
     }

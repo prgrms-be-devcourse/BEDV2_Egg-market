@@ -14,6 +14,7 @@ import com.devcourse.eggmarket.domain.post.dto.PostResponse.Posts;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse.PostsElement;
 import com.devcourse.eggmarket.domain.post.exception.NotExistPostException;
 import com.devcourse.eggmarket.domain.post.exception.NotMatchedSellerException;
+import com.devcourse.eggmarket.domain.post.model.Category;
 import com.devcourse.eggmarket.domain.post.model.Post;
 import com.devcourse.eggmarket.domain.post.model.PostImage;
 import com.devcourse.eggmarket.domain.post.repository.PostAttentionRepository;
@@ -124,8 +125,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostResponse.Posts getAllByCategory(Pageable pageable, String category) {
-        return null;
+    public PostResponse.Posts getAllByCategory(Pageable pageable, Category category) {
+        return new Posts(postRepository.findAllByCategory(pageable, category)
+            .map(this::postResponseAddThumbnail)
+            .getContent()
+        );
     }
 
     private String uploadFile(Post post, ImageFile file) {
