@@ -52,8 +52,8 @@ public class PostController {
             .body(postId);
     }
 
-    @PatchMapping("/{id}/post")
-    ResponseEntity<Long> updatePost(@RequestBody @Valid PostRequest.UpdatePost request,
+    @PatchMapping("/{id}")
+    ResponseEntity<Long> updatePost(@RequestBody PostRequest.UpdatePost request,
         Authentication authentication,
         @PathVariable Long id) {
         Long postId = postService.updatePost(id, request, authentication.getName());
