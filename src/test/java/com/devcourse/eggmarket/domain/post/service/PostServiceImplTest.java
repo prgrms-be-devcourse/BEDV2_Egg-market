@@ -21,6 +21,7 @@ import com.devcourse.eggmarket.domain.post.exception.NotMatchedSellerException;
 import com.devcourse.eggmarket.domain.post.model.Category;
 import com.devcourse.eggmarket.domain.post.model.Post;
 import com.devcourse.eggmarket.domain.post.repository.PostAttentionRepository;
+import com.devcourse.eggmarket.domain.post.repository.PostImageRepository;
 import com.devcourse.eggmarket.domain.post.repository.PostRepository;
 import com.devcourse.eggmarket.domain.stub.PostStub;
 import com.devcourse.eggmarket.domain.stub.UserStub;
@@ -60,6 +61,9 @@ class PostServiceImplTest {
 
     @Mock
     CommentRepository commentRepository;
+
+    @Mock
+    PostImageRepository postImageRepository;
 
     @Test
     @DisplayName("판매글 생성 테스트")

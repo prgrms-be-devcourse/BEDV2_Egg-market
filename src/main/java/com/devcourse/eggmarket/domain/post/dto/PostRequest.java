@@ -5,6 +5,7 @@ import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage
 import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage.NOT_BLANK_CONTENT;
 import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage.NOT_BLANK_POST_STATUS;
 import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage.NOT_BLANK_TITLE;
+import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage.NOT_NEGATIVE_ID;
 import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage.NOT_NEGATIVE_PRICE;
 import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage.NOT_NULL_USER;
 import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage.NOT_VALID_CATEGORY;
@@ -75,6 +76,7 @@ public class PostRequest {
         String postStatus,
 
         @NotNull(message = NOT_NULL_USER)
+        @PositiveOrZero(message = NOT_NEGATIVE_ID)
         Long buyerId
     ) {
 

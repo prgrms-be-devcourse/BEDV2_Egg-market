@@ -108,26 +108,6 @@ public class PostServiceImpl implements PostService {
         return post.getId();
     }
 
-    private void checkAllowedBuyer(User buyer, Post post) {
-        checkSellerIsNotBuyer(buyer, post);
-
-        commentRepository.findAllByPost(post).stream()
-            .filter(comment -> comment.getUser().isSameUser(buyer))
-            .findAny()
-            .orElseThrow(() -> new InvalidBuyerException(
-                post.getId() + "판매글의 구매자로 등록할 수 없는 사용자입니다 : " + buyer.getId(),
-                ErrorCode.NOT_ALLOWED_BUYER));
-    }
-
-    private void checkSellerIsNotBuyer(User buyer, Post post) {
-        if (post.getSeller().isSameUser(buyer)) {
-            throw new InvalidBuyerException(
-                post.getId() + "판매글의 구매자로 등록할 수 없는 사용자입니다 : " + buyer.getId(),
-                ErrorCode.NOT_ALLOWED_BUYER);
-        }
-    }
-
-
     @Transactional
     @Override
     public void deleteById(Long id, String loginUser) {
@@ -221,4 +201,24 @@ public class PostServiceImpl implements PostService {
         }
         return postConverter.postsElement(post, path);
     }
+
+    private void checkAllowedBuyer(User buyer, Post post) {
+        checkSellerIsNotBuyer(buyer, post);
+
+        commentRepository.findAllByPost(post).stream()
+            .filter(comment -> comment.getUser().isSameUser(buyer))
+            .findAny()
+            .orElseThrow(() -> new InvalidBuyerException(
+                post.getId() + "판매글의 구매자로 등록할 수 없는 사용자입니다 : " + buyer.getId(),
+                ErrorCode.NOT_ALLOWED_BUYER));
+    }
+
+    private void checkSellerIsNotBuyer(User buyer, Post post) {
+        if (post.getSeller().isSameUser(buyer)) {
+            throw new InvalidBuyerException(
+                post.getId() + "판매글의 구매자로 등록할 수 없는 사용자입니다 : " + buyer.getId(),
+                ErrorCode.NOT_ALLOWED_BUYER);
+        }
+    }
+
 }
