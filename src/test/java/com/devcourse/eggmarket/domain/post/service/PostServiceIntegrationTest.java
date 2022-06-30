@@ -3,6 +3,7 @@ package com.devcourse.eggmarket.domain.post.service;
 import com.devcourse.eggmarket.domain.comment.model.Comment;
 import com.devcourse.eggmarket.domain.comment.repository.CommentRepository;
 import com.devcourse.eggmarket.domain.post.dto.PostRequest.UpdatePurchaseInfo;
+import com.devcourse.eggmarket.domain.post.dto.PostResponse;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse.Posts;
 import com.devcourse.eggmarket.domain.post.exception.InvalidBuyerException;
 import com.devcourse.eggmarket.domain.post.model.Category;
@@ -121,7 +122,7 @@ public class PostServiceIntegrationTest {
 
     @Test
     @DisplayName("관심목록에 추가했던 로그인 사용자가 관심목록 추가 버튼을 누르면 관심목록에서 제거한다")
-    public void toggleAttentionToDisable() {
+    void toggleAttentionToDisable() {
         postAttentionService.toggleAttention(writerLikedOwnPost.getNickName(), likedPost1.getId());
 
         boolean afterLikeOfMe = postAttentionRepository.findByPostIdAndUserId(likedPost1.getId(),
@@ -133,7 +134,7 @@ public class PostServiceIntegrationTest {
 
     @Test
     @DisplayName("관심목록에 추가한 적 없던 로그인 사용자가 관심목록 추가 버튼을 누르면 관심목록에 추가한다")
-    public void toggleAttentionToEnable() {
+    void toggleAttentionToEnable() {
         postAttentionService.toggleAttention(notYetLikedUser.getNickName(), likedPost1.getId());
 
         boolean afterLikeOfMe = postAttentionRepository.findByPostIdAndUserId(likedPost1.getId(),
@@ -145,7 +146,7 @@ public class PostServiceIntegrationTest {
 
     @Test
     @DisplayName("로그인 사용자는 자신의 관심목록을 확인한다")
-    public void getAllLikedPosts() {
+    void getAllLikedPosts() {
         Posts allLikedPosts = postAttentionService.getAllLikedBy(
             writerLikedOwnPost.getNickName());
 
@@ -154,7 +155,7 @@ public class PostServiceIntegrationTest {
 
     @Test
     @DisplayName("판매글에 대한 댓글 작성자가 아니면 판매글의 구매자로 등록될 수 없다")
-    public void updatePostInfoFail() {
+    void updatePostInfoFail() {
         UpdatePurchaseInfo updatePurchaseRequest = new UpdatePurchaseInfo(
             PostStatus.COMPLETED.name(),
             notCommentWriter.getId());
@@ -169,7 +170,7 @@ public class PostServiceIntegrationTest {
 
     @Test
     @DisplayName("판매글 작성자는 판매글의 구매자로 등록될 수 없다")
-    public void updatePostInfoFailWithSeller() {
+    void updatePostInfoFailWithSeller() {
         UpdatePurchaseInfo updatePurchaseRequest = new UpdatePurchaseInfo(
             PostStatus.COMPLETED.name(),
             writerLikedOwnPost.getId());
@@ -184,16 +185,16 @@ public class PostServiceIntegrationTest {
 
     @Test
     @DisplayName("판매글에 대한 댓글 작성자는 판매글의 구매자로 등록할 수 있다")
-    public void updatePostInfoSuccess() {
+    void updatePostInfoSuccess() {
         UpdatePurchaseInfo updatePurchaseRequest = new UpdatePurchaseInfo(
             PostStatus.COMPLETED.name(),
             commentWriter.getId());
 
-        Long soldPostId = postService.updatePurchaseInfo(
+        PostResponse.Update response = postService.updatePurchaseInfo(
             likedPost1.getId(),
             updatePurchaseRequest,
             likedPost1.getSeller().getNickName());
 
-        Assertions.assertThat(soldPostId).isEqualTo(likedPost1.getId());
+        Assertions.assertThat(response.id()).isEqualTo(likedPost1.getId());
     }
 }

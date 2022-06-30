@@ -13,6 +13,7 @@ import com.devcourse.eggmarket.domain.post.dto.PostRequest.UpdatePurchaseInfo;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse.Posts;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse.PostsElement;
+import com.devcourse.eggmarket.domain.post.dto.PostResponse.Update;
 import com.devcourse.eggmarket.domain.post.exception.InvalidBuyerException;
 import com.devcourse.eggmarket.domain.post.exception.NotExistPostException;
 import com.devcourse.eggmarket.domain.post.exception.NotMatchedSellerException;
@@ -68,7 +69,7 @@ public class PostServiceImpl implements PostService {
 
     @Transactional
     @Override
-    public Long save(PostRequest.Save request, String loginUser) {
+    public PostResponse.Save save(PostRequest.Save request, String loginUser) {
         Order order = new Order();
         User seller = userService.getUser(loginUser);
 
@@ -83,29 +84,28 @@ public class PostServiceImpl implements PostService {
 
         // TODO : 이미지 개수 , HttpRequest 용량 관련 에러 처리
 
-        return savedPost.getId();
+        return new PostResponse.Save(savedPost.getId());
     }
 
     @Transactional
     @Override
-    public Long updatePost(Long id, PostRequest.UpdatePost request, String loginUser) {
+    public PostResponse.Update updatePost(Long id, PostRequest.UpdatePost request, String loginUser) {
         Post post = checkPostWriter(id, loginUser);
 
         postConverter.updateToPost(request, post);
 
-        return post.getId();
+        return new PostResponse.Update(post.getId());
     }
 
     @Transactional
     @Override
-    public Long updatePurchaseInfo(Long id, UpdatePurchaseInfo request, String loginUser) {
+    public PostResponse.Update updatePurchaseInfo(Long id, UpdatePurchaseInfo request, String loginUser) {
         Post post = checkPostWriter(id, loginUser);
         User buyer = userService.getById(request.buyerId());
 
         checkAllowedBuyer(buyer, post);
-
         postConverter.updateToPurchase(request, post, buyer);
-        return post.getId();
+        return new PostResponse.Update(post.getId());
     }
 
     @Transactional

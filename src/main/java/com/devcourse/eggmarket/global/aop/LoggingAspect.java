@@ -18,9 +18,10 @@ public class LoggingAspect {
         long startTime = System.nanoTime();
         Object result = joinPoint.proceed();
         long endTime = System.nanoTime() - startTime;
-        logger.info("[{}] After method called with result => {} as time taken {} ns", layer, result, endTime);
+        logger.info("[{}] After method called with result => {} as time taken {} ns", layer, result,
+            endTime);
         return result;
-}
+    }
 
     @Around("com.devcourse.eggmarket.global.aop.CommonPointcut.controllerPublicMethodPointcut()")
     public Object controllerLog(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -29,11 +30,11 @@ public class LoggingAspect {
 
     @Around("com.devcourse.eggmarket.global.aop.CommonPointcut.servicePublicMethodPointcut()")
     public Object serviceLog(ProceedingJoinPoint joinPoint) throws Throwable {
-            return loggingFormat(joinPoint, "Service");
-        }
+        return loggingFormat(joinPoint, "Service");
+    }
 
-        @Around("com.devcourse.eggmarket.global.aop.CommonPointcut.repositoryPublicMethodPointcut()")
-        public Object repositoryLog(ProceedingJoinPoint joinPoint) throws Throwable {
-            return loggingFormat(joinPoint, "Repository");
+    @Around("com.devcourse.eggmarket.global.aop.CommonPointcut.repositoryPublicMethodPointcut()")
+    public Object repositoryLog(ProceedingJoinPoint joinPoint) throws Throwable {
+        return loggingFormat(joinPoint, "Repository");
     }
 }

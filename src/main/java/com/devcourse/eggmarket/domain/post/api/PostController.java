@@ -40,34 +40,34 @@ public class PostController {
     }
 
     @PostMapping
-    ResponseEntity<Long> write(@Valid PostRequest.Save request,
+    ResponseEntity<PostResponse.Save> write(@Valid PostRequest.Save request,
         Authentication authentication) {
-        Long postId = postService.save(request, authentication.getName());
+        PostResponse.Save response = postService.save(request, authentication.getName());
         final URI location = ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
-            .buildAndExpand(postId)
+            .buildAndExpand(response.id())
             .toUri();
 
         return ResponseEntity.created(location)
-            .body(postId);
+            .body(response);
     }
 
     @PatchMapping("/{id}")
-    ResponseEntity<Long> updatePost(@RequestBody PostRequest.UpdatePost request,
+    ResponseEntity<PostResponse.Update> updatePost(@RequestBody PostRequest.UpdatePost request,
         Authentication authentication,
         @PathVariable Long id) {
-        Long postId = postService.updatePost(id, request, authentication.getName());
+        PostResponse.Update response = postService.updatePost(id, request, authentication.getName());
 
-        return ResponseEntity.ok(postId);
+        return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/{id}/purchase")
-    ResponseEntity<Long> updatePurchase(@RequestBody @Valid PostRequest.UpdatePurchaseInfo request,
+    ResponseEntity<PostResponse.Update> updatePurchase(@RequestBody @Valid PostRequest.UpdatePurchaseInfo request,
         Authentication authentication,
         @PathVariable Long id) {
-        Long postId = postService.updatePurchaseInfo(id, request, authentication.getName());
+        PostResponse.Update response = postService.updatePurchaseInfo(id, request, authentication.getName());
 
-        return ResponseEntity.ok(postId);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
