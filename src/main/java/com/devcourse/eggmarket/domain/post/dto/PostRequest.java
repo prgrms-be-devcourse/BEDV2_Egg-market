@@ -21,6 +21,7 @@ import com.devcourse.eggmarket.global.common.ValueOfEnum;
 import java.util.List;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import org.springframework.web.multipart.MultipartFile;
@@ -76,7 +77,7 @@ public class PostRequest {
         String postStatus,
 
         @NotNull(message = NOT_NULL_USER)
-        @PositiveOrZero(message = NOT_NEGATIVE_ID)
+        @Positive(message = NOT_NEGATIVE_ID)
         Long buyerId
     ) {
 
