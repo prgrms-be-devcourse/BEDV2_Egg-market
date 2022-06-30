@@ -10,11 +10,11 @@ import org.springframework.security.core.Authentication;
 
 public interface PostService {
 
-    Long save(Save request, String loginUser);
+    PostResponse.Save save(Save request, String loginUser);
 
-    Long updatePost(Long id, PostRequest.UpdatePost request, String loginUser);
+    PostResponse.Update updatePost(Long id, PostRequest.UpdatePost request, String loginUser);
 
-    Long updatePurchaseInfo(Long id, PostRequest.UpdatePurchaseInfo request, String loginUser);
+    PostResponse.Update updatePurchaseInfo(Long id, PostRequest.UpdatePurchaseInfo request, String loginUser);
 
     void deleteById(Long id, String loginUser);
 

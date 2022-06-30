@@ -18,7 +18,10 @@ public enum ErrorCode {
     // comment error
     SOLD_OUT_POST_NOT_ALLOWED_COMMENT_ERROR("C01", "판매 완료된 글에는 댓글을 작성할 수 없습니다",
         HttpStatus.FORBIDDEN),
-    NOT_ALLOWED_BUYER("C02", "해당 판매글에 대한 구매자로 등록할 수 없습니다", HttpStatus.BAD_REQUEST);
+    NOT_ALLOWED_BUYER("C02", "해당 판매글에 대한 구매자로 등록할 수 없습니다", HttpStatus.BAD_REQUEST),
+
+    // post error
+    NOT_VALID_CATEGORY("P01", "존재하지 않는 카테고리 입니다.", HttpStatus.BAD_REQUEST);
 
     private final String code;
     private final String message;
