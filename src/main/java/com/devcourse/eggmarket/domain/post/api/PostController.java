@@ -7,6 +7,7 @@ import com.devcourse.eggmarket.domain.post.dto.PostResponse.Posts;
 import com.devcourse.eggmarket.domain.post.model.Category;
 import com.devcourse.eggmarket.domain.post.service.PostAttentionService;
 import com.devcourse.eggmarket.domain.post.service.PostService;
+import com.devcourse.eggmarket.global.common.SuccessResponse;
 import com.devcourse.eggmarket.global.common.ValueOfEnum;
 import java.net.URI;
 import javax.validation.Valid;
@@ -40,34 +41,35 @@ public class PostController {
     }
 
     @PostMapping
-    ResponseEntity<PostResponse.Save> write(@Valid PostRequest.Save request,
+    ResponseEntity<SuccessResponse<Long>> write(@Valid PostRequest.Save request,
         Authentication authentication) {
-        PostResponse.Save response = postService.save(request, authentication.getName());
+        Long response = postService.save(request, authentication.getName());
         final URI location = ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
-            .buildAndExpand(response.id())
+            .buildAndExpand(response)
             .toUri();
 
         return ResponseEntity.created(location)
-            .body(response);
+            .body(new SuccessResponse<>(response));
     }
 
     @PatchMapping("/{id}")
-    ResponseEntity<PostResponse.Update> updatePost(@RequestBody PostRequest.UpdatePost request,
+    ResponseEntity<SuccessResponse<Long>> updatePost(@RequestBody PostRequest.UpdatePost request,
         Authentication authentication,
         @PathVariable Long id) {
-        PostResponse.Update response = postService.updatePost(id, request, authentication.getName());
+        Long response = postService.updatePost(id, request, authentication.getName());
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(new SuccessResponse<>(response));
     }
 
     @PatchMapping("/{id}/purchase")
-    ResponseEntity<PostResponse.Update> updatePurchase(@RequestBody @Valid PostRequest.UpdatePurchaseInfo request,
+    ResponseEntity<SuccessResponse<Long>> updatePurchase(
+        @RequestBody @Valid PostRequest.UpdatePurchaseInfo request,
         Authentication authentication,
         @PathVariable Long id) {
-        PostResponse.Update response = postService.updatePurchaseInfo(id, request, authentication.getName());
+        Long response = postService.updatePurchaseInfo(id, request, authentication.getName());
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(new SuccessResponse<>(response));
     }
 
     @DeleteMapping("/{id}")
@@ -77,34 +79,40 @@ public class PostController {
     }
 
     @PostMapping("/{id}/attention")
-    ResponseEntity<PostAttentionCount> attention(@PathVariable("id") Long postId,
+    ResponseEntity<SuccessResponse<PostAttentionCount>> attention(@PathVariable("id") Long postId,
         Authentication authentication) {
         return ResponseEntity.ok(
-            postAttentionService.toggleAttention(authentication.getName(), postId)
+            new SuccessResponse<>(
+                postAttentionService.toggleAttention(authentication.getName(), postId)
+            )
         );
     }
 
     @GetMapping("/attention")
-    ResponseEntity<Posts> allAttention(Authentication authentication) {
+    ResponseEntity<SuccessResponse<Posts>> allAttention(Authentication authentication) {
         return ResponseEntity.ok(
-            postAttentionService.getAllLikedBy(authentication.getName())
+            new SuccessResponse<>(
+                postAttentionService.getAllLikedBy(authentication.getName())
+            )
         );
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<PostResponse.SinglePost> getPost(@PathVariable Long id,
+    ResponseEntity<SuccessResponse<PostResponse.SinglePost>> getPost(@PathVariable Long id,
         Authentication authentication) {
         PostResponse.SinglePost response = postService.getById(id, authentication.getName());
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(new SuccessResponse<>(response));
     }
 
     @GetMapping
-    ResponseEntity<PostResponse.Posts> getPosts(Pageable pageable,
+    ResponseEntity<SuccessResponse<PostResponse.Posts>> getPosts(Pageable pageable,
         @RequestParam(required = false) @ValueOfEnum(enumClass = Category.class) String category) {
         return ResponseEntity.ok(
-            category != null ?
-                postService.getAllByCategory(pageable, Category.valueOf(category)) :
-                postService.getAll(pageable)
+            new SuccessResponse<>(
+                category != null ?
+                    postService.getAllByCategory(pageable, Category.valueOf(category)) :
+                    postService.getAll(pageable)
+            )
         );
     }
 

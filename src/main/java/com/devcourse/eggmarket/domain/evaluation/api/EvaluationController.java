@@ -3,6 +3,7 @@ package com.devcourse.eggmarket.domain.evaluation.api;
 import com.devcourse.eggmarket.domain.evaluation.dto.EvaluationRequest;
 import com.devcourse.eggmarket.domain.evaluation.dto.EvaluationResponse;
 import com.devcourse.eggmarket.domain.evaluation.service.EvaluationService;
+import com.devcourse.eggmarket.global.common.SuccessResponse;
 import java.net.URI;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,7 +26,7 @@ public class EvaluationController {
     }
 
     @PostMapping
-    public ResponseEntity<Long> save(@RequestBody EvaluationRequest.Save request) {
+    public ResponseEntity<SuccessResponse<Long>> save(@RequestBody EvaluationRequest.Save request) {
         Long evaluationId = evaluationService.save(request);
         final URI location = ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/reviewer/{id}")
@@ -33,7 +34,7 @@ public class EvaluationController {
             .toUri();
 
         return ResponseEntity.created(location)
-            .body(evaluationId);
+            .body(new SuccessResponse<>(evaluationId));
     }
 
     // TO DO:
@@ -46,16 +47,16 @@ public class EvaluationController {
 
     @GetMapping
     @RequestMapping("/reviewer/{id}")
-    public ResponseEntity<EvaluationResponse> getByReviewerId(@PathVariable Long id) {
+    public ResponseEntity<SuccessResponse<EvaluationResponse>> getByReviewerId(@PathVariable Long id) {
         EvaluationResponse review = evaluationService.getByReviewerId(id);
-        return ResponseEntity.ok(review);
+        return ResponseEntity.ok(new SuccessResponse<>(review));
     }
 
     @GetMapping
     @RequestMapping("/reviewee/{id}")
-    public ResponseEntity<EvaluationResponse> getByRevieweeId(@PathVariable Long id) {
+    public ResponseEntity<SuccessResponse<EvaluationResponse>> getByRevieweeId(@PathVariable Long id) {
         EvaluationResponse review = evaluationService.getByRevieweeId(id);
-        return ResponseEntity.ok(review);
+        return ResponseEntity.ok(new SuccessResponse<>(review));
     }
 
     @DeleteMapping
