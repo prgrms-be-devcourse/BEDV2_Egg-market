@@ -116,15 +116,14 @@ class PostControllerTest {
 
         ResultActions resultActions = mockMvc.perform(
             multipart("/posts").file(image)
-                .param("title"," ")
+                .param("title",request.title())
                 .param("content", request.content())
-                .param("price", "aa")
+                .param("price", String.valueOf(request.price()))
                 .param("category", request.category())
                 .with(csrf().asHeader())
         );
 
-        resultActions.andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message").value(ErrorCode.NOT_VALID_CATEGORY.getMessage()));
+        resultActions.andExpect(status().isBadRequest());
     }
 
 }

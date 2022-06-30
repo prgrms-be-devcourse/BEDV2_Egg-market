@@ -33,7 +33,7 @@ public class PostStub {
             "title",
             "content",
             1000,
-            "BEAUTY",
+            "FOOD",
             null
         );
     }
