@@ -11,6 +11,8 @@ import com.devcourse.eggmarket.domain.user.dto.UserResponse;
 import com.devcourse.eggmarket.domain.user.model.User;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.Arguments;
 
 public class PostStub {
 
@@ -172,5 +174,51 @@ public class PostStub {
             )
         );
     }
+
+    public static Stream<Arguments> invalidWriteRequest() {
+        return Stream.of(
+            Arguments.arguments(
+                new PostRequest.Save("", "content", 1000, "BEAUTY", null)
+            ),
+            Arguments.arguments(
+                new PostRequest.Save("title", "", 1000, "BEAUTY", null)
+            ),
+            Arguments.arguments(
+                new PostRequest.Save("title", "content", -1000, "BEAUTY", null)
+            ),
+            Arguments.arguments(
+                new PostRequest.Save("title", "content", 1000, "INVALID", null)
+            )
+        );
+    }
+
+    public static Stream<Arguments> invalidUpdatePostRequest() {
+        return Stream.of(
+            Arguments.arguments(
+                new PostRequest.UpdatePost("", "content", 1000, "BEAUTY")
+            ),
+            Arguments.arguments(
+                new PostRequest.UpdatePost("title", "", 1000, "BEAUTY")
+            ),
+            Arguments.arguments(
+                new PostRequest.UpdatePost("title", "content", -1000, "BEAUTY")
+            ),
+            Arguments.arguments(
+                new PostRequest.UpdatePost("title", "content", 1000, "INVALID")
+            )
+        );
+    }
+
+    public static Stream<Arguments> invalidUpdatePurchaseInfoRequest() {
+        return Stream.of(
+            Arguments.arguments(
+                new PostRequest.UpdatePurchaseInfo("COMPLTED", 0L)
+            ),
+            Arguments.arguments(
+                new PostRequest.UpdatePurchaseInfo("INVALID", 1L)
+            )
+        );
+    }
+
 }
 
