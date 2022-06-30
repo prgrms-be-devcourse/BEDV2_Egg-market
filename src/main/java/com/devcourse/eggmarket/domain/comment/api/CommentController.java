@@ -2,6 +2,7 @@ package com.devcourse.eggmarket.domain.comment.api;
 
 import com.devcourse.eggmarket.domain.comment.dto.CommentRequest;
 import com.devcourse.eggmarket.domain.comment.service.CommentService;
+import com.devcourse.eggmarket.global.common.SuccessResponse;
 import java.net.URI;
 import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class CommentController {
     }
 
     @PostMapping("/posts/{postId}/comments")
-    public ResponseEntity<Long> save(@PathVariable Long postId,
+    public ResponseEntity<SuccessResponse<Long>> save(@PathVariable Long postId,
         @RequestBody @Valid CommentRequest.Save createRequest, Authentication authentication) {
 
         Long commentId = commentService.write(authentication.getName(), postId, createRequest);
@@ -35,17 +36,18 @@ public class CommentController {
             .toUri();
 
         return ResponseEntity.created(location)
-            .body(commentId);
+            .body(new SuccessResponse<>(commentId));
     }
 
     @PutMapping("/posts/{postId}/comments/{commentId}")
-    public ResponseEntity<Long> update(@PathVariable Long postId,
+    public ResponseEntity<SuccessResponse<Long>> update(@PathVariable Long postId,
         @PathVariable Long commentId, @RequestBody @Valid CommentRequest.Update updateRequest,
         Authentication authentication) {
 
         Long updatedCommentId = commentService.update(authentication.getName(), postId, commentId,
             updateRequest);
 
-        return ResponseEntity.ok(updatedCommentId);
+        return ResponseEntity.ok(
+            new SuccessResponse<>(updatedCommentId));
     }
 }
