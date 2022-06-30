@@ -222,4 +222,19 @@ class PostControllerTest {
 
         resultActions.andExpect(status().isBadRequest());
     }
+
+    @Test
+    @WithMockUser
+    @DisplayName("판매글 삭제 테스트")
+    void deleteTest() throws Exception {
+        Long request = 1L;
+
+        ResultActions resultActions = mockMvc.perform(
+            MockMvcRequestBuilders.delete("/posts/" + request)
+                .with(csrf().asHeader())
+        );
+
+        resultActions.andExpect(status().isNoContent())
+            .andDo(document("post-delete"));
+    }
 }
