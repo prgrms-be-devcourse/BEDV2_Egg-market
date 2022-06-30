@@ -45,7 +45,7 @@ public class PostController {
         PostResponse.Save response = postService.save(request, authentication.getName());
         final URI location = ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
-            .buildAndExpand(response)
+            .buildAndExpand(response.id())
             .toUri();
 
         return ResponseEntity.created(location)
