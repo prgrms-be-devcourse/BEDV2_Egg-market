@@ -190,14 +190,12 @@ public class PostServiceIntegrationTest {
             PostStatus.COMPLETED.name(),
             commentWriter.getId());
 
-        SuccessResponse<Long> response = new SuccessResponse<>(
-            postService.updatePurchaseInfo(
+        Long response = postService.updatePurchaseInfo(
                 likedPost1.getId(),
                 updatePurchaseRequest,
                 likedPost1.getSeller().getNickName()
-            )
         );
 
-        Assertions.assertThat(response.getData()).isEqualTo(likedPost1.getId());
+        Assertions.assertThat(response).isEqualTo(likedPost1.getId());
     }
 }
