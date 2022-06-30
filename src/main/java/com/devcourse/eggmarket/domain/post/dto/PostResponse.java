@@ -46,12 +46,4 @@ public class PostResponse {
     public record Posts(List<PostsElement> posts) {
 
     }
-
-    public record Save(Long id) {
-
-    }
-
-    public record Update(Long id) {
-
-    }
 }

@@ -3,7 +3,6 @@ package com.devcourse.eggmarket.domain.post.service;
 import com.devcourse.eggmarket.domain.comment.model.Comment;
 import com.devcourse.eggmarket.domain.comment.repository.CommentRepository;
 import com.devcourse.eggmarket.domain.post.dto.PostRequest.UpdatePurchaseInfo;
-import com.devcourse.eggmarket.domain.post.dto.PostResponse;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse.Posts;
 import com.devcourse.eggmarket.domain.post.exception.InvalidBuyerException;
 import com.devcourse.eggmarket.domain.post.model.Category;
@@ -14,6 +13,7 @@ import com.devcourse.eggmarket.domain.post.repository.PostAttentionRepository;
 import com.devcourse.eggmarket.domain.post.repository.PostRepository;
 import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.repository.UserRepository;
+import com.devcourse.eggmarket.global.common.SuccessResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -190,11 +190,12 @@ public class PostServiceIntegrationTest {
             PostStatus.COMPLETED.name(),
             commentWriter.getId());
 
-        PostResponse.Update response = postService.updatePurchaseInfo(
-            likedPost1.getId(),
-            updatePurchaseRequest,
-            likedPost1.getSeller().getNickName());
+        Long response = postService.updatePurchaseInfo(
+                likedPost1.getId(),
+                updatePurchaseRequest,
+                likedPost1.getSeller().getNickName()
+        );
 
-        Assertions.assertThat(response.id()).isEqualTo(likedPost1.getId());
+        Assertions.assertThat(response).isEqualTo(likedPost1.getId());
     }
 }
