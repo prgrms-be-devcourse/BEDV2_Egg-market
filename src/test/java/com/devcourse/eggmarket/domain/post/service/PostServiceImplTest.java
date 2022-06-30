@@ -83,7 +83,7 @@ class PostServiceImplTest {
             .when(postRepository)
             .save(any(Post.class));
 
-        assertThat(postService.save(request, loginUser).id()).isEqualTo(want.getId());
+        assertThat(postService.save(request, loginUser)).isEqualTo(want.getId());
     }
 
     @Test
@@ -103,7 +103,7 @@ class PostServiceImplTest {
             .when(userService)
             .getUser(anyString());
 
-        assertThat(postService.updatePost(id, request, loginUser).id())
+        assertThat(postService.updatePost(id, request, loginUser))
             .isEqualTo(id);
     }
 
@@ -227,7 +227,7 @@ class PostServiceImplTest {
             .when(commentRepository)
             .findAllByPost(post);
 
-        assertThat(postService.updatePurchaseInfo(id, request, loginUser).id())
+        assertThat(postService.updatePurchaseInfo(id, request, loginUser))
             .isEqualTo(id);
     }
 

@@ -21,7 +21,7 @@ public class PostExceptionMessage {
 
     public static final String NOT_NEGATIVE_PRICE = "가격은 음수일 수 없습니다";
 
-    public static final String NOT_NEGATIVE_ID = "아이디는 음수일 수 없습니다";
+    public static final String NOT_NEGATIVE_ID = "아이디는 양수여야 합니다.";
 
     public static final String NOT_VALID_RANGE_CATEGORY = "카테고리는 1 ~ 20자 이어야 합니다";
 

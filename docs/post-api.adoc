@@ -35,9 +35,19 @@ include::{snippets}/post-update/response-fields.adoc[]
 === PATCH /posts/{id}/purchase
 
 .Request
-include::{snippets}/post-update/http-request.adoc[]
-include::{snippets}/post-update/request-fields.adoc[]
+include::{snippets}/post-update-purchase/http-request.adoc[]
+include::{snippets}/post-update-purchase/request-fields.adoc[]
 
 .Response
-include::{snippets}/post-update/http-response.adoc[]
-include::{snippets}/post-update/response-fields.adoc[]
+include::{snippets}/post-update-purchase/http-response.adoc[]
+include::{snippets}/post-update-purchase/response-fields.adoc[]
+
+== 판매글 삭제
+
+=== DELETE /posts/{id}
+
+.Request
+include::{snippets}/post-delete/http-request.adoc[]
+
+.Response
+include::{snippets}/post-delete/http-response.adoc[]

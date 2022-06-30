@@ -17,22 +17,18 @@ import static org.springframework.restdocs.request.RequestDocumentation.partWith
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.devcourse.eggmarket.domain.post.dto.PostRequest;
-import com.devcourse.eggmarket.domain.post.dto.PostResponse;
-import com.devcourse.eggmarket.domain.post.dto.PostResponse.Save;
-import com.devcourse.eggmarket.domain.post.dto.PostResponse.Update;
 import com.devcourse.eggmarket.domain.post.service.PostAttentionService;
 import com.devcourse.eggmarket.domain.post.service.PostService;
 import com.devcourse.eggmarket.domain.stub.PostStub;
-import com.devcourse.eggmarket.global.error.exception.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -67,7 +63,7 @@ class PostControllerTest {
     @DisplayName("판매글 작성 테스트")
     void writeTest() throws Exception {
         PostRequest.Save request = PostStub.writeRequest();
-        PostResponse.Save response = new Save(1L);
+        Long response = 1L;
 
         String images = "Image Files";
         MockMultipartFile image = new MockMultipartFile("images", "img.png", "image/png",
@@ -100,23 +96,23 @@ class PostControllerTest {
                     partWithName("images").description("이미지")
                 ),
                 responseFields(
-                    fieldWithPath("id").type(JsonFieldType.NUMBER).description("게시글 ID")
+                    fieldWithPath("data").type(JsonFieldType.NUMBER).description("게시글 ID")
                 )
             ));
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("com.devcourse.eggmarket.domain.stub.PostStub#invalidWriteRequest")
     @WithMockUser
-    @DisplayName("존재하지 않는 카테고리가 전달될 경우 예외가 발생하는지 테스트")
-    void invalidRequestWriteTest() throws Exception {
-        PostRequest.Save request = PostStub.invalidCategoryWriteRequest();
+    @DisplayName("판매글 생성시 잘못된 값을 전달할 경우 badRequest(400) 반환 테스트")
+    void invalidRequestWriteTest(PostRequest.Save request) throws Exception {
         String images = "Image Files";
         MockMultipartFile image = new MockMultipartFile("images", "img.png", "image/png",
             images.getBytes(StandardCharsets.UTF_8));
 
         ResultActions resultActions = mockMvc.perform(
             multipart("/posts").file(image)
-                .param("title",request.title())
+                .param("title", request.title())
                 .param("content", request.content())
                 .param("price", String.valueOf(request.price()))
                 .param("category", request.category())
@@ -126,4 +122,119 @@ class PostControllerTest {
         resultActions.andExpect(status().isBadRequest());
     }
 
+    @Test
+    @WithMockUser
+    @DisplayName("판매글 수정 테스트")
+    void updatePostTest() throws Exception {
+        PostRequest.UpdatePost request = PostStub.updatePostRequest();
+        Long postId = 1L;
+
+        doReturn(postId)
+            .when(postService)
+            .updatePost(anyLong(), any(PostRequest.UpdatePost.class), anyString());
+
+        ResultActions resultActions = mockMvc.perform(
+            MockMvcRequestBuilders.patch("/posts/" + postId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(request))
+                .with(csrf().asHeader())
+        );
+
+        resultActions.andExpect(status().isOk())
+            .andDo(document("post-update",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                requestFields(
+                    fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
+                    fieldWithPath("content").type(JsonFieldType.STRING).description("본문"),
+                    fieldWithPath("price").type(JsonFieldType.NUMBER).description("가격"),
+                    fieldWithPath("category").type(JsonFieldType.STRING).description("카테고리")
+                ),
+                responseFields(
+                    fieldWithPath("data").type(JsonFieldType.NUMBER).description("판매글 ID")
+                )
+            ));
+
+    }
+
+    @ParameterizedTest
+    @WithMockUser
+    @MethodSource("com.devcourse.eggmarket.domain.stub.PostStub#invalidUpdatePostRequest")
+    @DisplayName("판매글 수정시 잘못된 값을 전달할 경우 badRequest(400) 반환 테스트")
+    void invalidUpdatePostTest(PostRequest.UpdatePost request) throws Exception {
+        Long postId = 1L;
+
+        ResultActions resultActions = mockMvc.perform(
+            MockMvcRequestBuilders.patch("/posts/" + postId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(request))
+                .with(csrf().asHeader())
+        );
+
+        resultActions.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("판매글 상태변경 테스트")
+    void updatePurchaseTest() throws Exception {
+        PostRequest.UpdatePurchaseInfo request = PostStub.updatePurchaseInfo();
+        Long postId = 1L;
+
+        doReturn(postId)
+            .when(postService)
+            .updatePurchaseInfo(anyLong(), any(PostRequest.UpdatePurchaseInfo.class), anyString());
+
+        ResultActions resultActions = mockMvc.perform(
+            MockMvcRequestBuilders.patch("/posts/" + postId + "/purchase")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(request))
+                .with(csrf().asHeader())
+        );
+
+        resultActions.andExpect(status().isOk())
+            .andDo(document("post-update-purchase",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                requestFields(
+                    fieldWithPath("postStatus").type(JsonFieldType.STRING).description("제목"),
+                    fieldWithPath("buyerId").type(JsonFieldType.NUMBER).description("구매자 ID")
+                ),
+                responseFields(
+                    fieldWithPath("data").type(JsonFieldType.NUMBER).description("판매글 ID")
+                )
+            ));
+    }
+
+    @ParameterizedTest
+    @WithMockUser
+    @MethodSource("com.devcourse.eggmarket.domain.stub.PostStub#invalidUpdatePurchaseInfoRequest")
+    @DisplayName("판매글 상태변경시 잘못된 값을 전달할 경우 badRequest(400) 반환 테스트")
+    void invalidUpdatePurchaseTest(PostRequest.UpdatePurchaseInfo request) throws Exception {
+        Long postId = 1L;
+
+        ResultActions resultActions = mockMvc.perform(
+            MockMvcRequestBuilders.patch("/posts/" + postId + "/purchase")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(request))
+                .with(csrf().asHeader())
+        );
+
+        resultActions.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("판매글 삭제 테스트")
+    void deleteTest() throws Exception {
+        Long request = 1L;
+
+        ResultActions resultActions = mockMvc.perform(
+            MockMvcRequestBuilders.delete("/posts/" + request)
+                .with(csrf().asHeader())
+        );
+
+        resultActions.andExpect(status().isNoContent())
+            .andDo(document("post-delete"));
+    }
 }
