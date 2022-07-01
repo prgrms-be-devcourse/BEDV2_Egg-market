@@ -20,9 +20,11 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.devcourse.eggmarket.domain.post.dto.PostRequest;
+import com.devcourse.eggmarket.domain.post.dto.PostResponse;
 import com.devcourse.eggmarket.domain.post.service.PostAttentionService;
 import com.devcourse.eggmarket.domain.post.service.PostService;
 import com.devcourse.eggmarket.domain.stub.PostStub;
+import com.devcourse.eggmarket.domain.stub.UserStub;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.DisplayName;
@@ -236,5 +238,59 @@ class PostControllerTest {
 
         resultActions.andExpect(status().isNoContent())
             .andDo(document("post-delete"));
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("판매글 단일 조회 테스트")
+    void getPostTest() throws Exception {
+        Long request = 1L;
+        PostResponse.SinglePost response = PostStub.singlePostResponse(
+            PostStub.entity(
+                UserStub.entity()
+            )
+        );
+        doReturn(response)
+            .when(postService)
+            .getById(anyLong(), anyString());
+
+        ResultActions resultActions = mockMvc.perform(
+            MockMvcRequestBuilders.get("/posts/" + request)
+        );
+
+        resultActions.andExpect(status().isOk())
+            .andDo(document("post-get-detail",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                responseFields(
+                    fieldWithPath("data.id").type(JsonFieldType.NUMBER).description("판매글 ID"),
+                    fieldWithPath("data.seller.id").type(JsonFieldType.NUMBER)
+                        .description("판매자 ID"),
+                    fieldWithPath("data.seller.nickName").type(JsonFieldType.STRING)
+                        .description("판매자 닉네임"),
+                    fieldWithPath("data.seller.mannerTemperature").type(JsonFieldType.NUMBER)
+                        .description("판매자 매너 온도"),
+                    fieldWithPath("data.seller.role").type(JsonFieldType.STRING)
+                        .description("판매자 권한"),
+                    fieldWithPath("data.seller.imagePath").type(JsonFieldType.VARIES)
+                        .description("판매자 프로필 이미지"),
+                    fieldWithPath("data.price").type(JsonFieldType.NUMBER).description("상품 가격"),
+                    fieldWithPath("data.title").type(JsonFieldType.STRING).description("제목"),
+                    fieldWithPath("data.content").type(JsonFieldType.STRING).description("본문"),
+                    fieldWithPath("data.postStatus").type(JsonFieldType.STRING)
+                        .description("판매 상태"),
+                    fieldWithPath("data.category").type(JsonFieldType.STRING).description("카테고리"),
+                    fieldWithPath("data.createAt").type(JsonFieldType.STRING)
+                        .description("판매글 생성 시간"),
+                    fieldWithPath("data.attentionCount").type(JsonFieldType.NUMBER)
+                        .description("찜 개수"),
+                    fieldWithPath("data.commentCount").type(JsonFieldType.NUMBER)
+                        .description("댓글 개수"),
+                    fieldWithPath("data.likeOfMe").type(JsonFieldType.BOOLEAN).description("찜 여부"),
+                    fieldWithPath("data.imagePaths").type(JsonFieldType.VARIES)
+                        .description("판매글 이미지 링크")
+                )
+            ));
+
     }
 }

@@ -51,3 +51,15 @@ include::{snippets}/post-delete/http-request.adoc[]
 
 .Response
 include::{snippets}/post-delete/http-response.adoc[]
+
+== 판매글 단일 조회
+
+=== GET /posts/{id}
+
+.Request
+include::{snippets}/post-get-detail/http-request.adoc[]
+
+.Response
+include::{snippets}/post-get-detail/http-response.adoc[]
+include::{snippets}/post-get-detail/response-fields.adoc[]
+
