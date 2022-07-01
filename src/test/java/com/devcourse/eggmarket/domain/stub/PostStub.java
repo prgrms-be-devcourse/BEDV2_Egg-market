@@ -85,11 +85,11 @@ public class PostStub {
             post.getContent(),
             post.getPostStatus().name(),
             post.getCategory().name(),
-            post.getCreatedAt(),
+            LocalDateTime.now(),
             post.getAttentionCount(),
             0,
             true,
-            null
+            List.of("http://example.com/test/1.png", "http://example.com/test/2.png")
         );
     }
 }
