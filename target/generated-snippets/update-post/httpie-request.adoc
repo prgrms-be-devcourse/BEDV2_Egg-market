@@ -1,6 +1,0 @@
-[source,bash]
-----
-$ echo '{"title":"update-title","content":"update-content","price":2000,"category":"DIGITAL"}' | http PATCH 'http://localhost:8080/posts/1' \
-    'Content-Type:application/json;charset=UTF-8' \
-    'X-CSRF-TOKEN:5377bfc0-d5dc-4cea-a8b1-5a5105c0b335'
-----

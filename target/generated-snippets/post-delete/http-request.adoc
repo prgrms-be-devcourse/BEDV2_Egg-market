@@ -1,7 +1,0 @@
-[source,http,options="nowrap"]
-----
-DELETE /posts/1 HTTP/1.1
-X-CSRF-TOKEN: a4237c49-55d8-4440-ad05-da1393328ff1
-Host: localhost:8080
-
-----
