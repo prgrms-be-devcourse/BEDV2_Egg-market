@@ -36,11 +36,13 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -291,6 +293,23 @@ class PostControllerTest {
                         .description("판매글 이미지 링크")
                 )
             ));
+    }
 
+    @Test
+    @DisplayName("판매글 최신순 조회 테스트")
+    void getPostsLatestTest() {
+        PostResponse.Posts response = PostStub.posts();
+
+        doReturn(response)
+            .when(postService)
+            .getAll(any(Pageable.class));
+
+//        ResultActions resultActions = mockMvc.perform();
+    }
+
+    @Test
+    @DisplayName("판매글 가격순 조회 테스트")
+    void getPostsPriceTest() {
+        PostResponse.Posts response = PostStub.priceSortPosts();
     }
 }
