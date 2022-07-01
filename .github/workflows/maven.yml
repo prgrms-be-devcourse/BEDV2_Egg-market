@@ -23,6 +23,15 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+
+      # logback 용 로깅 파일 디렉토리 생성
+      - name: Create Logging File Directory
+        run: sudo mkdir /var/log/egg-market
+
+      # logback 용 로깅 파일 디렉토리 일반 유저 권한 부여
+      - name: Logging Directory Permission Configure
+        run: sudo chown runner:runner /var/log/egg-market
+
       - name: Build with Maven
         run: mvn -B package --file pom.xml
 
