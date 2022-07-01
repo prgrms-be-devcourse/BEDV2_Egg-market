@@ -112,7 +112,7 @@ public class PostStub {
                     LocalDateTime.now(),
                     0,
                     0,
-                    null
+                    "http://example.com/test/1-1.png"
                 ),
                 new PostsElement(
                     2L,
@@ -122,17 +122,17 @@ public class PostStub {
                     LocalDateTime.now(),
                     0,
                     0,
-                    null
+                    "http://example.com/test/2-1.png"
                 ),
                 new PostsElement(
-                    1L,
+                    3L,
                     2500,
                     "title",
                     "COMPLETED",
                     LocalDateTime.now(),
                     0,
                     0,
-                    null
+                    "http://example.com/test/3-1.png"
                 )
             )
         );
@@ -149,7 +149,7 @@ public class PostStub {
                     LocalDateTime.now(),
                     0,
                     0,
-                    null
+                    "http://example.com/test/2-1.png"
                 ),
                 new PostsElement(
                     1L,
@@ -159,7 +159,7 @@ public class PostStub {
                     LocalDateTime.now(),
                     0,
                     0,
-                    null
+                    "http://example.com/test/1-1.png"
                 ),
                 new PostsElement(
                     3L,
@@ -169,7 +169,7 @@ public class PostStub {
                     LocalDateTime.now(),
                     0,
                     0,
-                    null
+                    "http://example.com/test/3-1.png"
                 )
             )
         );
