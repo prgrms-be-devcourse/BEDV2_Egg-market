@@ -14,7 +14,7 @@ public class UserStub {
             "test",
             "test1234!@#$",
             36.5F,
-            "http://example.com/profile/1.png",
+            null,
             UserRole.USER);
     }
 

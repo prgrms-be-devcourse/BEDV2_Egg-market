@@ -14,6 +14,7 @@ import com.devcourse.eggmarket.domain.post.model.PostStatus;
 import com.devcourse.eggmarket.domain.post.repository.PostRepository;
 import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.repository.UserRepository;
+import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -173,6 +174,19 @@ class CommentServiceIntegrationTest {
     }
 
     @Test
+    @DisplayName("id 가 postId 인 포스트가 존재하지 않을 경우 id 가 postId 인 포스트에 속해 있는 커멘트에 대한 댓글 수정은 실패한다")
+    public void updateCommentWithNotExistPost() {
+        Update updateRequest = new Update("abc");
+        User commentWriter = comment.getUser();
+        Long postId = 1000L;
+        Long commentId = comment.getId();
+
+        Assertions.assertThatThrownBy(() ->
+            commentService.update(commentWriter.getNickName(), postId, commentId, updateRequest)
+        ).isInstanceOf(NotExistPostException.class);
+    }
+
+    @Test
     @DisplayName("id 가 commentId 인 댓글이 id 가 postId 인 포스트에 속해 있는 경우 댓글을 수정한다")
     public void updateCommentWithCorrectPostId() {
         Update updateRequest = new Update("abc");
@@ -187,4 +201,55 @@ class CommentServiceIntegrationTest {
         Assertions.assertThat(updatedCommentId)
             .isEqualTo(comment.getId());
     }
+
+    @Test
+    @DisplayName("id 가 commentId 인 댓글이 id 가 postId 인 포스트에 속해 있지 않을 경우 댓글 삭제는 실패한다")
+    public void deleteCommentWithIncorrectPostId() {
+        User commentWriter = comment.getUser();
+        Long postId = otherPost.getId();
+        Long commentId = comment.getId();
+
+        Assertions.assertThatThrownBy(() ->
+            commentService.delete(commentWriter.getNickName(), postId, commentId)
+        ).isInstanceOf(NotExistCommentException.class);
+    }
+
+    @Test
+    @DisplayName("댓글 작성자가 아닌 사용자가 댓글을 삭제하려고 할 경우 댓글 권한 에러가 발생한다")
+    public void deleteFailWithNotCommentWriter() {
+        Assertions.assertThatThrownBy(() ->
+            commentService.delete(postWriter.getNickName(), post.getId(), comment.getId())
+        ).isInstanceOf(NotWriterException.class);
+    }
+
+    @Test
+    @DisplayName("id 가 postId 인 포스트가 존재하지 않을 경우 id 가 postId 인 포스트에 속해 있는 커멘트에 대한 댓글 삭제는 실패한다")
+    public void deleteCommentWithNotExistPost() {
+        User commentWriter = comment.getUser();
+        Long postId = 1000L;
+        Long commentId = comment.getId();
+
+        Assertions.assertThatThrownBy(() ->
+            commentService.delete(commentWriter.getNickName(), postId, commentId)
+        ).isInstanceOf(NotExistPostException.class);
+    }
+
+    @Test
+    @DisplayName("id 가 commentId 인 댓글이 id 가 postId 인 포스트에 속해 있는 경우 댓글은 정상적으로 삭제된다")
+    public void deleteCommentWithCorrectPostId() {
+        User commentWriter = comment.getUser();
+        Long postId = post.getId();
+        Long commentId = comment.getId();
+
+        commentService.delete(commentWriter.getNickName(), postId,
+            commentId);
+
+        Optional<Comment> foundOptionalComment = commentRepository.findByIdAndPostId(commentId,
+            postId);
+
+        Assertions.assertThat(foundOptionalComment.isEmpty())
+            .isTrue();
+    }
+
+
 }
