@@ -1,5 +1,6 @@
 package com.devcourse.eggmarket.domain.comment.model;
 
+import com.devcourse.eggmarket.domain.model.BaseEntity;
 import com.devcourse.eggmarket.domain.post.model.Post;
 import com.devcourse.eggmarket.domain.user.model.User;
 import javax.persistence.Column;
@@ -17,7 +18,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Comment {
+public class Comment extends BaseEntity {
 
     @Id
     @GeneratedValue
@@ -48,11 +49,27 @@ public class Comment {
         this(null, post, user, content);
     }
 
+    public boolean isWriter(User user) {
+        return this.user.isSameUser(user);
+    }
+
     public Long getId() {
         return id;
     }
 
     public User getUser() {
         return user;
+    }
+
+    public void updateComment(String comment) {
+        this.content = comment;
+    }
+
+    public Post getPost() {
+        return post;
+    }
+
+    public String getContent() {
+        return content;
     }
 }

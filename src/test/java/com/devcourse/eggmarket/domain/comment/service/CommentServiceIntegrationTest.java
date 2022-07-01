@@ -1,7 +1,10 @@
 package com.devcourse.eggmarket.domain.comment.service;
 
 import com.devcourse.eggmarket.domain.comment.dto.CommentRequest.Save;
+import com.devcourse.eggmarket.domain.comment.dto.CommentRequest.Update;
 import com.devcourse.eggmarket.domain.comment.exception.CommentNotAllowedPostException;
+import com.devcourse.eggmarket.domain.comment.exception.NotExistCommentException;
+import com.devcourse.eggmarket.domain.comment.exception.NotWriterException;
 import com.devcourse.eggmarket.domain.comment.model.Comment;
 import com.devcourse.eggmarket.domain.comment.repository.CommentRepository;
 import com.devcourse.eggmarket.domain.post.exception.NotExistPostException;
@@ -11,7 +14,6 @@ import com.devcourse.eggmarket.domain.post.model.PostStatus;
 import com.devcourse.eggmarket.domain.post.repository.PostRepository;
 import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.repository.UserRepository;
-import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,7 +41,9 @@ class CommentServiceIntegrationTest {
     private User user1;
     private User buyer;
     private Post soldPost;
+    private Post otherPost;
     private Post post;
+    private Comment comment;
 
     @BeforeEach
     void setUp() {
@@ -80,13 +84,27 @@ class CommentServiceIntegrationTest {
             .category(Category.BEAUTY)
             .build();
 
+        otherPost = Post.builder()
+            .title("title31")
+            .content("content31")
+            .seller(postWriter)
+            .price(1000)
+            .category(Category.BEAUTY)
+            .build();
+
+        comment = new Comment(post, buyer, "I'll buy it!!!");
+
         soldPost.updatePurchaseInfo(PostStatus.COMPLETED, buyer);
 
         userRepository.save(postWriter);
         userRepository.save(user1);
         userRepository.save(buyer);
+
         postRepository.save(post);
         postRepository.save(soldPost);
+        postRepository.save(otherPost);
+
+        commentRepository.save(comment);
     }
 
     @AfterEach
@@ -104,10 +122,9 @@ class CommentServiceIntegrationTest {
         Long writtenCommentId = commentService.write(postWriter.getNickName(), post.getId(),
             createCommentRequest);
 
-        List<Comment> postComments = commentRepository.findAllByPost(post);
+        boolean isCommentPresent = commentRepository.findById(writtenCommentId).isPresent();
 
-        Assertions.assertThat(postComments.size())
-            .isEqualTo(1);
+        Assertions.assertThat(isCommentPresent).isTrue();
     }
 
     @Test
@@ -128,5 +145,46 @@ class CommentServiceIntegrationTest {
         Assertions.assertThatThrownBy(() ->
             commentService.write(postWriter.getNickName(), soldPost.getId(), createCommentRequest)
         ).isInstanceOf(CommentNotAllowedPostException.class);
+    }
+
+    @Test
+    @DisplayName("id 가 commentId 인 댓글이 id 가 postId 인 포스트에 속해 있지 않을 경우 댓글 수정은 실패한다")
+    public void updateCommentWithIncorrectPostId() {
+        Update updateRequest = new Update("abc");
+        User commentWriter = comment.getUser();
+        Long postId = otherPost.getId();
+        Long commentId = comment.getId();
+
+        Assertions.assertThatThrownBy(() ->
+            commentService.update(commentWriter.getNickName(), postId, commentId,
+                updateRequest)
+        ).isInstanceOf(NotExistCommentException.class);
+    }
+
+    @Test
+    @DisplayName("댓글 작성자가 아닌 사용자가 댓글을 수정하려고 할 경우 댓글 권한 에러가 발생한다")
+    public void updateFailWithNotCommentWriter() {
+        Update updateRequest = new Update("abc");
+
+        Assertions.assertThatThrownBy(() ->
+            commentService.update(postWriter.getNickName(), post.getId(), comment.getId(),
+                updateRequest)
+        ).isInstanceOf(NotWriterException.class);
+    }
+
+    @Test
+    @DisplayName("id 가 commentId 인 댓글이 id 가 postId 인 포스트에 속해 있는 경우 댓글을 수정한다")
+    public void updateCommentWithCorrectPostId() {
+        Update updateRequest = new Update("abc");
+        User commentWriter = comment.getUser();
+        Long postId = post.getId();
+        Long commentId = comment.getId();
+
+        Long updatedCommentId = commentService.update(commentWriter.getNickName(), postId,
+            commentId,
+            updateRequest);
+
+        Assertions.assertThat(updatedCommentId)
+            .isEqualTo(comment.getId());
     }
 }
