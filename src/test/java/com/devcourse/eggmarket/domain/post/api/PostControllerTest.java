@@ -9,7 +9,6 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -22,6 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.devcourse.eggmarket.domain.post.dto.PostRequest;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse;
+import com.devcourse.eggmarket.domain.post.model.Category;
 import com.devcourse.eggmarket.domain.post.service.PostAttentionService;
 import com.devcourse.eggmarket.domain.post.service.PostService;
 import com.devcourse.eggmarket.domain.stub.PostStub;
@@ -314,22 +314,30 @@ class PostControllerTest {
             .andDo(document("post-get-latest",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
-                responseFields(beneathPath("data.posts"),
-                    fieldWithPath("id").type(JsonFieldType.NUMBER).description("판매글 ID"),
-                    fieldWithPath("price").type(JsonFieldType.NUMBER).description("판매글 가격"),
-                    fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
-                    fieldWithPath("postStatus").type(JsonFieldType.STRING).description("판매 상태"),
-                    fieldWithPath("createdAt").type(JsonFieldType.STRING).description("판매글 생성 시간"),
-                    fieldWithPath("attentionCount").type(JsonFieldType.NUMBER).description("찜 개수"),
-                    fieldWithPath("commentCount").type(JsonFieldType.NUMBER).description("댓글 개수"),
-                    fieldWithPath("imagePath").type(JsonFieldType.STRING).description("대표 이미지")
+                responseFields(
+                    fieldWithPath("data.posts[].id").type(JsonFieldType.NUMBER)
+                        .description("판매글 ID"),
+                    fieldWithPath("data.posts[].price").type(JsonFieldType.NUMBER)
+                        .description("판매글 가격"),
+                    fieldWithPath("data.posts[].title").type(JsonFieldType.STRING)
+                        .description("제목"),
+                    fieldWithPath("data.posts[].postStatus").type(JsonFieldType.STRING)
+                        .description("판매 상태"),
+                    fieldWithPath("data.posts[].createdAt").type(JsonFieldType.STRING)
+                        .description("판매글 생성 시간"),
+                    fieldWithPath("data.posts[].attentionCount").type(JsonFieldType.NUMBER)
+                        .description("찜 개수"),
+                    fieldWithPath("data.posts[].commentCount").type(JsonFieldType.NUMBER)
+                        .description("댓글 개수"),
+                    fieldWithPath("data.posts[].imagePath").type(JsonFieldType.STRING)
+                        .description("대표 이미지")
                 )
             ));
     }
 
     @Test
     @WithMockUser
-    @DisplayName("판매글 가격순 조회 테스트")
+    @DisplayName("판매글 특정 기준으로 정렬 조회 테스트")
     void getPostsPriceTest() throws Exception {
         PostResponse.Posts response = PostStub.priceSortPosts();
 
@@ -343,18 +351,72 @@ class PostControllerTest {
         );
 
         resultActions.andExpect(status().isOk())
-            .andDo(document("post-get-latest",
+            .andDo(document("post-get-sort",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
-                responseFields(beneathPath("data.posts"),
-                    fieldWithPath("id").type(JsonFieldType.NUMBER).description("판매글 ID"),
-                    fieldWithPath("price").type(JsonFieldType.NUMBER).description("판매글 가격"),
-                    fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
-                    fieldWithPath("postStatus").type(JsonFieldType.STRING).description("판매 상태"),
-                    fieldWithPath("createdAt").type(JsonFieldType.STRING).description("판매글 생성 시간"),
-                    fieldWithPath("attentionCount").type(JsonFieldType.NUMBER).description("찜 개수"),
-                    fieldWithPath("commentCount").type(JsonFieldType.NUMBER).description("댓글 개수"),
-                    fieldWithPath("imagePath").type(JsonFieldType.STRING).description("대표 이미지")
+                requestParameters(
+                    parameterWithName("sort").description("정렬 기준")
+                ),
+                responseFields(
+                    fieldWithPath("data.posts[].id").type(JsonFieldType.NUMBER)
+                        .description("판매글 ID"),
+                    fieldWithPath("data.posts[].price").type(JsonFieldType.NUMBER)
+                        .description("판매글 가격"),
+                    fieldWithPath("data.posts[].title").type(JsonFieldType.STRING)
+                        .description("제목"),
+                    fieldWithPath("data.posts[].postStatus").type(JsonFieldType.STRING)
+                        .description("판매 상태"),
+                    fieldWithPath("data.posts[].createdAt").type(JsonFieldType.STRING)
+                        .description("판매글 생성 시간"),
+                    fieldWithPath("data.posts[].attentionCount").type(JsonFieldType.NUMBER)
+                        .description("찜 개수"),
+                    fieldWithPath("data.posts[].commentCount").type(JsonFieldType.NUMBER)
+                        .description("댓글 개수"),
+                    fieldWithPath("data.posts[].imagePath").type(JsonFieldType.STRING)
+                        .description("대표 이미지")
+                )
+            ));
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("판매글 카테고리 조회")
+    void getPostsByCategoryTest() throws Exception {
+        PostResponse.Posts response = PostStub.posts();
+
+        doReturn(response)
+            .when(postService)
+            .getAllByCategory(any(Pageable.class), any(Category.class));
+
+        ResultActions resultActions = mockMvc.perform(
+            MockMvcRequestBuilders.get("/posts")
+                .param("category", "BEAUTY")
+        );
+
+        resultActions.andExpect(status().isOk())
+            .andDo(document("post-get-by-category",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                requestParameters(
+                    parameterWithName("category").description("카테고리")
+                ),
+                responseFields(
+                    fieldWithPath("data.posts[].id").type(JsonFieldType.NUMBER)
+                        .description("판매글 ID"),
+                    fieldWithPath("data.posts[].price").type(JsonFieldType.NUMBER)
+                        .description("판매글 가격"),
+                    fieldWithPath("data.posts[].title").type(JsonFieldType.STRING)
+                        .description("제목"),
+                    fieldWithPath("data.posts[].postStatus").type(JsonFieldType.STRING)
+                        .description("판매 상태"),
+                    fieldWithPath("data.posts[].createdAt").type(JsonFieldType.STRING)
+                        .description("판매글 생성 시간"),
+                    fieldWithPath("data.posts[].attentionCount").type(JsonFieldType.NUMBER)
+                        .description("찜 개수"),
+                    fieldWithPath("data.posts[].commentCount").type(JsonFieldType.NUMBER)
+                        .description("댓글 개수"),
+                    fieldWithPath("data.posts[].imagePath").type(JsonFieldType.STRING)
+                        .description("대표 이미지")
                 )
             ));
     }

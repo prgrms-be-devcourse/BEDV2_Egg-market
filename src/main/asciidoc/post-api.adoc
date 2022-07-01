@@ -74,16 +74,30 @@ include::{snippets}/post-get-latest/http-request.adoc[]
 include::{snippets}/post-get-latest/http-response.adoc[]
 include::{snippets}/post-get-latest/response-fields.adoc[]
 
-== 판매글 가격순 조회
+== 판매글 조건 조회
 
-=== GET /posts?sort=price
+=== GET /posts?sort={정렬기준}
 
 .Request
-include::{snippets}/post-get-latest/http-request.adoc[]
+include::{snippets}/post-get-sort/http-request.adoc[]
+include::{snippets}/post-get-sort/request-parameters.adoc[]
 
 .Response
-include::{snippets}/post-get-latest/http-response.adoc[]
-include::{snippets}/post-get-latest/response-fields.adoc[]
+include::{snippets}/post-get-sort/http-response.adoc[]
+include::{snippets}/post-get-by-category/response-fields.adoc[]
 
+
+== 판매글 카테고리 조회
+
+=== GET /posts?category={카테고리}
+
+.Request
+include::{snippets}/post-get-by-category/http-request.adoc[]
+include::{snippets}/post-get-by-category/request-parameters.adoc[]
+
+
+.Response
+include::{snippets}/post-get-by-category/http-response.adoc[]
+include::{snippets}/post-get-by-category/response-fields.adoc[]
 
 
