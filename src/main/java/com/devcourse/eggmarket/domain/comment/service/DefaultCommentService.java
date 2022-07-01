@@ -89,21 +89,18 @@ public class DefaultCommentService implements CommentService {
     private Comment getExistingComment(Long commentId, Post post) {
         return commentRepository.findByIdAndPostId(commentId, post.getId())
             .orElseThrow(() ->
-                new NotExistCommentException(ErrorCode.ENTITY_NOT_FOUND.getMessage(),
-                    ErrorCode.ENTITY_NOT_FOUND));
+                new NotExistCommentException("해당 포스트에 존재하지 않는 댓글입니다"));
     }
 
     private void checkCommentWriter(User loginUser, Comment comment) {
         if (!comment.isWriter(loginUser)) {
-            throw new NotWriterException(ErrorCode.NOT_ALLOWED_USER.getMessage(),
-                ErrorCode.NOT_ALLOWED_USER);
+            throw new NotWriterException(ErrorCode.NOT_ALLOWED_USER);
         }
     }
 
     private void checkNotSoldOutPost(Post post) {
         if (!post.isAbleToDeal()) {
-            throw new CommentNotAllowedPostException(post.getId().toString(),
-                ErrorCode.SOLD_OUT_POST_NOT_ALLOWED_COMMENT_ERROR);
+            throw new CommentNotAllowedPostException(ErrorCode.SOLD_OUT_POST_NOT_ALLOWED_COMMENT_ERROR);
         }
     }
 

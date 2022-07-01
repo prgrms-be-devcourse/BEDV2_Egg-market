@@ -9,4 +9,8 @@ public class NotExistCommentException extends EntityNotFoundException {
         ErrorCode errorCode) {
         super(message, errorCode);
     }
+
+    public NotExistCommentException(String message) {
+        super(message);
+    }
 }

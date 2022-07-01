@@ -74,8 +74,8 @@ class CommentRepositoryTest {
 
         List<Comment> allComments = commentRepository.findAllByPost(post);
 
-        Assertions.assertThat(allComments.size())
-            .isEqualTo(0);
+        Assertions.assertThat(allComments.isEmpty())
+            .isTrue();
     }
 
     @Test
