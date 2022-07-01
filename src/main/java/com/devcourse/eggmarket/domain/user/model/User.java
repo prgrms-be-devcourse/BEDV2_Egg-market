@@ -19,6 +19,9 @@ import lombok.NoArgsConstructor;
 public class User extends BaseEntity {
 
     private static final float DEFAULT_TEMP = 36.5F;
+    private static final float HIGHEST_TEMP = 100.0F;
+    private static final float LOWEST_TEMP = 0.0F;
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -96,6 +99,25 @@ public class User extends BaseEntity {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public void updateMannerTemperature(float mannerTemperature) {
+        float updatedMannerTemperature = this.mannerTemperature + mannerTemperature;
+
+        updatedMannerTemperature = validTemperatureScope(updatedMannerTemperature);
+
+        this.mannerTemperature = updatedMannerTemperature;
+    }
+
+    public boolean isSameUser(User user) {
+        return this.id.equals(user.getId());
+    }
+
+    private float validTemperatureScope(final float mannerTemperature) {
+        if (mannerTemperature < LOWEST_TEMP) {
+            return LOWEST_TEMP;
+        }
+        return Math.min(mannerTemperature, HIGHEST_TEMP);
     }
 }
 

@@ -59,7 +59,6 @@ include::{snippets}/post-delete/http-response.adoc[]
 .Request
 include::{snippets}/post-get-detail/http-request.adoc[]
 
-
 .Response
 include::{snippets}/post-get-detail/http-response.adoc[]
 include::{snippets}/post-get-detail/response-fields.adoc[]

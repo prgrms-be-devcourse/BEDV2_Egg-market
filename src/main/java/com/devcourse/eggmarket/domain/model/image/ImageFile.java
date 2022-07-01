@@ -2,7 +2,7 @@ package com.devcourse.eggmarket.domain.model.image;
 
 import org.springframework.web.multipart.MultipartFile;
 
-public interface Image {
+public interface ImageFile {
 
     byte[] getContents();
 

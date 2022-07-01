@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class EggmarketApplication {
 
-  public static void main(String[] args) {
-    SpringApplication.run(EggmarketApplication.class, args);
-  }
+    public static void main(String[] args) {
+        SpringApplication.run(EggmarketApplication.class, args);
+    }
 
 }

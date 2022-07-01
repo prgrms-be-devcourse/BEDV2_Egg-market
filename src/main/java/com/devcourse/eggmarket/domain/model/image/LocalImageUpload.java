@@ -21,7 +21,7 @@ public class LocalImageUpload implements ImageUpload {
     }
 
     @Override
-    public String upload(Image image) {
+    public String upload(ImageFile image) {
         String path = imgPath(image);
 
         try {
@@ -32,7 +32,7 @@ public class LocalImageUpload implements ImageUpload {
         return path;
     }
 
-    private String imgPath(Image image) {
+    private String imgPath(ImageFile image) {
         return switch (image.getType()) {
             case POST -> image.pathTobeStored(pathProperties.postImagePath());
             case PROFILE -> image.pathTobeStored(pathProperties.profileImagePath());

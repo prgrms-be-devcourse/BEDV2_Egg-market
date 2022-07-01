@@ -59,7 +59,7 @@ public class PostConverter {
             post.getCategory().name(),
             post.getCreatedAt(),
             post.getAttentionCount(),
-            0, // TODO : Comment 개수 를 post 로부터 받아온다
+            post.getCommentCount(),
             likeOfMe,
             imgPaths
         );
@@ -73,9 +73,9 @@ public class PostConverter {
             post.getPostStatus().toString(),
             post.getCreatedAt(),
             post.getAttentionCount(),
-            0, // TODO : 커멘트 개수 post 에서 가져오기
+            post.getCommentCount(),
             imgPath
         );
-
     }
+
 }

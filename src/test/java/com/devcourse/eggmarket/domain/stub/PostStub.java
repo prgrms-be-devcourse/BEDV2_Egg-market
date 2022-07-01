@@ -1,13 +1,18 @@
 package com.devcourse.eggmarket.domain.stub;
 
 import com.devcourse.eggmarket.domain.post.dto.PostRequest;
-import com.devcourse.eggmarket.domain.post.dto.PostRequest.UpdatePost;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse;
+import com.devcourse.eggmarket.domain.post.dto.PostResponse.Posts;
+import com.devcourse.eggmarket.domain.post.dto.PostResponse.PostsElement;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse.SinglePost;
 import com.devcourse.eggmarket.domain.post.model.Category;
 import com.devcourse.eggmarket.domain.post.model.Post;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
 import com.devcourse.eggmarket.domain.user.model.User;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.Arguments;
 
 public class PostStub {
 
@@ -20,7 +25,8 @@ public class PostStub {
             "title",
             "content",
             1000,
-            "BEAUTY"
+            "BEAUTY",
+            null
         );
     }
 
@@ -29,12 +35,14 @@ public class PostStub {
             "title",
             "content",
             1000,
-            "FOOD"
+            "FOOD",
+            null
         );
     }
 
     public static Post entity(User seller) {
         return Post.builder()
+            .id(1L)
             .title("title")
             .content("content")
             .price(1000)
@@ -65,7 +73,7 @@ public class PostStub {
     public static PostRequest.UpdatePurchaseInfo updatePurchaseInfo() {
         return new PostRequest.UpdatePurchaseInfo(
             "COMPLETED",
-            "test"
+            2L
         );
     }
 
@@ -92,5 +100,125 @@ public class PostStub {
             List.of("http://example.com/test/1.png", "http://example.com/test/2.png")
         );
     }
+
+    public static PostResponse.Posts posts() {
+        return new PostResponse.Posts(
+            List.of(
+                new PostsElement(
+                    1L,
+                    1000,
+                    "title",
+                    "COMPLETED",
+                    LocalDateTime.now(),
+                    0,
+                    0,
+                    null
+                ),
+                new PostsElement(
+                    2L,
+                    500,
+                    "title",
+                    "COMPLETED",
+                    LocalDateTime.now(),
+                    0,
+                    0,
+                    null
+                ),
+                new PostsElement(
+                    1L,
+                    2500,
+                    "title",
+                    "COMPLETED",
+                    LocalDateTime.now(),
+                    0,
+                    0,
+                    null
+                )
+            )
+        );
+    }
+
+    public static Posts priceSortPosts() {
+        return new PostResponse.Posts(
+            List.of(
+                new PostsElement(
+                    2L,
+                    500,
+                    "title",
+                    "COMPLETED",
+                    LocalDateTime.now(),
+                    0,
+                    0,
+                    null
+                ),
+                new PostsElement(
+                    1L,
+                    1000,
+                    "title",
+                    "COMPLETED",
+                    LocalDateTime.now(),
+                    0,
+                    0,
+                    null
+                ),
+                new PostsElement(
+                    3L,
+                    2500,
+                    "title",
+                    "COMPLETED",
+                    LocalDateTime.now(),
+                    0,
+                    0,
+                    null
+                )
+            )
+        );
+    }
+
+    public static Stream<Arguments> invalidWriteRequest() {
+        return Stream.of(
+            Arguments.arguments(
+                new PostRequest.Save("", "content", 1000, "BEAUTY", null)
+            ),
+            Arguments.arguments(
+                new PostRequest.Save("title", "", 1000, "BEAUTY", null)
+            ),
+            Arguments.arguments(
+                new PostRequest.Save("title", "content", -1000, "BEAUTY", null)
+            ),
+            Arguments.arguments(
+                new PostRequest.Save("title", "content", 1000, "INVALID", null)
+            )
+        );
+    }
+
+    public static Stream<Arguments> invalidUpdatePostRequest() {
+        return Stream.of(
+            Arguments.arguments(
+                new PostRequest.UpdatePost("", "content", 1000, "BEAUTY")
+            ),
+            Arguments.arguments(
+                new PostRequest.UpdatePost("title", "", 1000, "BEAUTY")
+            ),
+            Arguments.arguments(
+                new PostRequest.UpdatePost("title", "content", -1000, "BEAUTY")
+            ),
+            Arguments.arguments(
+                new PostRequest.UpdatePost("title", "content", 1000, "INVALID")
+            )
+        );
+    }
+
+    public static Stream<Arguments> invalidUpdatePurchaseInfoRequest() {
+        return Stream.of(
+            Arguments.arguments(
+                new PostRequest.UpdatePurchaseInfo("COMPLTED", 0L)
+            ),
+            Arguments.arguments(
+                new PostRequest.UpdatePurchaseInfo("INVALID", 1L)
+            )
+        );
+    }
+
 }
 

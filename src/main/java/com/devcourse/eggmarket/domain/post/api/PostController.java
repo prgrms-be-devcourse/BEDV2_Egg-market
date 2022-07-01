@@ -4,11 +4,17 @@ import com.devcourse.eggmarket.domain.post.dto.PostRequest;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse.PostAttentionCount;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse.Posts;
+import com.devcourse.eggmarket.domain.post.model.Category;
 import com.devcourse.eggmarket.domain.post.service.PostAttentionService;
 import com.devcourse.eggmarket.domain.post.service.PostService;
+import com.devcourse.eggmarket.global.common.SuccessResponse;
+import com.devcourse.eggmarket.global.common.ValueOfEnum;
 import java.net.URI;
+import javax.validation.Valid;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -16,10 +22,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
+@Validated
 @RequestMapping("/posts")
 public class PostController {
 
@@ -33,34 +41,35 @@ public class PostController {
     }
 
     @PostMapping
-    ResponseEntity<Long> write(@RequestBody PostRequest.Save request,
+    ResponseEntity<SuccessResponse<Long>> write(@Valid PostRequest.Save request,
         Authentication authentication) {
-        Long postId = postService.save(request, authentication.getName());
+        Long response = postService.save(request, authentication.getName());
         final URI location = ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
-            .buildAndExpand(postId)
+            .buildAndExpand(response)
             .toUri();
 
         return ResponseEntity.created(location)
-            .body(postId);
+            .body(new SuccessResponse<>(response));
     }
 
-    @PatchMapping("/{id}/post")
-    ResponseEntity<Long> updatePost(@RequestBody PostRequest.UpdatePost request,
+    @PatchMapping("/{id}")
+    ResponseEntity<SuccessResponse<Long>> updatePost(@RequestBody @Valid PostRequest.UpdatePost request,
         Authentication authentication,
         @PathVariable Long id) {
-        Long postId = postService.updatePost(id, request, authentication.getName());
+        Long response = postService.updatePost(id, request, authentication.getName());
 
-        return ResponseEntity.ok(postId);
+        return ResponseEntity.ok(new SuccessResponse<>(response));
     }
 
     @PatchMapping("/{id}/purchase")
-    ResponseEntity<Long> updatePurchase(@RequestBody PostRequest.UpdatePurchaseInfo request,
+    ResponseEntity<SuccessResponse<Long>> updatePurchase(
+        @RequestBody @Valid PostRequest.UpdatePurchaseInfo request,
         Authentication authentication,
         @PathVariable Long id) {
-        Long postId = postService.updatePurchaseInfo(id, request, authentication.getName());
+        Long response = postService.updatePurchaseInfo(id, request, authentication.getName());
 
-        return ResponseEntity.ok(postId);
+        return ResponseEntity.ok(new SuccessResponse<>(response));
     }
 
     @DeleteMapping("/{id}")
@@ -70,23 +79,41 @@ public class PostController {
     }
 
     @PostMapping("/{id}/attention")
-    ResponseEntity<PostAttentionCount> attention(@PathVariable("id") Long postId,
+    ResponseEntity<SuccessResponse<PostAttentionCount>> attention(@PathVariable("id") Long postId,
         Authentication authentication) {
         return ResponseEntity.ok(
-            postAttentionService.toggleAttention(authentication.getName(), postId)
+            new SuccessResponse<>(
+                postAttentionService.toggleAttention(authentication.getName(), postId)
+            )
         );
     }
 
     @GetMapping("/attention")
-    ResponseEntity<Posts> allAttention(Authentication authentication) {
+    ResponseEntity<SuccessResponse<Posts>> allAttention(Authentication authentication) {
         return ResponseEntity.ok(
-            postAttentionService.getAllLikedBy(authentication.getName())
+            new SuccessResponse<>(
+                postAttentionService.getAllLikedBy(authentication.getName())
+            )
         );
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<PostResponse.SinglePost> getPost(@PathVariable Long id, Authentication authentication) {
+    ResponseEntity<SuccessResponse<PostResponse.SinglePost>> getPost(@PathVariable Long id,
+        Authentication authentication) {
         PostResponse.SinglePost response = postService.getById(id, authentication.getName());
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(new SuccessResponse<>(response));
     }
+
+    @GetMapping
+    ResponseEntity<SuccessResponse<PostResponse.Posts>> getPosts(Pageable pageable,
+        @RequestParam(required = false) @ValueOfEnum(enumClass = Category.class) String category) {
+        return ResponseEntity.ok(
+            new SuccessResponse<>(
+                category != null ?
+                    postService.getAllByCategory(pageable, Category.valueOf(category)) :
+                    postService.getAll(pageable)
+            )
+        );
+    }
+
 }

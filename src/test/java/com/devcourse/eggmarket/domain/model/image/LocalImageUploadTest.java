@@ -22,7 +22,7 @@ class LocalImageUploadTest {
     ImageLocalPathProperties pathProperties;
 
     private ImageUpload imageUpload;
-    private Image postImage;
+    private ImageFile postImageFile;
 
     private String pathSaved;
 
@@ -45,9 +45,9 @@ class LocalImageUploadTest {
         MultipartFile multipartFile2 = new MockMultipartFile(name2, savedPath.toString(),
             contentType, inputStream2);
 
-        PostImage savedPostImage = PostImage.toImage(1, multipartFile2, 4);
+        PostImageFile savedPostImage = PostImageFile.toImage(1, multipartFile2, 4);
 
-        this.postImage = PostImage.toImage(1, multipartFile, 2);
+        this.postImageFile = PostImageFile.toImage(1, multipartFile, 2);
         this.imageUpload = new LocalImageUpload(pathProperties);
         this.pathSaved = this.imageUpload.upload(savedPostImage);
     }
@@ -55,7 +55,7 @@ class LocalImageUploadTest {
     @Test
     @DisplayName("PostImage 를 서버에 저장한다")
     public void uploadTest() {
-        String uploadedPath = imageUpload.upload(postImage);
+        String uploadedPath = imageUpload.upload(postImageFile);
 
         Assertions.assertThat(Files.exists(Path.of(uploadedPath))).isTrue();
     }

@@ -24,7 +24,8 @@ class PostConverterTest {
             "title",
             "content",
             1000,
-            "BEAUTY"
+            "BEAUTY",
+            null
         );
         User seller = User.builder()
             .nickName("test")

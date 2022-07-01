@@ -21,13 +21,15 @@ public class PostExceptionMessage {
 
     public static final String NOT_NEGATIVE_PRICE = "가격은 음수일 수 없습니다";
 
+    public static final String NOT_NEGATIVE_ID = "아이디는 양수여야 합니다.";
+
     public static final String NOT_VALID_RANGE_CATEGORY = "카테고리는 1 ~ 20자 이어야 합니다";
 
     public static final String NOT_BLANK_POST_STATUS = "판매 상태를 선택 해주세요";
 
     public static final String NOT_VALID_RANGE_POST_STATUS = "판매 상태는 1 ~ 20자 이어야 합니다";
 
-    public static final String NOT_NULL_USER = "유저 닉네임을 입력 해주세요";
+    public static final String NOT_NULL_USER = "유저 아이디를 입력해주세요";
 
     public static final String NOT_VALID_RANGE_USER = "닉네임은 3 ~ 12자 이어야 합니다";
 
