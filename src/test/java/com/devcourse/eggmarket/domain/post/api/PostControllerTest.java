@@ -272,7 +272,7 @@ class PostControllerTest {
                         .description("판매자 매너 온도"),
                     fieldWithPath("data.seller.role").type(JsonFieldType.STRING)
                         .description("판매자 권한"),
-                    fieldWithPath("data.seller.imagePath").type(JsonFieldType.VARIES)
+                    fieldWithPath("data.seller.imagePath").type(JsonFieldType.STRING)
                         .description("판매자 프로필 이미지"),
                     fieldWithPath("data.price").type(JsonFieldType.NUMBER).description("상품 가격"),
                     fieldWithPath("data.title").type(JsonFieldType.STRING).description("제목"),
@@ -287,10 +287,21 @@ class PostControllerTest {
                     fieldWithPath("data.commentCount").type(JsonFieldType.NUMBER)
                         .description("댓글 개수"),
                     fieldWithPath("data.likeOfMe").type(JsonFieldType.BOOLEAN).description("찜 여부"),
-                    fieldWithPath("data.imagePaths").type(JsonFieldType.VARIES)
+                    fieldWithPath("data.imagePaths[]").type(JsonFieldType.ARRAY)
                         .description("판매글 이미지 링크")
                 )
             ));
+    }
+
+    @Test
+    @DisplayName("판매글 최신순 조회 테스트")
+    void getPostsLatestTest() {
+        PostResponse.Posts response = PostStub.posts();
+    }
+
+    @Test
+    @DisplayName("판매글 가격순 조회 테스트")
+    void getPostsPriceTest() {
 
     }
 }

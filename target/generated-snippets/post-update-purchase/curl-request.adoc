@@ -1,0 +1,10 @@
+[source,bash]
+----
+$ curl 'http://localhost:8080/posts/1/purchase' -i -X PATCH \
+    -H 'Content-Type: application/json;charset=UTF-8' \
+    -H 'X-CSRF-TOKEN: 227dbb95-3b42-496a-a586-083285016a3d' \
+    -d '{
+  "postStatus" : "COMPLETED",
+  "buyerId" : 2
+}'
+----

@@ -1,0 +1,10 @@
+[source,bash]
+----
+$ http --multipart POST 'http://localhost:8080/posts' \
+    'images'@'img.png' \
+    'X-CSRF-TOKEN:5f868462-fe41-46b2-95ec-c94281562c20' \
+    'title=title' \
+    'content=content' \
+    'price=1000' \
+    'category=BEAUTY'
+----

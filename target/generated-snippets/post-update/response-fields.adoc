@@ -1,0 +1,8 @@
+|===
+|Path|Type|Description
+
+|`+data+`
+|`+Number+`
+|판매글 ID
+
+|===

@@ -1,0 +1,13 @@
+[source,http,options="nowrap"]
+----
+PATCH /posts/1/purchase HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 49
+X-CSRF-TOKEN: 227dbb95-3b42-496a-a586-083285016a3d
+Host: localhost:8080
+
+{
+  "postStatus" : "COMPLETED",
+  "buyerId" : 2
+}
+----
