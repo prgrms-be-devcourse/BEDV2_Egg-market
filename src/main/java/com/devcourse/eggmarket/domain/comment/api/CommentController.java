@@ -55,7 +55,7 @@ public class CommentController {
     }
 
     @DeleteMapping("/comments/{commentId}")
-    public ResponseEntity<SuccessResponse<Void>> delete(@PathVariable Long postId,
+    public ResponseEntity<Void> delete(@PathVariable Long postId,
         @PathVariable Long commentId, Authentication authentication) {
 
         commentService.delete(authentication.getName(), postId, commentId);
