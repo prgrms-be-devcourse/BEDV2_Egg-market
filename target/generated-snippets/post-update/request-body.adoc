@@ -1,9 +1,0 @@
-[source,options="nowrap"]
-----
-{
-  "title" : "update-title",
-  "content" : "update-content",
-  "price" : 2000,
-  "category" : "DIGITAL"
-}
-----

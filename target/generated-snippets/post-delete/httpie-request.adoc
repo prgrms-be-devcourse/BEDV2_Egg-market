@@ -1,5 +1,0 @@
-[source,bash]
-----
-$ http DELETE 'http://localhost:8080/posts/1' \
-    'X-CSRF-TOKEN:a4237c49-55d8-4440-ad05-da1393328ff1'
-----
