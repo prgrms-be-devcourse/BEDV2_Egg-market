@@ -78,7 +78,14 @@ public class DefaultCommentService implements CommentService {
     @Override
     @Transactional
     public void delete(String userName, Long postId, Long commentId) {
-        // TODO
+        User loginUser = getLoginUser(userName);
+        Post post = getExistingPost(postId);
+
+        Comment comment = getExistingComment(commentId, post);
+
+        checkCommentWriter(loginUser, comment);
+
+        commentRepository.delete(comment);
     }
 
     private Post getExistingPost(Long postId) {
@@ -100,7 +107,8 @@ public class DefaultCommentService implements CommentService {
 
     private void checkNotSoldOutPost(Post post) {
         if (!post.isAbleToDeal()) {
-            throw new CommentNotAllowedPostException(ErrorCode.SOLD_OUT_POST_NOT_ALLOWED_COMMENT_ERROR);
+            throw new CommentNotAllowedPostException(
+                ErrorCode.SOLD_OUT_POST_NOT_ALLOWED_COMMENT_ERROR);
         }
     }
 
