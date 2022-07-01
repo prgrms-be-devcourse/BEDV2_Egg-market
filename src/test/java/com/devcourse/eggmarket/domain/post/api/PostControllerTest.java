@@ -9,6 +9,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -42,7 +43,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -295,21 +295,67 @@ class PostControllerTest {
             ));
     }
 
+
     @Test
+    @WithMockUser
     @DisplayName("판매글 최신순 조회 테스트")
-    void getPostsLatestTest() {
+    void getPostsLatestTest() throws Exception {
         PostResponse.Posts response = PostStub.posts();
 
         doReturn(response)
             .when(postService)
             .getAll(any(Pageable.class));
 
-//        ResultActions resultActions = mockMvc.perform();
+        ResultActions resultActions = mockMvc.perform(
+            MockMvcRequestBuilders.get("/posts")
+        );
+
+        resultActions.andExpect(status().isOk())
+            .andDo(document("post-get-latest",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                responseFields(beneathPath("data.posts"),
+                    fieldWithPath("id").type(JsonFieldType.NUMBER).description("판매글 ID"),
+                    fieldWithPath("price").type(JsonFieldType.NUMBER).description("판매글 가격"),
+                    fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
+                    fieldWithPath("postStatus").type(JsonFieldType.STRING).description("판매 상태"),
+                    fieldWithPath("createdAt").type(JsonFieldType.STRING).description("판매글 생성 시간"),
+                    fieldWithPath("attentionCount").type(JsonFieldType.NUMBER).description("찜 개수"),
+                    fieldWithPath("commentCount").type(JsonFieldType.NUMBER).description("댓글 개수"),
+                    fieldWithPath("imagePath").type(JsonFieldType.STRING).description("대표 이미지")
+                )
+            ));
     }
 
     @Test
+    @WithMockUser
     @DisplayName("판매글 가격순 조회 테스트")
-    void getPostsPriceTest() {
+    void getPostsPriceTest() throws Exception {
         PostResponse.Posts response = PostStub.priceSortPosts();
+
+        doReturn(response)
+            .when(postService)
+            .getAll(any(Pageable.class));
+
+        ResultActions resultActions = mockMvc.perform(
+            MockMvcRequestBuilders.get("/posts")
+                .param("sort", "price")
+        );
+
+        resultActions.andExpect(status().isOk())
+            .andDo(document("post-get-latest",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                responseFields(beneathPath("data.posts"),
+                    fieldWithPath("id").type(JsonFieldType.NUMBER).description("판매글 ID"),
+                    fieldWithPath("price").type(JsonFieldType.NUMBER).description("판매글 가격"),
+                    fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
+                    fieldWithPath("postStatus").type(JsonFieldType.STRING).description("판매 상태"),
+                    fieldWithPath("createdAt").type(JsonFieldType.STRING).description("판매글 생성 시간"),
+                    fieldWithPath("attentionCount").type(JsonFieldType.NUMBER).description("찜 개수"),
+                    fieldWithPath("commentCount").type(JsonFieldType.NUMBER).description("댓글 개수"),
+                    fieldWithPath("imagePath").type(JsonFieldType.STRING).description("대표 이미지")
+                )
+            ));
     }
 }
