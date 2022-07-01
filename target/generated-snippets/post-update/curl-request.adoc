@@ -1,0 +1,12 @@
+[source,bash]
+----
+$ curl 'http://localhost:8080/posts/1' -i -X PATCH \
+    -H 'Content-Type: application/json;charset=UTF-8' \
+    -H 'X-CSRF-TOKEN: 03257c37-de31-48ca-8bab-d0c99aaf3d7d' \
+    -d '{
+  "title" : "update-title",
+  "content" : "update-content",
+  "price" : 2000,
+  "category" : "DIGITAL"
+}'
+----

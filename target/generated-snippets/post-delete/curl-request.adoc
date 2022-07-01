@@ -1,0 +1,5 @@
+[source,bash]
+----
+$ curl 'http://localhost:8080/posts/1' -i -X DELETE \
+    -H 'X-CSRF-TOKEN: a4237c49-55d8-4440-ad05-da1393328ff1'
+----
