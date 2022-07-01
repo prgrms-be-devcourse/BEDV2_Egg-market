@@ -1,8 +1,0 @@
-|===
-|Path|Type|Description
-
-|`+data+`
-|`+Number+`
-|게시글 ID
-
-|===
