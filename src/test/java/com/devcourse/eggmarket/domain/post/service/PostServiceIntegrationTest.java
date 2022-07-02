@@ -226,9 +226,8 @@ class PostServiceIntegrationTest {
     @Test
     @DisplayName("판매글 단일 조회")
     void getByIdTest() {
-        Post save = postRepository.save(likedPost1);
         SinglePost got = postService.getById(likedPost1.getId(), writerLikedOwnPost.getNickName());
-        SinglePost want = PostStub.singlePostResponse(save);
+        SinglePost want = PostStub.singlePostResponse(likedPost1);
 
         Assertions.assertThat(got).usingRecursiveComparison().isEqualTo(want);
 

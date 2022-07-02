@@ -10,7 +10,7 @@ public class ImageStub {
     private ImageStub() {
     }
 
-    private static String mockImage = "mock";
+    private static final String mockImage = "mock";
 
     public static ImageFile image1(Long postId) {
         return PostImageFile.toImage(postId, new MockMultipartFile("image1",
