@@ -447,4 +447,42 @@ class PostControllerTest {
                 )
             ));
     }
+
+    @Test
+    @WithMockUser
+    @DisplayName("찜한 판매글만 조회하는 기능 테스트")
+    void allAttentionTest() throws Exception {
+        PostResponse.Posts response = PostStub.posts();
+
+        doReturn(response)
+            .when(postAttentionService)
+            .getAllLikedBy(anyString());
+        ResultActions resultActions = mockMvc.perform(
+            MockMvcRequestBuilders.get("/posts/attention")
+        );
+
+        resultActions.andExpect(status().isOk())
+            .andDo(document("post-get-attention",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                responseFields(
+                    fieldWithPath("data.posts[].id").type(JsonFieldType.NUMBER)
+                        .description("판매글 ID"),
+                    fieldWithPath("data.posts[].price").type(JsonFieldType.NUMBER)
+                        .description("판매글 가격"),
+                    fieldWithPath("data.posts[].title").type(JsonFieldType.STRING)
+                        .description("제목"),
+                    fieldWithPath("data.posts[].postStatus").type(JsonFieldType.STRING)
+                        .description("판매 상태"),
+                    fieldWithPath("data.posts[].createdAt").type(JsonFieldType.STRING)
+                        .description("판매글 생성 시간"),
+                    fieldWithPath("data.posts[].attentionCount").type(JsonFieldType.NUMBER)
+                        .description("찜 개수"),
+                    fieldWithPath("data.posts[].commentCount").type(JsonFieldType.NUMBER)
+                        .description("댓글 개수"),
+                    fieldWithPath("data.posts[].imagePath").type(JsonFieldType.STRING)
+                        .description("대표 이미지")
+                )
+            ));
+    }
 }

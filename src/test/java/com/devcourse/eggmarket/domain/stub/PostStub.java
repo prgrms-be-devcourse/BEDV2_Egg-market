@@ -110,8 +110,8 @@ public class PostStub {
                     "title",
                     "COMPLETED",
                     LocalDateTime.now(),
-                    0,
-                    0,
+                    3,
+                    2,
                     "http://example.com/test/1-1.png"
                 ),
                 new PostsElement(
@@ -120,7 +120,7 @@ public class PostStub {
                     "title",
                     "COMPLETED",
                     LocalDateTime.now(),
-                    0,
+                    1,
                     0,
                     "http://example.com/test/2-1.png"
                 ),
@@ -130,8 +130,8 @@ public class PostStub {
                     "title",
                     "COMPLETED",
                     LocalDateTime.now(),
-                    0,
-                    0,
+                    5,
+                    12,
                     "http://example.com/test/3-1.png"
                 )
             )

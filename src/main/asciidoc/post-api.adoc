@@ -102,7 +102,7 @@ include::{snippets}/post-get-by-category/response-fields.adoc[]
 
 == 판매글 찜하기
 
-=== GET /posts/{id}/attention
+=== POST /posts/{id}/attention
 
 .Request
 include::{snippets}/post-attention/http-request.adoc[]
@@ -111,3 +111,15 @@ include::{snippets}/post-attention/http-request.adoc[]
 .Response
 include::{snippets}/post-attention/http-response.adoc[]
 include::{snippets}/post-attention/response-fields.adoc[]
+
+== 찜한 판매글 조회
+
+=== GET /posts/attention
+
+.Request
+include::{snippets}/post-get-attention/http-request.adoc[]
+
+
+.Response
+include::{snippets}/post-get-attention/http-response.adoc[]
+include::{snippets}/post-get-attention/response-fields.adoc[]
