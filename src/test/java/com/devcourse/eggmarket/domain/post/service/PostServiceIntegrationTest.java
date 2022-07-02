@@ -2,15 +2,23 @@ package com.devcourse.eggmarket.domain.post.service;
 
 import com.devcourse.eggmarket.domain.comment.model.Comment;
 import com.devcourse.eggmarket.domain.comment.repository.CommentRepository;
+import com.devcourse.eggmarket.domain.model.image.ImageUpload;
+import com.devcourse.eggmarket.domain.model.image.PostImageFile;
 import com.devcourse.eggmarket.domain.post.dto.PostRequest.UpdatePurchaseInfo;
+import com.devcourse.eggmarket.domain.post.dto.PostResponse;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse.Posts;
+import com.devcourse.eggmarket.domain.post.dto.PostResponse.SinglePost;
 import com.devcourse.eggmarket.domain.post.exception.InvalidBuyerException;
 import com.devcourse.eggmarket.domain.post.model.Category;
 import com.devcourse.eggmarket.domain.post.model.Post;
 import com.devcourse.eggmarket.domain.post.model.PostAttention;
+import com.devcourse.eggmarket.domain.post.model.PostImage;
 import com.devcourse.eggmarket.domain.post.model.PostStatus;
 import com.devcourse.eggmarket.domain.post.repository.PostAttentionRepository;
+import com.devcourse.eggmarket.domain.post.repository.PostImageRepository;
 import com.devcourse.eggmarket.domain.post.repository.PostRepository;
+import com.devcourse.eggmarket.domain.stub.ImageStub;
+import com.devcourse.eggmarket.domain.stub.PostStub;
 import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.repository.UserRepository;
 import com.devcourse.eggmarket.global.common.SuccessResponse;
@@ -23,25 +31,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-public class PostServiceIntegrationTest {
+class PostServiceIntegrationTest {
 
     @Autowired
-    public PostAttentionRepository postAttentionRepository;
+    private PostAttentionRepository postAttentionRepository;
 
     @Autowired
-    public UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    public CommentRepository commentRepository;
+    private CommentRepository commentRepository;
 
     @Autowired
-    public PostRepository postRepository;
+    private PostRepository postRepository;
 
     @Autowired
-    public PostAttentionService postAttentionService;
+    private PostAttentionService postAttentionService;
 
     @Autowired
-    public PostService postService;
+    private PostService postService;
+
+    @Autowired
+    private PostImageRepository postImageRepository;
+
+    @Autowired
+    private ImageUpload imageUpload;
 
     private User writerLikedOwnPost;
     private User notYetLikedUser;
@@ -109,6 +123,16 @@ public class PostServiceIntegrationTest {
         postAttentionRepository.save(new PostAttention(likedPost1, writerLikedOwnPost));
         postAttentionRepository.save(new PostAttention(likedPost2, writerLikedOwnPost));
 
+        postImageRepository.save(PostImage.builder()
+            .post(likedPost1)
+            .imagePath(ImageStub.image1(likedPost1.getId()).pathTobeStored(""))
+            .build()
+        );
+        postImageRepository.save(PostImage.builder()
+            .post(likedPost1)
+            .imagePath(ImageStub.image2(likedPost1.getId()).pathTobeStored(""))
+            .build()
+        );
         commentRepository.save(comment1);
     }
 
@@ -197,5 +221,16 @@ public class PostServiceIntegrationTest {
         );
 
         Assertions.assertThat(response).isEqualTo(likedPost1.getId());
+    }
+
+    @Test
+    @DisplayName("판매글 단일 조회")
+    void getByIdTest() {
+        Post save = postRepository.save(likedPost1);
+        SinglePost got = postService.getById(likedPost1.getId(), writerLikedOwnPost.getNickName());
+        SinglePost want = PostStub.singlePostResponse(save);
+
+        Assertions.assertThat(got).usingRecursiveComparison().isEqualTo(want);
+
     }
 }

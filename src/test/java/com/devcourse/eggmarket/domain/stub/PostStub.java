@@ -1,5 +1,6 @@
 package com.devcourse.eggmarket.domain.stub;
 
+import com.devcourse.eggmarket.domain.model.image.ImageUpload;
 import com.devcourse.eggmarket.domain.post.dto.PostRequest;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse.Posts;
@@ -93,11 +94,12 @@ public class PostStub {
             post.getContent(),
             post.getPostStatus().name(),
             post.getCategory().name(),
-            LocalDateTime.now(),
-            post.getAttentionCount(),
-            0,
+            post.getCreatedAt() == null ? LocalDateTime.now() : post.getCreatedAt(),
+           1,
+            1,
             true,
-            List.of("http://example.com/test/1.png", "http://example.com/test/2.png")
+            List.of(ImageStub.image1(post.getId()).pathTobeStored(""),
+                ImageStub.image2(post.getId()).pathTobeStored(""))
         );
     }
 

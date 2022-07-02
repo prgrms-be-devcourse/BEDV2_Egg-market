@@ -4,6 +4,8 @@ import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -13,6 +15,7 @@ import static org.mockito.Mockito.verify;
 
 import com.devcourse.eggmarket.domain.comment.model.Comment;
 import com.devcourse.eggmarket.domain.comment.repository.CommentRepository;
+import com.devcourse.eggmarket.domain.model.image.ImageFile;
 import com.devcourse.eggmarket.domain.post.converter.PostConverter;
 import com.devcourse.eggmarket.domain.post.dto.PostRequest;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse;
@@ -20,9 +23,11 @@ import com.devcourse.eggmarket.domain.post.exception.NotExistPostException;
 import com.devcourse.eggmarket.domain.post.exception.NotMatchedSellerException;
 import com.devcourse.eggmarket.domain.post.model.Category;
 import com.devcourse.eggmarket.domain.post.model.Post;
+import com.devcourse.eggmarket.domain.post.model.PostImage;
 import com.devcourse.eggmarket.domain.post.repository.PostAttentionRepository;
 import com.devcourse.eggmarket.domain.post.repository.PostImageRepository;
 import com.devcourse.eggmarket.domain.post.repository.PostRepository;
+import com.devcourse.eggmarket.domain.stub.ImageStub;
 import com.devcourse.eggmarket.domain.stub.PostStub;
 import com.devcourse.eggmarket.domain.stub.UserStub;
 import com.devcourse.eggmarket.domain.user.model.User;
@@ -279,16 +284,16 @@ class PostServiceImplTest {
 
         doReturn(Optional.of(post))
             .when(postRepository)
-            .findById(request);
+            .findById(anyLong());
         doReturn(seller)
             .when(userService)
-            .getUser(loginUser);
+            .getUser(anyString());
         doReturn(Optional.of(attention))
             .when(postAttentionRepository)
-            .findByPostIdAndUserId(request, seller.getId());
+            .findByPostIdAndUserId(anyLong(), anyLong());
         doReturn(response)
             .when(postConverter)
-            .singlePost(post, attention, null);
+            .singlePost(any(Post.class), anyBoolean(), anyList());
 
         assertThat(postService.getById(request, loginUser))
             .usingRecursiveComparison()
