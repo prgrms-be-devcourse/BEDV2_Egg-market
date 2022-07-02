@@ -21,6 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.devcourse.eggmarket.domain.post.dto.PostRequest;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse;
+import com.devcourse.eggmarket.domain.post.dto.PostResponse.PostAttentionCount;
 import com.devcourse.eggmarket.domain.post.model.Category;
 import com.devcourse.eggmarket.domain.post.service.PostAttentionService;
 import com.devcourse.eggmarket.domain.post.service.PostService;
@@ -417,6 +418,32 @@ class PostControllerTest {
                         .description("댓글 개수"),
                     fieldWithPath("data.posts[].imagePath").type(JsonFieldType.STRING)
                         .description("대표 이미지")
+                )
+            ));
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("찜하기 기능 테스트")
+    void attentionTest() throws Exception {
+        Long request = 1L;
+        PostAttentionCount response = new PostAttentionCount(1);
+
+        doReturn(response)
+            .when(postAttentionService)
+            .toggleAttention(anyString(), anyLong());
+
+        ResultActions resultActions = mockMvc.perform(
+            MockMvcRequestBuilders.post("/posts/" + request + "/attention")
+                .with(csrf().asHeader())
+        );
+
+        resultActions.andExpect(status().isOk())
+            .andDo(document("post-attention",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                responseFields(
+                    fieldWithPath("data.likeCount").type(JsonFieldType.NUMBER).description("총 찜 개수")
                 )
             ));
     }
