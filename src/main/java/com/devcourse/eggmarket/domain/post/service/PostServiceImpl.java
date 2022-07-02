@@ -155,7 +155,7 @@ public class PostServiceImpl implements PostService {
             .orElseThrow(() -> new NotExistPostException(NOT_EXIST_POST, postId));
         User user = userService.getUser(loginUser);
         User seller = post.getSeller();
-        if (seller.isSameUser(user)) {
+        if (!seller.isSameUser(user)) {
             throw new NotMatchedSellerException(NOT_MATCHED_SELLER_POST, seller.getId(), user.getId());
         }
         return post;
