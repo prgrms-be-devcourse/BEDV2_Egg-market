@@ -17,13 +17,19 @@ import com.devcourse.eggmarket.domain.post.repository.PostRepository;
 import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.service.UserService;
 import com.devcourse.eggmarket.global.error.exception.ErrorCode;
-import java.awt.print.Pageable;
+import java.util.List;
+import java.util.Optional;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
 public class DefaultCommentService implements CommentService {
+
+    private static final int COMMENT_PAGING_SIZE = 15;
+    private static final int COMMENT_PAGE = 0;
 
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
@@ -70,9 +76,19 @@ public class DefaultCommentService implements CommentService {
     }
 
     @Override
-    public Comments getAllComments(String userName, Long postId, Pageable pageable) {
-        // TODO
-        return null;
+    public Comments getAllComments(String userName, Long postId, Long lastId) {
+        User loginUser = getLoginUser(
+            userName); // FIXME : 이를 확인한다는 것은, 인가된 사용자만이 댓글 목록을 조회할 수 있음을 의미
+        Post post = getExistingPost(postId);
+
+        Pageable pageRequest = PageRequest.of(COMMENT_PAGE, COMMENT_PAGING_SIZE);
+
+        List<Comment> comments = Optional.ofNullable(lastId)
+            .map(id ->
+                commentRepository.findAllByPostAndIdGreaterThan(post, id, pageRequest))
+            .orElse(commentRepository.findAllByPost(post, pageRequest));
+
+        return converter.commentListToComments(comments);
     }
 
     @Override
