@@ -121,8 +121,12 @@ public class PostServiceImpl implements PostService {
         User user = userService.getUser(loginUser);
         boolean attention = postAttentionRepository.findByPostIdAndUserId(id, user.getId())
             .isPresent();
+        List<String> imgPaths = postImageRepository.findByPost(post)
+            .stream()
+            .map(PostImage::getImagePath)
+            .toList();
 
-        return postConverter.singlePost(post, attention, null);
+        return postConverter.singlePost(post, attention, imgPaths);
     }
 
     @Override
@@ -156,7 +160,8 @@ public class PostServiceImpl implements PostService {
         User user = userService.getUser(loginUser);
         User seller = post.getSeller();
         if (!seller.isSameUser(user)) {
-            throw new NotMatchedSellerException(NOT_MATCHED_SELLER_POST, seller.getId(), user.getId());
+            throw new NotMatchedSellerException(NOT_MATCHED_SELLER_POST, seller.getId(),
+                user.getId());
         }
         return post;
     }
