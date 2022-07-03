@@ -1,17 +1,16 @@
 package com.devcourse.eggmarket.domain.user.service;
 
-import com.devcourse.eggmarket.domain.model.image.Image;
+import com.devcourse.eggmarket.domain.model.image.ImageFile;
 import com.devcourse.eggmarket.domain.model.image.ImageUpload;
-import com.devcourse.eggmarket.domain.model.image.ProfileImage;
+import com.devcourse.eggmarket.domain.model.image.ProfileImageFile;
 import com.devcourse.eggmarket.domain.user.converter.UserConverter;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest;
-import com.devcourse.eggmarket.domain.user.dto.UserRequest.ChangePassword;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest.Save;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest.Update;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
-import com.devcourse.eggmarket.domain.user.dto.UserResponse.Basic;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse.FindNickName;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse.MannerTemperature;
+import com.devcourse.eggmarket.domain.user.exception.NotExistUserException;
 import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.repository.UserRepository;
 import java.util.Collections;
@@ -50,9 +49,9 @@ public class DefaultUserService implements UserService {
     public UserResponse.Basic save(Save userRequest) {
         User user = userRepository.save(userConverter.saveToUser(userRequest));
         if (userRequest.profileImage() != null) {
-            Image image = ProfileImage.toImage(user.getId(), userRequest.profileImage());
-            user.setImagePath(imageUpload.upload(image));
-            userRepository.save(user);
+            ImageFile imageFile = ProfileImageFile.toImage(user.getId(),
+                userRequest.profileImage());
+            user.setImagePath(imageUpload.upload(imageFile));
         }
         return userConverter.convertToUserResponseBasic(user);
     }
@@ -61,7 +60,7 @@ public class DefaultUserService implements UserService {
     public UserResponse.Basic getByUsername(String userName) {
         Optional<User> user = userRepository.findByNickName(userName);
         if (user.isEmpty()) {
-            throw new IllegalArgumentException("해당 닉네임을 가진 사용자가 존재하지 않습니다");
+            throw new NotExistUserException();
         }
 
         return userConverter.convertToUserResponseBasic(user.get());
@@ -89,7 +88,7 @@ public class DefaultUserService implements UserService {
         }
 
         if (userRequest.profileImage() != null) {
-            Image image = ProfileImage.toImage(user.getId(), userRequest.profileImage());
+            ImageFile image = ProfileImageFile.toImage(user.getId(), userRequest.profileImage());
             user.setImagePath(imageUpload.upload(image));
         }
 
@@ -114,10 +113,25 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
+    public User getUser(String nickName) {
+        Optional<User> user = userRepository.findByNickName(nickName);
+        if (user.isEmpty()) {
+            throw new IllegalArgumentException("해당 닉네임을 가진 사용자가 존재하지 않습니다");
+        }
+
+        return user.get();
+    }
+
+    @Override
     @Transactional
     public Long delete(User user) {
         userRepository.delete(user);
         return user.getId();
+    }
+
+    public User getById(Long userId) {
+        return userRepository.findById(userId)
+            .orElseThrow(NotExistUserException::new);
     }
 
     @Override
@@ -142,7 +156,6 @@ public class DefaultUserService implements UserService {
     @Override
     public User getUserById(Long userId) {
         Optional<User> user = userRepository.findById(userId);
-
         if (user.isEmpty()) {
             throw new NoSuchElementException("해당 아이디를 가진 유저는 존재하지 않습니다.");
         }
@@ -156,7 +169,6 @@ public class DefaultUserService implements UserService {
 
         return userConverter.convertToMannerTemp(user);
     }
-
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

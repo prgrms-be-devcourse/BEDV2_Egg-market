@@ -1,16 +1,12 @@
 package com.devcourse.eggmarket.domain.user.converter;
 
-import com.devcourse.eggmarket.domain.model.image.ImageUpload;
-import com.devcourse.eggmarket.domain.model.image.ProfileImage;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse.MannerTemperature;
 import com.devcourse.eggmarket.domain.user.model.User;
-import org.springframework.context.ApplicationContext;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 @Component
 public class UserConverter {

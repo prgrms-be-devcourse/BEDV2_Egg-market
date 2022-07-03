@@ -11,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -19,6 +20,7 @@ import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Formula;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -51,16 +53,24 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "seller_id")
     private User seller;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "buyer_id")
     private User buyer;
 
-    private Post(String title,
+    @Formula("(select count(*) from post_attention pa where pa.post_id = id)")
+    private int attentionCount;
+
+    @Formula("(select count(*) from comment c where c.post_id = id)")
+    private int commentCount;
+
+    private Post(Long id,
+        String title,
         String content,
         Category category,
         int price,
         PostStatus postStatus,
         User seller) {
+        this.id = id;
         this.title = title;
         this.content = content;
         this.category = category;
@@ -70,8 +80,12 @@ public class Post extends BaseEntity {
     }
 
     @Builder
-    public Post(String title, String content, Category category, int price, User seller) {
-        this(title, content, category, price, PostStatus.SALE, seller);
+    public Post(Long id, String title, String content, Category category, int price, User seller) {
+        this(id, title, content, category, price, PostStatus.SALE, seller);
+    }
+
+    public boolean isAbleToDeal() {
+        return postStatus.equals(PostStatus.SALE);
     }
 
     public Long getId() {
@@ -104,6 +118,14 @@ public class Post extends BaseEntity {
 
     public User getBuyer() {
         return buyer;
+    }
+
+    public int getAttentionCount() {
+        return attentionCount;
+    }
+
+    public int getCommentCount() {
+        return commentCount;
     }
 
     public void updatePrice(int price) {

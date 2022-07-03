@@ -163,13 +163,13 @@ class DefaultUserServiceTest {
     void getMannerTemperature() {
         //Given
         UserResponse.MannerTemperature expectResponse = UserResponse.MannerTemperature.builder()
-            .id(1L)
+            .id(user.getId())
             .nickName(user.getNickName())
             .mannerTemperature(user.getMannerTemperature())
             .build();
 
         //When
-        UserResponse.MannerTemperature result = userService.getMannerTemperature(1L);
+        UserResponse.MannerTemperature result = userService.getMannerTemperature(user.getId());
 
         //Then
         assertThat(result).usingRecursiveComparison().isEqualTo(expectResponse);

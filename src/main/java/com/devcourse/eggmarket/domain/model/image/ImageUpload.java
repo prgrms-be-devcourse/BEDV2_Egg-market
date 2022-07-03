@@ -2,7 +2,7 @@ package com.devcourse.eggmarket.domain.model.image;
 
 public interface ImageUpload {
 
-    String upload(Image image);
+    String upload(ImageFile image);
 
     void deleteFile(String imagePath);
 }

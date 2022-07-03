@@ -1,9 +1,7 @@
 package com.devcourse.eggmarket.domain.user.service;
 
 import com.devcourse.eggmarket.domain.user.dto.UserRequest;
-import com.devcourse.eggmarket.domain.user.dto.UserRequest.ChangePassword;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
-import com.devcourse.eggmarket.domain.user.dto.UserResponse.FindNickName;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse.MannerTemperature;
 import com.devcourse.eggmarket.domain.user.model.User;
 import org.springframework.security.core.Authentication;
@@ -17,7 +15,11 @@ public interface UserService extends UserDetailsService {
 
     UserResponse.Update update(User user, UserRequest.Update userRequest);
 
+    User getById(Long userId);
+
     User getUser(Authentication authentication);
+
+    User getUser(String nickName);
 
     Long delete(User user);
 

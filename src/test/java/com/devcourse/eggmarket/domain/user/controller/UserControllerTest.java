@@ -1,6 +1,14 @@
 package com.devcourse.eggmarket.domain.user.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.devcourse.eggmarket.domain.user.dto.UserRequest;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest.Save;
@@ -14,6 +22,7 @@ import com.devcourse.eggmarket.domain.user.service.UserService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +31,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,13 +42,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -82,38 +85,48 @@ class UserControllerTest {
         userRepository.deleteAll();
     }
 
-//    @Test
-//    void signUp() throws Exception {
-//        //Given
-//        User newUser = User.builder()
-//            .nickName("test2")
-//            .phoneNumber("01011111111")
-//            .password("Password!2")
-//            .role("USER")
-//            .build();
-//
-//        UserResponse expectResponse = UserResponse.builder()
-//            .nickName(newUser.getNickName())
-//            .mannerTemperature(36.5F)
-//            .role(newUser.getRole().toString())
-//            .build();
-//
-//        UserRequest.Save saveRequest = new UserRequest.Save(newUser.getPhoneNumber(),
-//            newUser.getNickName(), newUser.getPassword(), false, null);
-//
-//        //when
-//        MvcResult result = mockMvc.perform(post("/signup")
-//            .content(objectMapper.writeValueAsString(saveRequest)))
-//            .andReturn();
-//
-//        UserResponse saveResult = objectMapper
-//            .readValue(result.getResponse().getContentAsString(), getUserResponseTypeReference());
-//
-//        //Then
-//        assertThat(saveResult).usingRecursiveComparison().ignoringFields("id")
-//            .isEqualTo(expectResponse);
-//
-//    }
+    @Test
+    void signUp() throws Exception {
+        //Given
+        User newUser = User.builder()
+            .nickName("test2")
+            .phoneNumber("01011111111")
+            .password("Password!2")
+            .role("USER")
+            .build();
+        String image = "profile";
+
+        MockMultipartFile profileImage = new MockMultipartFile(
+            "profile",
+            "img.png",
+            "image/png",
+            image.getBytes(StandardCharsets.UTF_8));
+
+        UserResponse.Basic expectResponse = UserResponse.Basic.builder()
+            .nickName(newUser.getNickName())
+            .mannerTemperature(36.5F)
+            .role(newUser.getRole().toString())
+            .build();
+
+        UserRequest.Save saveRequest = new UserRequest.Save(newUser.getPhoneNumber(),
+            newUser.getNickName(), newUser.getPassword(), false, profileImage);
+
+        //when
+        MvcResult result = mockMvc.perform(
+                multipart("/signup").file((MockMultipartFile) saveRequest.profileImage())
+                    .param("nickName", saveRequest.nickName())
+                    .param("password", saveRequest.password())
+                    .param("isAdmin", saveRequest.isAdmin() ? "true" : "false")
+                )
+            .andReturn();
+        UserResponse.Basic saveResult = objectMapper
+            .readValue(result.getResponse().getContentAsString(), UserResponse.Basic.class);
+
+        //Then
+        assertThat(saveResult).usingRecursiveComparison().ignoringFields("id")
+            .isEqualTo(expectResponse);
+
+    }
 
     @Test
     void login() throws Exception {
@@ -129,8 +142,8 @@ class UserControllerTest {
 
         //When
         MvcResult result = mockMvc.perform(post("/login")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(loginRequest)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(loginRequest)))
             .andExpect(status().isOk())
             .andReturn();
 
@@ -154,7 +167,7 @@ class UserControllerTest {
 
         //When
         MvcResult result = mockMvc.perform(delete("/signout")
-            .session(session))
+                .session(session))
             .andExpect(status().isOk())
             .andReturn();
 
@@ -172,7 +185,7 @@ class UserControllerTest {
 
         //When
         MvcResult result = mockMvc.perform(get("/users/nickName")
-            .param("phoneNumber", user.getPhoneNumber()))
+                .param("phoneNumber", user.getPhoneNumber()))
             .andExpect(status().isOk())
             .andReturn();
 
@@ -200,8 +213,8 @@ class UserControllerTest {
 
         //When
         MvcResult result = mockMvc.perform(patch("/users/password")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(userRequest)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userRequest)))
             .andExpect(status().isOk())
             .andReturn();
 
@@ -229,8 +242,8 @@ class UserControllerTest {
 
         //When
         MvcResult result = mockMvc.perform(put("/users")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(userRequest)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userRequest)))
             .andExpect(status().isOk())
             .andReturn();
 
@@ -254,7 +267,7 @@ class UserControllerTest {
 
         //When
         MvcResult result = mockMvc.perform(get("/users/mannerTemperature")
-            .param("id", "1"))
+                .param("id", "1"))
             .andExpect(status().isOk())
             .andReturn();
 

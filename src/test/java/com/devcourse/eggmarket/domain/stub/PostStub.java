@@ -1,10 +1,19 @@
 package com.devcourse.eggmarket.domain.stub;
 
+import com.devcourse.eggmarket.domain.model.image.ImageUpload;
 import com.devcourse.eggmarket.domain.post.dto.PostRequest;
-import com.devcourse.eggmarket.domain.post.dto.PostRequest.UpdatePost;
+import com.devcourse.eggmarket.domain.post.dto.PostResponse;
+import com.devcourse.eggmarket.domain.post.dto.PostResponse.Posts;
+import com.devcourse.eggmarket.domain.post.dto.PostResponse.PostsElement;
+import com.devcourse.eggmarket.domain.post.dto.PostResponse.SinglePost;
 import com.devcourse.eggmarket.domain.post.model.Category;
 import com.devcourse.eggmarket.domain.post.model.Post;
+import com.devcourse.eggmarket.domain.user.dto.UserResponse;
 import com.devcourse.eggmarket.domain.user.model.User;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.Arguments;
 
 public class PostStub {
 
@@ -17,7 +26,8 @@ public class PostStub {
             "title",
             "content",
             1000,
-            "BEAUTY"
+            "BEAUTY",
+            null
         );
     }
 
@@ -26,12 +36,14 @@ public class PostStub {
             "title",
             "content",
             1000,
-            "FOOD"
+            "FOOD",
+            null
         );
     }
 
     public static Post entity(User seller) {
         return Post.builder()
+            .id(1L)
             .title("title")
             .content("content")
             .price(1000)
@@ -62,8 +74,153 @@ public class PostStub {
     public static PostRequest.UpdatePurchaseInfo updatePurchaseInfo() {
         return new PostRequest.UpdatePurchaseInfo(
             "COMPLETED",
-            "test"
+            2L
         );
     }
+
+    public static SinglePost singlePostResponse(Post post) {
+        User seller = post.getSeller();
+        return new PostResponse.SinglePost(
+            post.getId(),
+            new UserResponse.Basic(
+                seller.getId(),
+                seller.getNickName(),
+                seller.getMannerTemperature(),
+                seller.getRole().name(),
+                seller.getImagePath()
+            ),
+            post.getPrice(),
+            post.getTitle(),
+            post.getContent(),
+            post.getPostStatus().name(),
+            post.getCategory().name(),
+            post.getCreatedAt() == null ? LocalDateTime.now() : post.getCreatedAt(),
+           1,
+            1,
+            true,
+            List.of(ImageStub.image1(post.getId()).pathTobeStored(""),
+                ImageStub.image2(post.getId()).pathTobeStored(""))
+        );
+    }
+
+    public static PostResponse.Posts posts() {
+        return new PostResponse.Posts(
+            List.of(
+                new PostsElement(
+                    1L,
+                    1000,
+                    "title",
+                    "COMPLETED",
+                    LocalDateTime.now(),
+                    3,
+                    2,
+                    "http://example.com/test/1-1.png"
+                ),
+                new PostsElement(
+                    2L,
+                    500,
+                    "title",
+                    "COMPLETED",
+                    LocalDateTime.now(),
+                    1,
+                    0,
+                    "http://example.com/test/2-1.png"
+                ),
+                new PostsElement(
+                    3L,
+                    2500,
+                    "title",
+                    "COMPLETED",
+                    LocalDateTime.now(),
+                    5,
+                    12,
+                    "http://example.com/test/3-1.png"
+                )
+            )
+        );
+    }
+
+    public static Posts priceSortPosts() {
+        return new PostResponse.Posts(
+            List.of(
+                new PostsElement(
+                    2L,
+                    500,
+                    "title",
+                    "COMPLETED",
+                    LocalDateTime.now(),
+                    0,
+                    0,
+                    "http://example.com/test/2-1.png"
+                ),
+                new PostsElement(
+                    1L,
+                    1000,
+                    "title",
+                    "COMPLETED",
+                    LocalDateTime.now(),
+                    0,
+                    0,
+                    "http://example.com/test/1-1.png"
+                ),
+                new PostsElement(
+                    3L,
+                    2500,
+                    "title",
+                    "COMPLETED",
+                    LocalDateTime.now(),
+                    0,
+                    0,
+                    "http://example.com/test/3-1.png"
+                )
+            )
+        );
+    }
+
+    public static Stream<Arguments> invalidWriteRequest() {
+        return Stream.of(
+            Arguments.arguments(
+                new PostRequest.Save("", "content", 1000, "BEAUTY", null)
+            ),
+            Arguments.arguments(
+                new PostRequest.Save("title", "", 1000, "BEAUTY", null)
+            ),
+            Arguments.arguments(
+                new PostRequest.Save("title", "content", -1000, "BEAUTY", null)
+            ),
+            Arguments.arguments(
+                new PostRequest.Save("title", "content", 1000, "INVALID", null)
+            )
+        );
+    }
+
+    public static Stream<Arguments> invalidUpdatePostRequest() {
+        return Stream.of(
+            Arguments.arguments(
+                new PostRequest.UpdatePost("", "content", 1000, "BEAUTY")
+            ),
+            Arguments.arguments(
+                new PostRequest.UpdatePost("title", "", 1000, "BEAUTY")
+            ),
+            Arguments.arguments(
+                new PostRequest.UpdatePost("title", "content", -1000, "BEAUTY")
+            ),
+            Arguments.arguments(
+                new PostRequest.UpdatePost("title", "content", 1000, "INVALID")
+            )
+        );
+    }
+
+    public static Stream<Arguments> invalidUpdatePurchaseInfoRequest() {
+        return Stream.of(
+            Arguments.arguments(
+                new PostRequest.UpdatePurchaseInfo("COMPLTED", 0L)
+            ),
+            Arguments.arguments(
+                new PostRequest.UpdatePurchaseInfo("INVALID", 1L)
+            )
+        );
+    }
+
 }
 
