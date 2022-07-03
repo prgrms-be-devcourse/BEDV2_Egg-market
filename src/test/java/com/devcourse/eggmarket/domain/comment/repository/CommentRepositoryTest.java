@@ -8,11 +8,14 @@ import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.repository.UserRepository;
 import java.util.List;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @DataJpaTest
 class CommentRepositoryTest {
@@ -58,6 +61,13 @@ class CommentRepositoryTest {
         commentRepository.save(comment2);
     }
 
+    @AfterEach
+    void tearDown() {
+        postRepository.deleteAllInBatch();
+        userRepository.deleteAllInBatch();
+        commentRepository.deleteAllInBatch();
+    }
+
     @Test
     @DisplayName("해당 판매글의 댓글들을 가져올 수 있다")
     void findAllByPost() {
@@ -89,5 +99,46 @@ class CommentRepositoryTest {
         Assertions.assertThat(foundComment)
             .usingRecursiveComparison()
             .isEqualTo(comment1);
+    }
+
+    @Test
+    @DisplayName("특정 판매글의 댓글들을 전달된 Pageable 요청을 기반으로 최신순으로 조회한다")
+    void findByPostAndIdLessThanOrderById() {
+        // given
+        int savedCommentSize = 29;
+        Comment lastSavedComment = null;
+        String content = "CONTENT";
+
+        Post newPost = postRepository.save(Post.builder()
+            .title("abc")
+            .category(Category.BEAUTY)
+            .content("content")
+            .seller(postWriter)
+            .price(1000)
+            .build());
+
+        for (int i = 0; i <= savedCommentSize; i++) {
+            lastSavedComment = commentRepository.save(Comment.builder()
+                .content(content + i)
+                .post(newPost)
+                .user(postWriter)
+                .build());
+        }
+        // lastSavedComment 는 CONTENT29 라는 컨텐트 값을 갖는다
+
+        Pageable pageRequest = PageRequest.of(0, 10);
+        Long lastRequestedCommentId = lastSavedComment.getId() - 10;
+
+        // when
+        List<Comment> comments =
+            commentRepository.findAllByPostAndIdGreaterThan(
+                newPost,
+                lastRequestedCommentId,
+                pageRequest);
+
+        // then
+        Assertions.assertThat(comments.get(0).getContent())
+            .isEqualTo("CONTENT20");
+
     }
 }

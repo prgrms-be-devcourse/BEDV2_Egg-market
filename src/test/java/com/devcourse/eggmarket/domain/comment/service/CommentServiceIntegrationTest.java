@@ -2,6 +2,8 @@ package com.devcourse.eggmarket.domain.comment.service;
 
 import com.devcourse.eggmarket.domain.comment.dto.CommentRequest.Save;
 import com.devcourse.eggmarket.domain.comment.dto.CommentRequest.Update;
+import com.devcourse.eggmarket.domain.comment.dto.CommentResponse.Comments;
+import com.devcourse.eggmarket.domain.comment.dto.CommentResponse.CommentsElement;
 import com.devcourse.eggmarket.domain.comment.exception.CommentNotAllowedPostException;
 import com.devcourse.eggmarket.domain.comment.exception.NotExistCommentException;
 import com.devcourse.eggmarket.domain.comment.exception.NotWriterException;
@@ -19,6 +21,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -251,5 +254,69 @@ class CommentServiceIntegrationTest {
             .isTrue();
     }
 
+    @Nested
+    public class CommentsPagingTest {
 
+        private Post newPost;
+        private Long firstCommentId;
+
+        @BeforeEach
+        void setUp() {
+            String content = "CONTENT";
+            Comment lastComment = null;
+
+            newPost = postRepository.save(Post.builder()
+                .title("abc")
+                .category(Category.BEAUTY)
+                .content("content")
+                .seller(postWriter)
+                .price(1000)
+                .build());
+
+            for (int i = 0; i < 30; i++) {
+                lastComment = commentRepository.save(Comment.builder()
+                    .content(content + i)
+                    .post(newPost)
+                    .user(postWriter)
+                    .build());
+            }
+
+            firstCommentId = lastComment.getId() - 29;
+
+        }
+
+        @Test
+        @DisplayName("특정 포스트에 대하여 페이징을 통해 오래된 순으로 댓글목록을 조회한다")
+        public void getAllComment() {
+            // when
+            Comments comments = commentService.getAllComments(
+                postWriter.getNickName(),
+                newPost.getId(),
+                null
+            );
+
+            CommentsElement firstComment = comments.comments().get(0);
+
+            // then
+            Assertions.assertThat(firstComment.content())
+                .isEqualTo("CONTENT0");
+        }
+
+        @Test
+        @DisplayName("특정 포스트에 대하여 페이징을 통해 특정 커멘트 이후의 댓글 목록을 조회한다")
+        public void getAllCommentsAfter() {
+            // when
+            Comments comments = commentService.getAllComments(
+                postWriter.getNickName(),
+                newPost.getId(),
+                firstCommentId + 10
+            );
+
+            CommentsElement firstCommentAfterLastId = comments.comments().get(0);
+
+            // then
+            Assertions.assertThat(firstCommentAfterLastId.content())
+                .isEqualTo("CONTENT11");
+        }
+    }
 }
