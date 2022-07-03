@@ -2,12 +2,15 @@ package com.devcourse.eggmarket.domain.model.image;
 
 import com.devcourse.eggmarket.domain.model.image.exception.InvalidFileException;
 import java.io.IOException;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 public class ProfileImageFile implements ImageFile {
 
+    private static final String EXTENSION_DELIMITER = ".";
+
     private final ImageType type;
-	private final byte[] bytes;
+    private final byte[] bytes;
     private final Long userId;
     private final String fileName;
 
@@ -16,7 +19,7 @@ public class ProfileImageFile implements ImageFile {
         this.type = type;
         this.bytes = bytes;
         this.userId = userId;
-        this.fileName = userId.toString() + "." + file.getContentType().split("/")[1];
+        this.fileName = file.getOriginalFilename();
     }
 
     public static ProfileImageFile toImage(Long userId, MultipartFile file) {
@@ -25,10 +28,9 @@ public class ProfileImageFile implements ImageFile {
         }
 
         try {
-			byte[] bytes = file.getBytes();
-            return new ProfileImageFile(ImageType.PROFILE, bytes, userId, file);
+            return new ProfileImageFile(ImageType.PROFILE, file.getBytes(), userId, file);
         } catch (IOException e) {
-			throw new InvalidFileException("업로드된 Profile 파일을 읽어오는데 실패하였습니다");
+            throw new InvalidFileException("업로드된 Profile 파일을 읽어오는데 실패하였습니다");
         }
     }
 
@@ -39,7 +41,12 @@ public class ProfileImageFile implements ImageFile {
 
     @Override
     public String pathTobeStored(String basePath) {
-        return basePath + "\\" + fileName;
+        String storedName = String.join(
+            EXTENSION_DELIMITER,
+            Long.toString(userId),
+            FilenameUtils.getExtension(this.fileName));
+
+        return FilenameUtils.concat(basePath, storedName);
     }
 
     @Override
