@@ -2,7 +2,6 @@ package com.devcourse.eggmarket.domain.model.image;
 
 import com.devcourse.eggmarket.domain.model.image.exception.InvalidFileException;
 import java.io.IOException;
-import java.io.InputStream;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,24 +12,17 @@ public class PostImageFile implements ImageFile {
     private final ImageType type;
     private final byte[] bytes;
     private final String fileName;
-    private final String extension;
     private final int order; // 이미지 순서
     private final long id; // 판매글 id
 
-    private PostImageFile(ImageType type, byte[] bytes, String extension, int order,
+    private PostImageFile(ImageType type, byte[] bytes, int order,
         String fileName,
         long id) {
         this.type = type;
         this.bytes = bytes;
-        this.extension = extension;
         this.fileName = fileName;
         this.order = order;
         this.id = id;
-    }
-
-    private PostImageFile(ImageType type, byte[] bytes, int order, String fileName,
-        long id) {
-        this(type, bytes, FilenameUtils.getExtension(fileName), order, fileName, id);
     }
 
     public static PostImageFile toImage(long postId, MultipartFile file, int img_order) {
@@ -38,8 +30,11 @@ public class PostImageFile implements ImageFile {
             throw new InvalidFileException("유효한 이미지 첨부가 아닙니다"); // 참고로 이미지 크기 오류는 따로 존재합니다
         }
 
-        try (InputStream inputStream = file.getInputStream()) {
-            return new PostImageFile(ImageType.POST, inputStream.readAllBytes(), img_order,
+        try {
+            return new PostImageFile(
+                ImageType.POST,
+                file.getBytes(),
+                img_order,
                 file.getOriginalFilename(),
                 postId);
         } catch (IOException e) {
@@ -68,7 +63,10 @@ public class PostImageFile implements ImageFile {
         return FilenameUtils.concat(basePath, storedName);
     }
 
-    private String extensionAppendedPath(String fileNameWithoutExtension) {
-        return String.join(EXTENSION_SEPARATOR, fileNameWithoutExtension, this.extension);
+    private String extensionAppendedPath(String filenameToBeStored) {
+        return String.join(
+            EXTENSION_SEPARATOR,
+            filenameToBeStored,
+            FilenameUtils.getExtension(this.fileName));
     }
 }
