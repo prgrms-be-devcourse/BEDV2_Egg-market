@@ -9,7 +9,8 @@ CREATE TABLE USERS
 (
     id 						BIGINT AUTO_INCREMENT,
     phone_number 			VARCHAR(15)	NOT NULL UNIQUE,
-    nickname				VARCHAR(64) NOT NULL UNIQUE,
+    nickname				VARCHAR(12) NOT NULL UNIQUE,
+    password                VARCHAR(64) NOT NULL,
     manner_temperature 		FLOAT NOT NULL,
     image_path				VARCHAR(100),
     role					VARCHAR(20) NOT NULL,
@@ -40,6 +41,8 @@ CREATE TABLE post_attention
     id						BIGINT AUTO_INCREMENT,
     post_id					BIGINT NOT NULL,
     user_id					BIGINT NOT NULL,
+    created_at				DATE NOT NULL,
+    updated_at				DATE,
 
     PRIMARY KEY(id)
 );
@@ -49,6 +52,8 @@ CREATE TABLE post_image
     id						BIGINT AUTO_INCREMENT,
     post_id					BIGINT NOT NULL,
     image_path				VARCHAR(100) NOT NULL,
+    created_at				DATE NOT NULL,
+    updated_at				DATE,
 
     PRIMARY KEY(id)
 );
@@ -61,6 +66,8 @@ CREATE TABLE evaluation
     post_id					BIGINT,
     score					TINYINT NOT NULL,
     content					VARCHAR(500) NOT NULL,
+    created_at				DATE NOT NULL,
+    updated_at				DATE,
 
     PRIMARY KEY(id)
 );
@@ -71,6 +78,8 @@ CREATE TABLE comment
     post_id					BIGINT NOT NULL,
     user_id					BIGINT NOT NULL,
     content					VARCHAR(500) NOT NULL,
+    created_at				DATE NOT NULL,
+    updated_at				DATE,
 
     PRIMARY KEY(id)
 );
