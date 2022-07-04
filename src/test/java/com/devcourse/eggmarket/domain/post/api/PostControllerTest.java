@@ -71,7 +71,10 @@ class PostControllerTest {
         Long response = 1L;
 
         String images = "Image Files";
-        MockMultipartFile image = new MockMultipartFile("images", "img.png", "image/png",
+        MockMultipartFile image = new MockMultipartFile(
+            "images",
+            "img.png",
+            "image/png",
             images.getBytes(StandardCharsets.UTF_8));
 
         doReturn(response)

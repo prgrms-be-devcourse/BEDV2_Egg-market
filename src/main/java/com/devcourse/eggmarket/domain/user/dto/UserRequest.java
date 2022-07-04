@@ -38,9 +38,8 @@ public class UserRequest {
 
         @NotBlank(message = "닉네임은 필수값입니다.")
         @Size(min = 3, max = 12)
-        String nickName,
+        String nickName
 
-        MultipartFile profileImage
     ) {
 
     }
@@ -65,8 +64,13 @@ public class UserRequest {
         String newPassword
     ) {
 
-        @Builder
-        public ChangePassword {
-        }
+    }
+
+    public record FindNickname(
+        @NotBlank(message = "전화번호는 필수값입니다.")
+        @Pattern(regexp = "\\d{1,15}", message = "잘못된 전화번호입니다.")
+        String phoneNumber
+    ) {
+
     }
 }

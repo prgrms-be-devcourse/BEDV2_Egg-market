@@ -97,9 +97,9 @@ class DefaultUserServiceTest {
     @Test
     void update() {
         //Given
-        UserRequest.Update userRequest = new Update("01011111111", "updateNick", null);
+        UserRequest.Update userRequest = new Update("01011111111", "updateNick");
         UserResponse.Update expectResponse = new UserResponse.Update(user.getId(),
-            userRequest.phoneNumber(), userRequest.nickName(), user.getImagePath());
+            userRequest.phoneNumber(), userRequest.nickName());
 
         //When
         UserResponse.Update result = userService.update(user, userRequest);
@@ -149,8 +149,9 @@ class DefaultUserServiceTest {
     @Test
     void updatePassword() {
         //Given
-        UserRequest.ChangePassword userRequest = UserRequest.ChangePassword.builder()
-            .newPassword("NewPass!1").build();
+        UserRequest.ChangePassword userRequest = new UserRequest.ChangePassword(
+            "NewPass!1"
+        );
 
         //When
         boolean result = userService.updatePassword(user, userRequest);

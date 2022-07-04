@@ -47,7 +47,6 @@ public class UserConverter {
             .id(user.getId())
             .phoneNumber(user.getPhoneNumber())
             .nickName(user.getNickName())
-            .imagePath(user.getImagePath())
             .build();
     }
 

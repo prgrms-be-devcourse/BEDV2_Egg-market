@@ -53,6 +53,7 @@ public class DefaultUserService implements UserService {
                 userRequest.profileImage());
             user.setImagePath(imageUpload.upload(imageFile));
         }
+
         return userConverter.convertToUserResponseBasic(user);
     }
 
@@ -85,11 +86,6 @@ public class DefaultUserService implements UserService {
                 throw new DuplicateKeyException("해당 닉네임은 이미 등록되어 있습니다.");
             }
             user.changeNickName(userRequest.nickName());
-        }
-
-        if (userRequest.profileImage() != null) {
-            ImageFile image = ProfileImageFile.toImage(user.getId(), userRequest.profileImage());
-            user.setImagePath(imageUpload.upload(image));
         }
 
         userRepository.save(user);
