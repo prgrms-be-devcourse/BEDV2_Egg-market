@@ -12,6 +12,7 @@ import com.devcourse.eggmarket.global.common.ValueOfEnum;
 import java.net.URI;
 import javax.validation.Valid;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
@@ -40,7 +41,7 @@ public class PostController {
         this.postAttentionService = postAttentionService;
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<SuccessResponse<Long>> write(@Valid PostRequest.Save request,
         Authentication authentication) {
         Long response = postService.save(request, authentication.getName());
