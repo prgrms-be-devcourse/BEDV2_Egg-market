@@ -1,0 +1,23 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+  sql:
+    init:
+      mode: always
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost/egg_market
+    username: yeon
+    password: root1234
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+        query.in_clause_parameter_padding: true
+image:
+  base: ${user.dir}
+  type:
+    post: post
+    profile: profile
