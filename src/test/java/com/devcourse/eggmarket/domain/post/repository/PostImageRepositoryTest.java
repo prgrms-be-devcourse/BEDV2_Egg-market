@@ -7,7 +7,6 @@ import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.repository.UserRepository;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -65,7 +64,7 @@ class PostImageRepositoryTest {
             )).toList();
 
         // given
-        List<PostImage> foundImgPaths = postImageRepository.findByPost(post);
+        List<PostImage> foundImgPaths = postImageRepository.findAllByPost(post);
 
         // then
         Assertions.assertThat(foundImgPaths.size())

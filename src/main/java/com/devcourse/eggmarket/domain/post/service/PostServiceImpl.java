@@ -122,7 +122,7 @@ public class PostServiceImpl implements PostService {
         User user = userService.getUser(loginUser);
         boolean attention = postAttentionRepository.findByPostIdAndUserId(id, user.getId())
             .isPresent();
-        List<String> imgPaths = postImageRepository.findByPost(post)
+        List<String> imgPaths = postImageRepository.findAllByPost(post)
             .stream()
             .map(PostImage::getImagePath)
             .toList();
@@ -159,21 +159,20 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findById(postId)
             .orElseThrow(() -> new NotExistPostException(NOT_EXIST_POST, postId));
         User user = userService.getUser(loginUser);
-        User seller = post.getSeller();
-        if (!seller.isSameUser(user)) {
-            throw new NotMatchedSellerException(NOT_MATCHED_SELLER_POST, seller.getId(),
+
+        if (!post.getSeller().isSameUser(user)) {
+            throw new NotMatchedSellerException(NOT_MATCHED_SELLER_POST, post.getSeller().getId(),
                 user.getId());
         }
         return post;
     }
 
     private PostsElement postResponseAddThumbnail(Post post) {
-        String path = null;
+        String path = postImageRepository.findAllByPost(post).stream()
+            .findFirst()
+            .map(PostImage::getImagePath)
+            .orElse(null);
 
-        List<PostImage> images = postImageRepository.findByPost(post);
-        if (!images.isEmpty()) {
-            path = images.get(0).getImagePath();
-        }
         return postConverter.postsElement(post, path);
     }
 
