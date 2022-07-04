@@ -1,6 +1,5 @@
 package com.devcourse.eggmarket.domain.post.repository;
 
-import com.devcourse.eggmarket.domain.post.dto.PostResponse.PostsElement;
 import com.devcourse.eggmarket.domain.post.model.Category;
 import com.devcourse.eggmarket.domain.post.model.Post;
 import java.util.List;
