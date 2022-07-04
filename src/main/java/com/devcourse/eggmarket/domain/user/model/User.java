@@ -24,13 +24,13 @@ public class User extends BaseEntity {
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "phone_number", nullable = false, unique = true, length = 15)
     private String phoneNumber;
 
-    @Column(name = "nick_name", nullable = false, unique = true, length = 12)
+    @Column(name = "nickname", nullable = false, unique = true, length = 12)
     private String nickName;
 
     @Column(name = "password", nullable = false, length = 64)
