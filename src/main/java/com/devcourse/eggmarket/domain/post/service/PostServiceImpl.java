@@ -28,6 +28,7 @@ import com.devcourse.eggmarket.global.error.exception.ErrorCode;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,7 +70,7 @@ public class PostServiceImpl implements PostService {
     @Transactional
     @Override
     public Long save(PostRequest.Save request, String loginUser) {
-        Order order = new Order();
+        final AtomicInteger order = new AtomicInteger(0);
         User seller = userService.getUser(loginUser);
 
         Post savedPost = postRepository.save(
@@ -78,7 +79,7 @@ public class PostServiceImpl implements PostService {
 
         Optional.ofNullable(request.images())
             .orElse(Collections.emptyList()).stream()
-            .map(img -> PostImageFile.toImage(savedPost.getId(), img, order.order()))
+            .map(img -> PostImageFile.toImage(savedPost.getId(), img, order.getAndIncrement()))
             .forEach(file -> uploadFile(savedPost, file));
 
         // TODO : 이미지 개수 , HttpRequest 용량 관련 에러 처리
@@ -164,36 +165,6 @@ public class PostServiceImpl implements PostService {
                 user.getId());
         }
         return post;
-    }
-
-    private static class Order {
-
-        private final Sequence order;
-
-        private Order(Sequence order) {
-            this.order = order;
-        }
-
-        public Order() {
-            this(new Sequence());
-        }
-
-        public int order() {
-            int pre = this.order.order;
-
-            this.order.increase();
-
-            return pre;
-        }
-
-        private static class Sequence {
-
-            private int order = 0;
-
-            public void increase() {
-                this.order++;
-            }
-        }
     }
 
     private PostsElement postResponseAddThumbnail(Post post) {
