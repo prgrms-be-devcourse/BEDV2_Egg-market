@@ -119,6 +119,7 @@ class UserControllerTest {
                 .nickName(newUser.getNickName())
                 .mannerTemperature(36.5F)
                 .role(newUser.getRole().toString())
+                // TODO 서버마다 프로젝트가 경로가 달라 테스트 할때 어려움이 있음 이를 어떻게 해결해야 할까?
                 .imagePath(System.getProperty("user.home") + "/eggmarket/profile/2.png")
                 .build()
             );
@@ -170,7 +171,7 @@ class UserControllerTest {
                 });
 
         //Then
-        assertThat(saveResult).usingRecursiveComparison()
+        assertThat(saveResult).usingRecursiveComparison().ignoringFields("data.imagePath")
             .isEqualTo(expectResponse);
 
     }
