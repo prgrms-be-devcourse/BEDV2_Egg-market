@@ -176,6 +176,33 @@ public class PostStub {
         );
     }
 
+    public static Posts searchPosts(Long id1, Long id2, LocalDateTime time1, LocalDateTime time2) {
+        return new Posts(
+            List.of(
+                new PostsElement(
+                    id1,
+                    1000,
+                    "test1",
+                    "SALE",
+                    time1,
+                    0,
+                    0,
+                    null
+                ),
+                new PostsElement(
+                    id2,
+                    2500,
+                    "test2",
+                    "SALE",
+                    time2,
+                    0,
+                    0,
+                    null
+                )
+            )
+        );
+    }
+
     public static Stream<Arguments> invalidWriteRequest() {
         return Stream.of(
             Arguments.arguments(
