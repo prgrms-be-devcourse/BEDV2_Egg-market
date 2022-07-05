@@ -28,6 +28,8 @@ import com.devcourse.eggmarket.global.error.exception.ErrorCode;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,7 +71,7 @@ public class PostServiceImpl implements PostService {
     @Transactional
     @Override
     public Long save(PostRequest.Save request, String loginUser) {
-        Order order = new Order();
+        final AtomicInteger order = new AtomicInteger(0);
         User seller = userService.getUser(loginUser);
 
         Post savedPost = postRepository.save(
@@ -78,7 +80,7 @@ public class PostServiceImpl implements PostService {
 
         Optional.ofNullable(request.images())
             .orElse(Collections.emptyList()).stream()
-            .map(img -> PostImageFile.toImage(savedPost.getId(), img, order.order()))
+            .map(img -> PostImageFile.toImage(savedPost.getId(), img, order.getAndIncrement()))
             .forEach(file -> uploadFile(savedPost, file));
 
         // TODO : 이미지 개수 , HttpRequest 용량 관련 에러 처리
@@ -121,7 +123,7 @@ public class PostServiceImpl implements PostService {
         User user = userService.getUser(loginUser);
         boolean attention = postAttentionRepository.findByPostIdAndUserId(id, user.getId())
             .isPresent();
-        List<String> imgPaths = postImageRepository.findByPost(post)
+        List<String> imgPaths = postImageRepository.findAllByPost(post)
             .stream()
             .map(PostImage::getImagePath)
             .toList();
@@ -145,6 +147,16 @@ public class PostServiceImpl implements PostService {
         );
     }
 
+    @Override
+    public Posts getAllLikedBy(String userName) {
+        User loginUser = userService.getUser(userName);
+
+        return new Posts(
+            postRepository.findAllLikedBy(loginUser.getId()).stream()
+                .map(this::postResponseAddThumbnail)
+                .collect(Collectors.toList()));
+    }
+
     private String uploadFile(Post post, ImageFile file) {
         return postImageRepository.save(
             PostImage.builder()
@@ -159,6 +171,7 @@ public class PostServiceImpl implements PostService {
             .orElseThrow(() -> new NotExistPostException(NOT_EXIST_POST, postId));
         User user = userService.getUser(loginUser);
         User seller = post.getSeller();
+
         if (!seller.isSameUser(user)) {
             throw new NotMatchedSellerException(NOT_MATCHED_SELLER_POST, seller.getId(),
                 user.getId());
@@ -166,43 +179,12 @@ public class PostServiceImpl implements PostService {
         return post;
     }
 
-    private static class Order {
-
-        private final Sequence order;
-
-        private Order(Sequence order) {
-            this.order = order;
-        }
-
-        public Order() {
-            this(new Sequence());
-        }
-
-        public int order() {
-            int pre = this.order.order;
-
-            this.order.increase();
-
-            return pre;
-        }
-
-        private static class Sequence {
-
-            private int order = 0;
-
-            public void increase() {
-                this.order++;
-            }
-        }
-    }
-
     private PostsElement postResponseAddThumbnail(Post post) {
-        String path = null;
+        String path = postImageRepository.findAllByPost(post).stream()
+            .findFirst()
+            .map(PostImage::getImagePath)
+            .orElse(null);
 
-        List<PostImage> images = postImageRepository.findByPost(post);
-        if (!images.isEmpty()) {
-            path = images.get(0).getImagePath();
-        }
         return postConverter.postsElement(post, path);
     }
 

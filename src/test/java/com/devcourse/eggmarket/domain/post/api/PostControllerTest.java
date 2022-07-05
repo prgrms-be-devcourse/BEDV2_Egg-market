@@ -455,7 +455,7 @@ class PostControllerTest {
         PostResponse.Posts response = PostStub.posts();
 
         doReturn(response)
-            .when(postAttentionService)
+            .when(postService)
             .getAllLikedBy(anyString());
         ResultActions resultActions = mockMvc.perform(
             MockMvcRequestBuilders.get("/posts/attention")
