@@ -48,7 +48,7 @@ public class DefaultUserService implements UserService {
 
     @Override
     @Transactional
-    public UserResponse.Basic save(Save userRequest) {
+    public Long save(Save userRequest) {
         User user = userRepository.save(userConverter.saveToUser(userRequest));
 
         Optional.ofNullable(userRequest.profileImage())
@@ -61,7 +61,7 @@ public class DefaultUserService implements UserService {
                     })
             );
 
-        return userConverter.convertToUserResponseBasic(user);
+        return user.getId();
     }
 
     @Override
