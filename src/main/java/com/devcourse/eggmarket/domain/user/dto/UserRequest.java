@@ -11,7 +11,7 @@ public class UserRequest {
 
     public record Save(
         @NotBlank(message = "전화번호는 필수값입니다.")
-        @Pattern(regexp = "\\d{1,15}")
+        @Pattern(regexp = "^01(?:0|1|[6-9])-(?:\\d{3}|\\d{4})-\\d{4}$")
         String phoneNumber,
 
         @NotBlank(message = "닉네임은 필수값입니다.")
@@ -33,7 +33,7 @@ public class UserRequest {
 
     public record Update(
         @NotBlank(message = "전화번호는 필수값입니다.")
-        @Pattern(regexp = "\\d{1,15}")
+        @Pattern(regexp = "^01(?:0|1|[6-9])-(?:\\d{3}|\\d{4})-\\d{4}$")
         String phoneNumber,
 
         @NotBlank(message = "닉네임은 필수값입니다.")
@@ -68,7 +68,7 @@ public class UserRequest {
 
     public record FindNickname(
         @NotBlank(message = "전화번호는 필수값입니다.")
-        @Pattern(regexp = "\\d{1,15}", message = "잘못된 전화번호입니다.")
+        @Pattern(regexp = "^01(?:0|1|[6-9])-(?:\\d{3}|\\d{4})-\\d{4}$", message = "잘못된 전화번호입니다.")
         String phoneNumber
     ) {
 

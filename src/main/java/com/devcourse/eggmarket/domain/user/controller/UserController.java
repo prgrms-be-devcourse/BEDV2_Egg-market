@@ -9,6 +9,7 @@ import java.net.URI;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,12 +20,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -40,8 +41,9 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<SuccessResponse<UserResponse.Basic>> signUp(@Valid UserRequest.Save request) {
+    @PostMapping(value = "/signup", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<SuccessResponse<UserResponse.Basic>> signUp(
+        @ModelAttribute @Valid UserRequest.Save request) {
         UserResponse.Basic response = userService.save(request);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
@@ -53,7 +55,8 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<SuccessResponse<Boolean>> login(@RequestBody @Valid UserRequest.Login userRequest, HttpServletRequest request) {
+    public ResponseEntity<SuccessResponse<Boolean>> login(
+        @RequestBody @Valid UserRequest.Login userRequest, HttpServletRequest request) {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         UserDetails userDetails = userService.loadUserByUsername(userRequest.nickName());
 
@@ -66,7 +69,8 @@ public class UserController {
     }
 
     @DeleteMapping("/signout")
-    public ResponseEntity<SuccessResponse<Long>> signOut(HttpServletRequest request, Authentication authentication) {
+    public ResponseEntity<SuccessResponse<Long>> signOut(HttpServletRequest request,
+        Authentication authentication) {
         User user = userService.getUser(authentication);
         Long userId = userService.delete(user);
 
@@ -82,9 +86,9 @@ public class UserController {
         }
     }
 
-    // TODO 이유를 알 수 없는데 제대로 validation 체크를 하지 못함
-    @GetMapping("/users/nickname")
-    public ResponseEntity<SuccessResponse<UserResponse.FindNickName>> findNickname(@RequestBody @Valid UserRequest.FindNickname userRequest) {
+    @GetMapping(value = "/users/nickname", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<SuccessResponse<UserResponse.FindNickName>> findNickname(
+        @ModelAttribute @Valid UserRequest.FindNickname userRequest) {
         return ResponseEntity.ok(
             new SuccessResponse<>(
                 userService.getUserName(userRequest.phoneNumber())
@@ -93,7 +97,8 @@ public class UserController {
     }
 
     @PatchMapping("/users/password")
-    public ResponseEntity<SuccessResponse<Boolean>> changePassword(HttpServletRequest request, Authentication authentication,
+    public ResponseEntity<SuccessResponse<Boolean>> changePassword(HttpServletRequest request,
+        Authentication authentication,
         @RequestBody UserRequest.ChangePassword userRequest) {
         User user = userService.getUser(authentication);
         boolean result = userService.updatePassword(user, userRequest);
@@ -119,7 +124,8 @@ public class UserController {
     }
 
     @PutMapping("/users")
-    public ResponseEntity<SuccessResponse<UserResponse.Update>> update(HttpServletRequest request, Authentication authentication,
+    public ResponseEntity<SuccessResponse<UserResponse.Update>> update(HttpServletRequest request,
+        Authentication authentication,
         @RequestBody @Valid UserRequest.Update userRequest) {
         User user = userService.getUser(authentication);
 
@@ -132,7 +138,8 @@ public class UserController {
     }
 
     @GetMapping("/users/mannerTemperature/{id}")
-    public ResponseEntity<SuccessResponse<UserResponse.MannerTemperature>> getMannerTemperature(@PathVariable Long id) {
+    public ResponseEntity<SuccessResponse<UserResponse.MannerTemperature>> getMannerTemperature(
+        @PathVariable Long id) {
         return ResponseEntity.ok(new SuccessResponse<>(userService.getMannerTemperature(id)));
     }
 

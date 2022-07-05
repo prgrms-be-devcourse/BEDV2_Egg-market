@@ -79,7 +79,7 @@ class UserControllerTest {
     void setUp() {
         user = User.builder()
             .nickName("test1")
-            .phoneNumber("01012345678")
+            .phoneNumber("010-1234-5678")
             .password("Password!1")
             .role("USER")
             .build();
@@ -108,7 +108,7 @@ class UserControllerTest {
         //Given
         User newUser = User.builder()
             .nickName("test2")
-            .phoneNumber("01011111111")
+            .phoneNumber("010-1111-1111")
             .password("Password!2")
             .role("USER")
             .build();
@@ -286,14 +286,14 @@ class UserControllerTest {
         //When
         MvcResult result = mockMvc.perform(
                 get("/users/nickname")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(request)))
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                    .param("phoneNumber", request.phoneNumber()))
             .andExpect(status().isOk())
             .andDo(document("user-findName",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
-                requestFields(
-                    fieldWithPath("phoneNumber").type(JsonFieldType.STRING).description("휴대폰 번호")
+                requestParameters(
+                    parameterWithName("phoneNumber").description("휴대폰 번호")
                 ),
                 responseFields(
                     fieldWithPath("data.nickName").type(JsonFieldType.STRING).description("닉네임")
@@ -366,7 +366,7 @@ class UserControllerTest {
         session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
             securityContext);
 
-        UserRequest.Update userRequest = new Update("01011111111", "updateNick");
+        UserRequest.Update userRequest = new Update("010-1111-1111", "updateNick");
         SuccessResponse<UserResponse.Update> expectResponse = new SuccessResponse<>(
             new UserResponse.Update(userResponse.id(),
                 userRequest.phoneNumber(), userRequest.nickName()));
