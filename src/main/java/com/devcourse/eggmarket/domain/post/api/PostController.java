@@ -55,7 +55,8 @@ public class PostController {
     }
 
     @PatchMapping("/{id}")
-    ResponseEntity<SuccessResponse<Long>> updatePost(@RequestBody @Valid PostRequest.UpdatePost request,
+    ResponseEntity<SuccessResponse<Long>> updatePost(
+        @RequestBody @Valid PostRequest.UpdatePost request,
         Authentication authentication,
         @PathVariable Long id) {
         Long response = postService.updatePost(id, request, authentication.getName());
@@ -93,7 +94,7 @@ public class PostController {
     ResponseEntity<SuccessResponse<Posts>> allAttention(Authentication authentication) {
         return ResponseEntity.ok(
             new SuccessResponse<>(
-                postAttentionService.getAllLikedBy(authentication.getName())
+                postService.getAllLikedBy(authentication.getName())
             )
         );
     }

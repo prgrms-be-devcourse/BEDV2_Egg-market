@@ -171,10 +171,11 @@ class PostServiceIntegrationTest {
     @Test
     @DisplayName("로그인 사용자는 자신의 관심목록을 확인한다")
     void getAllLikedPosts() {
-        Posts allLikedPosts = postAttentionService.getAllLikedBy(
+        Posts allLikedPosts = postService.getAllLikedBy(
             writerLikedOwnPost.getNickName());
 
-        Assertions.assertThat(allLikedPosts.posts().size()).isEqualTo(2);
+        Assertions.assertThat(allLikedPosts.posts().size())
+            .isEqualTo(2);
     }
 
     @Test

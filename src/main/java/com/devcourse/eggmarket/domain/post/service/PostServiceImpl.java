@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -144,6 +145,16 @@ public class PostServiceImpl implements PostService {
             .map(this::postResponseAddThumbnail)
             .getContent()
         );
+    }
+
+    @Override
+    public Posts getAllLikedBy(String userName) {
+        User loginUser = userService.getUser(userName);
+
+        return new Posts(
+            postRepository.findAllLikedBy(loginUser.getId()).stream()
+                .map(this::postResponseAddThumbnail)
+                .collect(Collectors.toList()));
     }
 
     private String uploadFile(Post post, ImageFile file) {
