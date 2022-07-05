@@ -11,7 +11,7 @@ public class PostResponse {
 
     public record SinglePost(
         Long id,
-        UserResponse seller,
+        UserResponse.Basic seller,
         int price,
         String title,
         String content,

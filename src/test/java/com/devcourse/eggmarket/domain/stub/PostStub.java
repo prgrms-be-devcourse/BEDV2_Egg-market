@@ -82,7 +82,7 @@ public class PostStub {
         User seller = post.getSeller();
         return new PostResponse.SinglePost(
             post.getId(),
-            new UserResponse(
+            new UserResponse.Basic(
                 seller.getId(),
                 seller.getNickName(),
                 seller.getMannerTemperature(),

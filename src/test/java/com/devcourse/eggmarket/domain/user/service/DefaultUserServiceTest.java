@@ -3,14 +3,21 @@ package com.devcourse.eggmarket.domain.user.service;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.devcourse.eggmarket.domain.user.dto.UserRequest;
+import com.devcourse.eggmarket.domain.user.dto.UserRequest.Update;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
 import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.repository.UserRepository;
+import javax.servlet.http.HttpSession;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -52,7 +59,7 @@ class DefaultUserServiceTest {
             .role("USER")
             .build();
 
-        UserResponse expectResponse = UserResponse.builder()
+        UserResponse.Basic expectResponse = UserResponse.Basic.builder()
             .nickName(newUser.getNickName())
             .mannerTemperature(36.5F)
             .role(newUser.getRole().toString())
@@ -62,7 +69,7 @@ class DefaultUserServiceTest {
             newUser.getNickName(), newUser.getPassword(), false, null);
 
         //When
-        UserResponse result = userService.save(saveRequest);
+        UserResponse.Basic result = userService.save(saveRequest);
 
         //Then
         assertThat(result).usingRecursiveComparison().ignoringFields("id")
@@ -73,14 +80,14 @@ class DefaultUserServiceTest {
     @Test
     void getByUsername() {
         //Given
-        UserResponse expectResponse = UserResponse.builder()
+        UserResponse.Basic expectResponse = UserResponse.Basic.builder()
             .nickName(user.getNickName())
             .mannerTemperature(36.5F)
             .role(user.getRole().toString())
             .build();
 
         //When
-        UserResponse result = userService.getByUsername(user.getNickName());
+        UserResponse.Basic result = userService.getByUsername(user.getNickName());
 
         //Then
         assertThat(result).usingRecursiveComparison().ignoringFields("id")
@@ -89,12 +96,28 @@ class DefaultUserServiceTest {
 
     @Test
     void update() {
+        //Given
+        UserRequest.Update userRequest = new Update("01011111111", "updateNick");
+        UserResponse.Update expectResponse = new UserResponse.Update(user.getId(),
+            userRequest.phoneNumber(), userRequest.nickName());
+
+        //When
+        UserResponse.Update result = userService.update(user, userRequest);
+
+        //Then
+        assertThat(result).usingRecursiveComparison().isEqualTo(expectResponse);
+
     }
 
     @Test
     void getUser() {
         //When
-        User foundUser = userService.getUser(user.getNickName());
+        UserDetails userDetails = userService.loadUserByUsername(user.getNickName());
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        securityContext.setAuthentication(
+            new UsernamePasswordAuthenticationToken(userDetails, null,
+                userDetails.getAuthorities()));
+        User foundUser = userService.getUser(securityContext.getAuthentication().getName());
 
         //Then
         assertThat(foundUser).usingRecursiveComparison()
@@ -103,6 +126,54 @@ class DefaultUserServiceTest {
 
     @Test
     void deleteById() {
+        //When
+        Long userId = userService.delete(user);
+
+        //Then
+        assertThat(userId).isEqualTo(user.getId());
+    }
+
+    @Test
+    void getUserName() {
+        //Given
+        UserResponse.FindNickName expectResult = UserResponse.FindNickName.builder()
+            .nickName(user.getNickName()).build();
+
+        //When
+        UserResponse.FindNickName result = userService.getUserName(user.getPhoneNumber());
+
+        //Then
+        assertThat(result).usingRecursiveComparison().isEqualTo(expectResult);
+    }
+
+    @Test
+    void updatePassword() {
+        //Given
+        UserRequest.ChangePassword userRequest = new UserRequest.ChangePassword(
+            "NewPass!1"
+        );
+
+        //When
+        boolean result = userService.updatePassword(user, userRequest);
+
+        //Then
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void getMannerTemperature() {
+        //Given
+        UserResponse.MannerTemperature expectResponse = UserResponse.MannerTemperature.builder()
+            .id(user.getId())
+            .nickName(user.getNickName())
+            .mannerTemperature(user.getMannerTemperature())
+            .build();
+
+        //When
+        UserResponse.MannerTemperature result = userService.getMannerTemperature(user.getId());
+
+        //Then
+        assertThat(result).usingRecursiveComparison().isEqualTo(expectResponse);
     }
 
 }

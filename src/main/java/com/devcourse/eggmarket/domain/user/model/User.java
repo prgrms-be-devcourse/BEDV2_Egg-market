@@ -69,6 +69,14 @@ public class User extends BaseEntity {
         this.nickName = nickName;
     }
 
+    public void changePassword(String password) {
+        this.password = password;
+    }
+
+    public void changePhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
     public Long getId() {
         return id;
     }

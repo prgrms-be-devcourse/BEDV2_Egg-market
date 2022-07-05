@@ -70,7 +70,7 @@ class PostConverterTest {
 
         PostResponse.SinglePost expected = new PostResponse.SinglePost(
             post.getId(),
-            new UserResponse(writer.getId(), writer.getNickName(), writer.getMannerTemperature(),
+            new UserResponse.Basic(writer.getId(), writer.getNickName(), writer.getMannerTemperature(),
                 writer.getRole().toString(), writer.getImagePath()),
             post.getPrice(),
             post.getTitle(),

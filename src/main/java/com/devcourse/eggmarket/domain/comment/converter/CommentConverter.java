@@ -26,7 +26,7 @@ public class CommentConverter {
         User commentWriter = comment.getUser();
 
         return new CommentsElement(comment.getId(),
-            new UserResponse(commentWriter.getId(),
+            new UserResponse.Basic(commentWriter.getId(),
                 commentWriter.getNickName(),
                 commentWriter.getMannerTemperature(),
                 commentWriter.getRole().name(),

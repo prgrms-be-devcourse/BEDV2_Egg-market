@@ -75,7 +75,7 @@ class CommentConverterTest {
 
         CommentsElement expectedDto = new CommentsElement(
             postComment.getId(),
-            new UserResponse(commentWriter.getId(),
+            new UserResponse.Basic(commentWriter.getId(),
                 commentWriter.getNickName(),
                 commentWriter.getMannerTemperature(),
                 commentWriter.getRole().name(),
@@ -106,7 +106,7 @@ class CommentConverterTest {
         List<CommentsElement> expectedComments =
             postComments.stream()
                 .map(comment -> new CommentsElement(comment.getId(),
-                    new UserResponse(
+                    new UserResponse.Basic(
                         commentWriter.getId(),
                         commentWriter.getNickName(),
                         commentWriter.getMannerTemperature(),

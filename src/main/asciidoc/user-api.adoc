@@ -1,0 +1,101 @@
+:hardbreaks:
+ifndef::snippets[]
+:snippets: ../../../target/generated-snippets
+endif::[]
+
+= 유저 관리
+
+== 유저 생성
+
+=== POST /signup
+
+.Request
+include::{snippets}/user-signup/http-request.adoc[]
+include::{snippets}/user-signup/request-parameters.adoc[]
+include::{snippets}/user-signup/request-parts.adoc[]
+
+.Response
+include::{snippets}/user-signup/http-response.adoc[]
+include::{snippets}/user-signup/response-fields.adoc[]
+
+== 로그인
+
+=== POST /login
+
+.Request
+include::{snippets}/user-login/http-request.adoc[]
+include::{snippets}/user-login/request-fields.adoc[]
+
+.Response
+include::{snippets}/user-login/http-response.adoc[]
+include::{snippets}/user-login/response-fields.adoc[]
+
+== 로그아웃
+
+=== POST /login
+
+.Request
+include::{snippets}/user-logout/http-request.adoc[]
+
+.Response
+include::{snippets}/user-logout/http-response.adoc[]
+
+
+== 로그아웃
+
+=== POST /login
+
+.Request
+include::{snippets}/user-signout/http-request.adoc[]
+
+.Response
+include::{snippets}/user-signout/http-response.adoc[]
+include::{snippets}/user-signout/response-fields.adoc[]
+
+== 로그인 ID 찾기
+
+=== POST /users/nickName
+
+.Request
+include::{snippets}/user-findName/http-request.adoc[]
+include::{snippets}/user-findName/request-fields.adoc[]
+
+.Response
+include::{snippets}/user-findName/http-response.adoc[]
+include::{snippets}/user-findName/response-fields.adoc[]
+
+== 패스워드 변경
+
+=== PATCH /users/password
+
+.Request
+include::{snippets}/user-change-password/http-request.adoc[]
+include::{snippets}/user-change-password/request-fields.adoc[]
+
+.Response
+include::{snippets}/user-change-password/http-response.adoc[]
+include::{snippets}/user-change-password/response-fields.adoc[]
+
+== 사용자 정보 변경
+
+=== PUT /users
+
+.Request
+include::{snippets}/user-update/http-request.adoc[]
+include::{snippets}/user-update/request-fields.adoc[]
+
+.Response
+include::{snippets}/user-update/http-response.adoc[]
+include::{snippets}/user-update/response-fields.adoc[]
+
+== 사용자 매너온도 조회
+
+=== GET /users/mannerTemperature/{id}
+
+.Request
+include::{snippets}/user-get-temperature/http-request.adoc[]
+include::{snippets}/user-get-temperature/path-parameters.adoc[]
+
+.Response
+include::{snippets}/user-get-temperature/http-response.adoc[]
+include::{snippets}/user-get-temperature/response-fields.adoc[]

@@ -2,6 +2,7 @@ package com.devcourse.eggmarket.domain.user.converter;
 
 import com.devcourse.eggmarket.domain.user.dto.UserRequest;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
+import com.devcourse.eggmarket.domain.user.dto.UserResponse.MannerTemperature;
 import com.devcourse.eggmarket.domain.user.model.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,8 +26,8 @@ public class UserConverter {
             .build();
     }
 
-    public UserResponse convertToUserResponse(User user) {
-        return UserResponse.builder()
+    public UserResponse.Basic convertToUserResponseBasic(User user) {
+        return UserResponse.Basic.builder()
             .id(user.getId())
             .nickName(user.getNickName())
             .mannerTemperature(user.getMannerTemperature())
@@ -35,4 +36,25 @@ public class UserConverter {
             .build();
     }
 
+    public UserResponse.FindNickName convertToUserFindNickName(User user) {
+        return UserResponse.FindNickName.builder()
+            .nickName(user.getNickName())
+            .build();
+    }
+
+    public UserResponse.Update convertToUpdate(User user) {
+        return UserResponse.Update.builder()
+            .id(user.getId())
+            .phoneNumber(user.getPhoneNumber())
+            .nickName(user.getNickName())
+            .build();
+    }
+
+    public UserResponse.MannerTemperature convertToMannerTemp(User user) {
+        return UserResponse.MannerTemperature.builder()
+            .id(user.getId())
+            .nickName(user.getNickName())
+            .mannerTemperature(user.getMannerTemperature())
+            .build();
+    }
 }

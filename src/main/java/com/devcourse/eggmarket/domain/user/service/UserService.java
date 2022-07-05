@@ -2,20 +2,30 @@ package com.devcourse.eggmarket.domain.user.service;
 
 import com.devcourse.eggmarket.domain.user.dto.UserRequest;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
+import com.devcourse.eggmarket.domain.user.dto.UserResponse.MannerTemperature;
 import com.devcourse.eggmarket.domain.user.model.User;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface UserService extends UserDetailsService {
 
-    UserResponse save(UserRequest.Save userRequest);
+    UserResponse.Basic save(UserRequest.Save userRequest);
 
-    UserResponse getByUsername(String userName);
+    UserResponse.Basic getByUsername(String userName);
+
+    UserResponse.Update update(User user, UserRequest.Update userRequest);
 
     User getById(Long userId);
 
-    UserResponse update(String userName, UserRequest.Update userRequest);
+    User getUser(String nickName);
 
-    User getUser(String userName);
+    Long delete(User user);
 
-    boolean deleteById(Long id);
+    UserResponse.FindNickName getUserName(String phoneNumber);
+
+    boolean updatePassword(User user, UserRequest.ChangePassword userRequest);
+
+    User getUserById(Long userId);
+
+    MannerTemperature getMannerTemperature(Long userId);
 }

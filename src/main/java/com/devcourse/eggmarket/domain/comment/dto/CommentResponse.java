@@ -14,7 +14,7 @@ public class CommentResponse {
 
     public record CommentsElement(
         Long id,
-        UserResponse writer,
+        UserResponse.Basic writer,
         String content,
         LocalDateTime createdAt
     ) {

@@ -10,7 +10,7 @@ public class UserStub {
 
     public static User entity() {
         return new User(1L,
-            "01012345678",
+            "010-1234-5678",
             "test",
             "test1234!@#$",
             36.5F,
@@ -20,7 +20,7 @@ public class UserStub {
 
     public static User entity2() {
         return new User(2L,
-            "01022345678",
+            "010-2234-5678",
             "tests",
             "test1234!@#$s",
             36.5F,

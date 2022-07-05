@@ -4,17 +4,24 @@ import com.devcourse.eggmarket.domain.model.image.ImageFile;
 import com.devcourse.eggmarket.domain.model.image.ImageUpload;
 import com.devcourse.eggmarket.domain.model.image.ProfileImageFile;
 import com.devcourse.eggmarket.domain.user.converter.UserConverter;
+import com.devcourse.eggmarket.domain.user.dto.UserRequest;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest.Save;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest.Update;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
+import com.devcourse.eggmarket.domain.user.dto.UserResponse.FindNickName;
+import com.devcourse.eggmarket.domain.user.dto.UserResponse.MannerTemperature;
 import com.devcourse.eggmarket.domain.user.exception.NotExistUserException;
 import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.repository.UserRepository;
 import java.util.Collections;
+import java.util.NoSuchElementException;
 import java.util.Optional;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,38 +44,53 @@ public class DefaultUserService implements UserService {
 
     @Override
     @Transactional
-    public UserResponse save(Save userRequest) {
+    public UserResponse.Basic save(Save userRequest) {
         User user = userRepository.save(userConverter.saveToUser(userRequest));
         if (userRequest.profileImage() != null) {
-            ImageFile imageFile = ProfileImageFile.toImage(user.getId(), userRequest.profileImage());
+            ImageFile imageFile = ProfileImageFile.toImage(user.getId(),
+                userRequest.profileImage());
             user.setImagePath(imageUpload.upload(imageFile));
         }
-        return userConverter.convertToUserResponse(user);
+
+        return userConverter.convertToUserResponseBasic(user);
     }
 
     @Override
-    public UserResponse getByUsername(String userName) {
+    public UserResponse.Basic getByUsername(String userName) {
         Optional<User> user = userRepository.findByNickName(userName);
         if (user.isEmpty()) {
             throw new NotExistUserException();
         }
 
-        return userConverter.convertToUserResponse(user.get());
+        return userConverter.convertToUserResponseBasic(user.get());
     }
 
     @Override
-    public UserResponse update(String userName, Update userRequest) {
-        return null;
+    @Transactional
+    public UserResponse.Update update(User user, Update userRequest) {
+        registerPhoneNumber(user, userRequest.phoneNumber());
+        registerNickName(user, userRequest.nickName());
+        userRepository.save(user);
+
+        return userConverter.convertToUpdate(user);
     }
 
+
     @Override
-    public User getUser(String userName) {
-        Optional<User> user = userRepository.findByNickName(userName);
+    public User getUser(String nickName) {
+        Optional<User> user = userRepository.findByNickName(nickName);
         if (user.isEmpty()) {
             throw new IllegalArgumentException("해당 닉네임을 가진 사용자가 존재하지 않습니다");
         }
 
         return user.get();
+    }
+
+    @Override
+    @Transactional
+    public Long delete(User user) {
+        userRepository.delete(user);
+        return user.getId();
     }
 
     public User getById(Long userId) {
@@ -77,8 +99,39 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public boolean deleteById(Long id) {
-        return false;
+    public FindNickName getUserName(String phoneNumber) {
+        Optional<User> foundUser = userRepository.findByPhoneNumber(phoneNumber);
+        if (foundUser.isEmpty()) {
+            throw new NoSuchElementException("해당 핸드폰 번호를 가진 유저는 존재하지 않습니다.");
+        }
+
+        return userConverter.convertToUserFindNickName(foundUser.get());
+    }
+
+    @Override
+    @Transactional
+    public boolean updatePassword(User user, UserRequest.ChangePassword userRequest) {
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        user.changePassword(passwordEncoder.encode(userRequest.newPassword()));
+        userRepository.save(user);
+        return true;
+    }
+
+    @Override
+    public User getUserById(Long userId) {
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isEmpty()) {
+            throw new NoSuchElementException("해당 아이디를 가진 유저는 존재하지 않습니다.");
+        }
+
+        return user.get();
+    }
+
+    @Override
+    public MannerTemperature getMannerTemperature(Long userId) {
+        User user = getUserById(userId);
+
+        return userConverter.convertToMannerTemp(user);
     }
 
     @Override
@@ -93,5 +146,23 @@ public class DefaultUserService implements UserService {
                     .build())
             .orElseThrow(
                 () -> new UsernameNotFoundException("Could not found user for " + username));
+    }
+
+    private void registerPhoneNumber(User user, String changePhoneNumber) {
+        if (!user.getPhoneNumber().equals(changePhoneNumber)) {
+            if (userRepository.findByPhoneNumber(changePhoneNumber).isPresent()) {
+                throw new DuplicateKeyException("이미 등록된 번호입니다.");
+            }
+            user.changePhoneNumber(changePhoneNumber);
+        }
+    }
+
+    private void registerNickName(User user, String changeNickName) {
+        if (!user.getNickName().equals(changeNickName)) {
+            if (userRepository.findByNickName(changeNickName).isPresent()) {
+                throw new DuplicateKeyException("해당 닉네임은 이미 등록되어 있습니다.");
+            }
+            user.changeNickName(changeNickName);
+        }
     }
 }
