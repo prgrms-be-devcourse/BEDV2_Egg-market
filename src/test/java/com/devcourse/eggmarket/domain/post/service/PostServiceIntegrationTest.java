@@ -2,10 +2,7 @@ package com.devcourse.eggmarket.domain.post.service;
 
 import com.devcourse.eggmarket.domain.comment.model.Comment;
 import com.devcourse.eggmarket.domain.comment.repository.CommentRepository;
-import com.devcourse.eggmarket.domain.model.image.ImageUpload;
-import com.devcourse.eggmarket.domain.model.image.PostImageFile;
 import com.devcourse.eggmarket.domain.post.dto.PostRequest.UpdatePurchaseInfo;
-import com.devcourse.eggmarket.domain.post.dto.PostResponse;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse.Posts;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse.SinglePost;
 import com.devcourse.eggmarket.domain.post.exception.InvalidBuyerException;
@@ -21,7 +18,6 @@ import com.devcourse.eggmarket.domain.stub.ImageStub;
 import com.devcourse.eggmarket.domain.stub.PostStub;
 import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.repository.UserRepository;
-import com.devcourse.eggmarket.global.common.SuccessResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,16 +42,13 @@ class PostServiceIntegrationTest {
     private PostRepository postRepository;
 
     @Autowired
+    private PostImageRepository postImageRepository;
+
+    @Autowired
     private PostAttentionService postAttentionService;
 
     @Autowired
     private PostService postService;
-
-    @Autowired
-    private PostImageRepository postImageRepository;
-
-    @Autowired
-    private ImageUpload imageUpload;
 
     private User writerLikedOwnPost;
     private User notYetLikedUser;
@@ -216,9 +209,9 @@ class PostServiceIntegrationTest {
             commentWriter.getId());
 
         Long response = postService.updatePurchaseInfo(
-                likedPost1.getId(),
-                updatePurchaseRequest,
-                likedPost1.getSeller().getNickName()
+            likedPost1.getId(),
+            updatePurchaseRequest,
+            likedPost1.getSeller().getNickName()
         );
 
         Assertions.assertThat(response).isEqualTo(likedPost1.getId());
