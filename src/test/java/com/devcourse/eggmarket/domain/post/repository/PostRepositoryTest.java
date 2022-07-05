@@ -116,16 +116,4 @@ class PostRepositoryTest {
             .isEqualTo(2);
     }
 
-    @Test
-    @DisplayName("제목을 기준으로 판매글을 불러올 수 있다.")
-    void findPostByTitleLikeTest() {
-        List<Post> response = List.of(
-            notLikedPost1,
-            notLikedPost2
-        );
-
-        Assertions.assertThat(postRepository.findByTitleContains("test"))
-            .usingRecursiveComparison()
-            .isEqualTo(response);
-    }
 }
