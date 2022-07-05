@@ -37,14 +37,6 @@ public class EvaluationController {
             .body(new SuccessResponse<>(evaluationId));
     }
 
-    // TO DO:
-//    @GetMapping
-//    @RequestMapping("{/id}")
-//    public ResponseEntity<List<EvaluationResponse>> getListByRevieweeId(@PathVariable Long id, Pageable pageable) {
-//        evaluationService.getListByRevieweeId(id);
-//        return ResponseEntity.ok();
-//    }
-
     @GetMapping
     @RequestMapping("/reviewer/{id}")
     public ResponseEntity<SuccessResponse<EvaluationResponse>> getByReviewerId(@PathVariable Long id) {
