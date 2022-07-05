@@ -255,7 +255,7 @@ class PostServiceIntegrationTest {
 
         Assertions.assertThat(got)
             .usingRecursiveComparison()
-            .ignoringFields("createdAt")
+            .ignoringFields("posts.createdAt")
             .isEqualTo(want);
     }
 }
