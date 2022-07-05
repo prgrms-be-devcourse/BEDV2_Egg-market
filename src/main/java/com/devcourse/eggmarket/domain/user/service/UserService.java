@@ -17,8 +17,6 @@ public interface UserService extends UserDetailsService {
 
     User getById(Long userId);
 
-    User getUser(Authentication authentication);
-
     User getUser(String nickName);
 
     Long delete(User user);

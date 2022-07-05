@@ -52,98 +52,102 @@ public class UserController {
 
         return ResponseEntity.created(location)
             .body(new SuccessResponse<>(response));
-        }
-
-        @PostMapping("/login")
-        public ResponseEntity<SuccessResponse<Boolean>> login (
-            @RequestBody @Valid UserRequest.Login userRequest, HttpServletRequest request){
-            SecurityContext securityContext = SecurityContextHolder.getContext();
-            UserDetails userDetails = userService.loadUserByUsername(userRequest.nickName());
-
-            if (!passwordEncoder.matches(userRequest.password(), userDetails.getPassword())) {
-                throw new IllegalArgumentException();
-            }
-
-            createNewSession(request, userDetails, securityContext);
-            return ResponseEntity.ok(new SuccessResponse<>(true));
-        }
-
-        @DeleteMapping("/signout")
-        public ResponseEntity<SuccessResponse<Long>> signOut (HttpServletRequest request,
-            Authentication authentication){
-            User user = userService.getUser(authentication);
-            Long userId = userService.delete(user);
-
-            deleteSession(request);
-
-            return ResponseEntity.ok(new SuccessResponse<>(userId));
-        }
-
-        private void deleteSession (HttpServletRequest request){
-            HttpSession session = request.getSession(false);
-            if (session != null) {
-                session.invalidate();
-            }
-        }
-
-        @GetMapping(value = "/users/nickname", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-        public ResponseEntity<SuccessResponse<UserResponse.FindNickName>> findNickname (
-            @ModelAttribute @Valid UserRequest.FindNickname userRequest){
-            return ResponseEntity.ok(
-                new SuccessResponse<>(
-                    userService.getUserName(userRequest.phoneNumber())
-                )
-            );
-        }
-
-        @PatchMapping("/users/password")
-        public ResponseEntity<SuccessResponse<Boolean>> changePassword (HttpServletRequest request,
-            Authentication authentication,
-            @RequestBody UserRequest.ChangePassword userRequest){
-            User user = userService.getUser(authentication);
-            boolean result = userService.updatePassword(user, userRequest);
-
-            deleteSession(request);
-
-            SecurityContext securityContext = SecurityContextHolder.getContext();
-            UserDetails userDetails = userService.loadUserByUsername(user.getNickName());
-
-            createNewSession(request, userDetails, securityContext);
-
-            return ResponseEntity.ok(new SuccessResponse<>(result));
-        }
-
-        private void createNewSession (HttpServletRequest request, UserDetails userDetails,
-            SecurityContext securityContext){
-            securityContext.setAuthentication(
-                new UsernamePasswordAuthenticationToken(userDetails, null,
-                    userDetails.getAuthorities()));
-            HttpSession newSession = request.getSession(true);
-            newSession.setAttribute(
-                HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-                securityContext);
-        }
-
-        @PutMapping("/users")
-        public ResponseEntity<SuccessResponse<UserResponse.Update>> update (HttpServletRequest
-        request,
-            Authentication authentication,
-            @RequestBody @Valid UserRequest.Update userRequest){
-            User user = userService.getUser(authentication);
-
-            SecurityContext securityContext = SecurityContextHolder.getContext();
-            UserDetails userDetails = userService.loadUserByUsername(user.getNickName());
-
-            createNewSession(request, userDetails, securityContext);
-
-            return ResponseEntity.ok(new SuccessResponse<>(userService.update(user, userRequest)));
-        }
-
-        @GetMapping("/users/mannerTemperature/{id}")
-        public ResponseEntity<SuccessResponse<UserResponse.MannerTemperature>> getMannerTemperature
-        (
-            @PathVariable Long id){
-            return ResponseEntity.ok(new SuccessResponse<>(userService.getMannerTemperature(id)));
-        }
-
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<SuccessResponse<Boolean>> login(
+        @RequestBody @Valid UserRequest.Login userRequest, HttpServletRequest request) {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        UserDetails userDetails = userService.loadUserByUsername(userRequest.nickName());
+
+        if (!passwordEncoder.matches(userRequest.password(), userDetails.getPassword())) {
+            throw new IllegalArgumentException();
+        }
+
+        createNewSession(request, userDetails, securityContext);
+        return ResponseEntity.ok(new SuccessResponse<>(true));
+    }
+
+
+    @DeleteMapping("/signout")
+    public ResponseEntity<SuccessResponse<Long>> signOut(HttpServletRequest request,
+        Authentication authentication) {
+        User user = userService.getUser(authentication.getName());
+        Long userId = userService.delete(user);
+
+        deleteSession(request);
+
+        return ResponseEntity.ok(new SuccessResponse<>(userId));
+    }
+
+    private void deleteSession(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+    }
+
+    @GetMapping(value = "/users/nickname", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<SuccessResponse<UserResponse.FindNickName>> findNickname(
+        @ModelAttribute @Valid UserRequest.FindNickname userRequest) {
+        return ResponseEntity.ok(
+            new SuccessResponse<>(
+                userService.getUserName(userRequest.phoneNumber())
+            )
+        );
+    }
+
+
+    @PatchMapping("/users/password")
+    public ResponseEntity<SuccessResponse<Boolean>> changePassword(HttpServletRequest request,
+        Authentication authentication,
+        @RequestBody UserRequest.ChangePassword userRequest) {
+        User user = userService.getUser(authentication.getName());
+        boolean result = userService.updatePassword(user, userRequest);
+
+        deleteSession(request);
+
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        UserDetails userDetails = userService.loadUserByUsername(user.getNickName());
+
+        createNewSession(request, userDetails, securityContext);
+
+        return ResponseEntity.ok(new SuccessResponse<>(result));
+    }
+
+    private void createNewSession(HttpServletRequest request, UserDetails userDetails,
+        SecurityContext securityContext) {
+        securityContext.setAuthentication(
+            new UsernamePasswordAuthenticationToken(userDetails, null,
+                userDetails.getAuthorities()));
+        HttpSession newSession = request.getSession(true);
+        newSession.setAttribute(
+            HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+            securityContext);
+    }
+
+    @PutMapping("/users")
+    public ResponseEntity<SuccessResponse<UserResponse.Update>> update(HttpServletRequest
+        request,
+        Authentication authentication,
+        @RequestBody @Valid UserRequest.Update userRequest) {
+        User user = userService.getUser(authentication.getName());
+
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        UserDetails userDetails = userService.loadUserByUsername(user.getNickName());
+
+        createNewSession(request, userDetails, securityContext);
+
+        return ResponseEntity.ok(
+            new SuccessResponse<>(userService.update(user, userRequest)));
+    }
+
+    @GetMapping("/users/mannerTemperature/{id}")
+    public ResponseEntity<SuccessResponse<UserResponse.MannerTemperature>> getMannerTemperature
+        (
+            @PathVariable Long id) {
+        return ResponseEntity.ok(
+            new SuccessResponse<>(userService.getMannerTemperature(id)));
+    }
+
+}

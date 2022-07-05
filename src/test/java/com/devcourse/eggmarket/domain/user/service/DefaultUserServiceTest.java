@@ -117,7 +117,7 @@ class DefaultUserServiceTest {
         securityContext.setAuthentication(
             new UsernamePasswordAuthenticationToken(userDetails, null,
                 userDetails.getAuthorities()));
-        User foundUser = userService.getUser(securityContext.getAuthentication());
+        User foundUser = userService.getUser(securityContext.getAuthentication().getName());
 
         //Then
         assertThat(foundUser).usingRecursiveComparison()

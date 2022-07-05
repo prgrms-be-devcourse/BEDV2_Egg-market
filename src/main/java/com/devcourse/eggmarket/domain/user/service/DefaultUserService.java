@@ -17,13 +17,11 @@ import java.util.Collections;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.session.SessionAuthenticationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,43 +68,13 @@ public class DefaultUserService implements UserService {
     @Override
     @Transactional
     public UserResponse.Update update(User user, Update userRequest) {
-        if (!user.getPhoneNumber().equals(userRequest.phoneNumber())
-            && userRequest.phoneNumber() != null) {
-            Optional<User> phoneNumberResult = userRepository
-                .findByPhoneNumber(userRequest.phoneNumber());
-            if (phoneNumberResult.isPresent()) {
-                throw new DuplicateKeyException("해당 전화번호는 이미 등록되어 있습니다.");
-            }
-            user.changePhoneNumber(userRequest.phoneNumber());
-        }
-
-        if (!user.getNickName().equals(userRequest.nickName()) && userRequest.nickName() != null) {
-            Optional<User> nickNameResult = userRepository.findByNickName(userRequest.nickName());
-            if (nickNameResult.isPresent()) {
-                throw new DuplicateKeyException("해당 닉네임은 이미 등록되어 있습니다.");
-            }
-            user.changeNickName(userRequest.nickName());
-        }
-
+        registerPhoneNumber(user, userRequest.phoneNumber());
+        registerNickName(user, userRequest.nickName());
         userRepository.save(user);
 
         return userConverter.convertToUpdate(user);
     }
 
-
-    @Override
-    public User getUser(Authentication authentication) {
-        if (authentication == null) {
-            throw new SessionAuthenticationException("Login을 먼저 진행해주세요");
-        }
-
-        Optional<User> user = userRepository.findByNickName(authentication.getName());
-        if (user.isEmpty()) {
-            throw new IllegalArgumentException("해당 닉네임을 가진 사용자가 존재하지 않습니다");
-        }
-
-        return user.get();
-    }
 
     @Override
     public User getUser(String nickName) {
@@ -178,5 +146,23 @@ public class DefaultUserService implements UserService {
                     .build())
             .orElseThrow(
                 () -> new UsernameNotFoundException("Could not found user for " + username));
+    }
+
+    private void registerPhoneNumber(User user, String changePhoneNumber) {
+        if (!user.getPhoneNumber().equals(changePhoneNumber)) {
+            if (userRepository.findByPhoneNumber(changePhoneNumber).isPresent()) {
+                throw new DuplicateKeyException("이미 등록된 번호입니다.");
+            }
+            user.changePhoneNumber(changePhoneNumber);
+        }
+    }
+
+    private void registerNickName(User user, String changeNickName) {
+        if (!user.getNickName().equals(changeNickName)) {
+            if (userRepository.findByNickName(changeNickName).isPresent()) {
+                throw new DuplicateKeyException("해당 닉네임은 이미 등록되어 있습니다.");
+            }
+            user.changeNickName(changeNickName);
+        }
     }
 }
