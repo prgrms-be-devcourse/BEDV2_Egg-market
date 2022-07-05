@@ -251,13 +251,11 @@ class PostServiceIntegrationTest {
     void searchTest() {
         String request = "test";
         PostResponse.Posts got = postService.search(request);
-        PostResponse.Posts want = PostStub.searchPosts(
-            notLikedPost1.getId(),
-            notLikedPost2.getId(),
-            notLikedPost1.getCreatedAt(),
-            notLikedPost2.getCreatedAt()
-        );
+        PostResponse.Posts want = PostStub.searchPosts(notLikedPost1.getId(), notLikedPost2.getId());
 
-        Assertions.assertThat(got).usingRecursiveComparison().isEqualTo(want);
+        Assertions.assertThat(got)
+            .usingRecursiveComparison()
+            .ignoringFields("createdAt")
+            .isEqualTo(want);
     }
 }

@@ -176,7 +176,7 @@ public class PostStub {
         );
     }
 
-    public static Posts searchPosts(Long id1, Long id2, LocalDateTime time1, LocalDateTime time2) {
+    public static Posts searchPosts(Long id1, Long id2) {
         return new Posts(
             List.of(
                 new PostsElement(
@@ -184,7 +184,7 @@ public class PostStub {
                     1000,
                     "test1",
                     "SALE",
-                    time1,
+                    LocalDateTime.now(),
                     0,
                     0,
                     null
@@ -194,7 +194,7 @@ public class PostStub {
                     2500,
                     "test2",
                     "SALE",
-                    time2,
+                    LocalDateTime.now(),
                     0,
                     0,
                     null
