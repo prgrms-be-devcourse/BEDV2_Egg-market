@@ -71,7 +71,7 @@ public class PostServiceImpl implements PostService {
     @Transactional
     @Override
     public Long save(PostRequest.Save request, String loginUser) {
-        final AtomicInteger order = new AtomicInteger(0);
+        AtomicInteger order = new AtomicInteger(0);
         User seller = userService.getUser(loginUser);
 
         Post savedPost = postRepository.save(
@@ -80,6 +80,7 @@ public class PostServiceImpl implements PostService {
 
         Optional.ofNullable(request.images())
             .orElse(Collections.emptyList()).stream()
+            .filter(file -> file.getContentType() != null)
             .map(img -> PostImageFile.toImage(savedPost.getId(), img, order.getAndIncrement()))
             .forEach(file -> uploadFile(savedPost, file));
 
@@ -157,13 +158,13 @@ public class PostServiceImpl implements PostService {
                 .collect(Collectors.toList()));
     }
 
-    private String uploadFile(Post post, ImageFile file) {
-        return postImageRepository.save(
+    private void uploadFile(Post post, ImageFile file) {
+        postImageRepository.save(
             PostImage.builder()
                 .post(post)
                 .imagePath(imageUpload.upload(file))
                 .build()
-        ).getImagePath();
+        );
     }
 
     private Post checkPostWriter(Long postId, String loginUser) {

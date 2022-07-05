@@ -26,7 +26,6 @@ import com.devcourse.eggmarket.domain.user.dto.UserRequest.FindNickname;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest.Save;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest.Update;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
-import com.devcourse.eggmarket.domain.user.dto.UserResponse.MannerTemperature;
 import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.repository.UserRepository;
 import com.devcourse.eggmarket.domain.user.service.UserService;
@@ -72,7 +71,7 @@ class UserControllerTest {
     private UserRepository userRepository;
 
     User user;
-    UserResponse.Basic userResponse;
+    Long userIdResponse;
     MockMultipartFile profileImage;
 
     @BeforeEach
@@ -95,7 +94,7 @@ class UserControllerTest {
         UserRequest.Save saveRequest = new Save(user.getPhoneNumber(), user.getNickName(),
             user.getPassword(), false, null);
 
-        userResponse = userService.save(saveRequest);
+        userIdResponse = userService.save(saveRequest);
     }
 
     @AfterEach
@@ -113,16 +112,8 @@ class UserControllerTest {
             .role("USER")
             .build();
 
-        SuccessResponse<UserResponse.Basic> expectResponse =
-            new SuccessResponse<>(UserResponse.Basic.builder()
-                .id(2L)
-                .nickName(newUser.getNickName())
-                .mannerTemperature(36.5F)
-                .role(newUser.getRole().toString())
-                // TODO 서버마다 프로젝트가 경로가 달라 테스트 할때 어려움이 있음 이를 어떻게 해결해야 할까?
-                .imagePath(System.getProperty("user.home") + "/eggmarket/profile/2.png")
-                .build()
-            );
+        SuccessResponse<Long> expectResponse =
+            new SuccessResponse<>(2L);
 
         UserRequest.Save saveRequest = new UserRequest.Save(
             newUser.getPhoneNumber(),
@@ -154,26 +145,19 @@ class UserControllerTest {
                     partWithName("profileImage").description("프로필 사진")
                 ),
                 responseFields(
-                    fieldWithPath("data.id").type(JsonFieldType.NUMBER).description("사용자 ID"),
-                    fieldWithPath("data.nickName").type(JsonFieldType.STRING).description("유저 닉네임"),
-                    fieldWithPath("data.mannerTemperature").type(JsonFieldType.NUMBER)
-                        .description("매너온도"),
-                    fieldWithPath("data.role").type(JsonFieldType.STRING).description("유저 권한"),
-                    fieldWithPath("data.imagePath").type(JsonFieldType.STRING)
-                        .description("프로필 사진 경로")
+                    fieldWithPath("data").type(JsonFieldType.NUMBER).description("사용자 ID")
                 )
             ))
             .andReturn();
 
-        SuccessResponse<UserResponse.Basic> saveResult = objectMapper
-            .readValue(result.getResponse().getContentAsString(),
-                new TypeReference<SuccessResponse<UserResponse.Basic>>() {
-                });
+        SuccessResponse<Long> response = objectMapper.readValue(
+            result.getResponse().getContentAsString(),
+            new TypeReference<>() {
+            });
 
         //Then
-        assertThat(saveResult).usingRecursiveComparison().ignoringFields("data.imagePath")
-            .isEqualTo(expectResponse);
-
+        assertThat(response.getData())
+            .isEqualTo(expectResponse.getData());
     }
 
     @Test
@@ -187,7 +171,7 @@ class UserControllerTest {
 
         UserRequest.Login loginRequest = new UserRequest.Login(user.getNickName(),
             user.getPassword());
-        SuccessResponse<Boolean> response = new SuccessResponse<Boolean>(true);
+        SuccessResponse<Boolean> response = new SuccessResponse<>(true);
         //When
         MvcResult result = mockMvc.perform(post("/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -208,7 +192,7 @@ class UserControllerTest {
 
         SuccessResponse<Boolean> loginResult = objectMapper.readValue(
             result.getResponse().getContentAsString(),
-            new TypeReference<SuccessResponse<Boolean>>() {
+            new TypeReference<>() {
             });
 
         //Then
@@ -249,7 +233,7 @@ class UserControllerTest {
         MockHttpSession session = new MockHttpSession();
         session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
             securityContext);
-        SuccessResponse<Long> response = new SuccessResponse<>(userResponse.id());
+        SuccessResponse<Long> response = new SuccessResponse<>(userIdResponse);
 
         //When
         MvcResult result = mockMvc.perform(
@@ -266,8 +250,7 @@ class UserControllerTest {
             .andReturn();
 
         SuccessResponse<Long> signOutResult = objectMapper.readValue(
-            result.getResponse().getContentAsString(),
-            new TypeReference<SuccessResponse<Long>>() {
+            result.getResponse().getContentAsString(), new TypeReference<>() {
             }
         );
 
@@ -303,7 +286,7 @@ class UserControllerTest {
 
         SuccessResponse<UserResponse.FindNickName> findResult = objectMapper
             .readValue(result.getResponse().getContentAsString(),
-                new TypeReference<SuccessResponse<UserResponse.FindNickName>>() {
+                new TypeReference<>() {
                 });
 
         //Then
@@ -345,7 +328,7 @@ class UserControllerTest {
 
         SuccessResponse<Boolean> updateResult = objectMapper.readValue(
             result.getResponse().getContentAsString(),
-            new TypeReference<SuccessResponse<Boolean>>() {
+            new TypeReference<>() {
             }
         );
 
@@ -368,15 +351,15 @@ class UserControllerTest {
 
         UserRequest.Update userRequest = new Update("010-1111-1111", "updateNick");
         SuccessResponse<UserResponse.Update> expectResponse = new SuccessResponse<>(
-            new UserResponse.Update(userResponse.id(),
+            new UserResponse.Update(userIdResponse,
                 userRequest.phoneNumber(), userRequest.nickName()));
 
         //When
         MvcResult result = mockMvc.perform(
-            put("/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(userRequest))
-                )
+                put("/users")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(userRequest))
+            )
             .andExpect(status().isOk())
             .andDo(document("user-update",
                 preprocessRequest(prettyPrint()),
@@ -396,7 +379,7 @@ class UserControllerTest {
 
         SuccessResponse<UserResponse.Update> updateResult = objectMapper
             .readValue(result.getResponse().getContentAsString(),
-                new TypeReference<SuccessResponse<UserResponse.Update>>() {
+                new TypeReference<>() {
                 });
 
         //Then
@@ -410,7 +393,7 @@ class UserControllerTest {
         //Given
         SuccessResponse<UserResponse.MannerTemperature> expectResponse = new SuccessResponse<>(
             UserResponse.MannerTemperature.builder()
-                .id(userResponse.id())
+                .id(userIdResponse)
                 .nickName(user.getNickName())
                 .mannerTemperature(user.getMannerTemperature())
                 .build()
@@ -419,7 +402,7 @@ class UserControllerTest {
         //When
         MvcResult result = mockMvc.perform(
                 RestDocumentationRequestBuilders.get("/users/mannerTemperature/{id}",
-                    userResponse.id()))
+                    userIdResponse))
             .andExpect(status().isOk())
             .andDo(document("user-get-temperature",
                 preprocessRequest(prettyPrint()),
@@ -438,7 +421,7 @@ class UserControllerTest {
 
         SuccessResponse<UserResponse.MannerTemperature> mannerTempResult = objectMapper
             .readValue(result.getResponse().getContentAsString(),
-                new TypeReference<SuccessResponse<MannerTemperature>>() {
+                new TypeReference<>() {
                 });
 
         //Then

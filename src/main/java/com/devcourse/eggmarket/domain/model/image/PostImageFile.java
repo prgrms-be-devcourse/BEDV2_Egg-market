@@ -27,7 +27,7 @@ public class PostImageFile implements ImageFile {
 
     public static PostImageFile toImage(long postId, MultipartFile file, int img_order) {
         if (ImageFile.isNotImage(file)) {
-            throw new InvalidFileException("유효한 이미지 첨부가 아닙니다"); // 참고로 이미지 크기 오류는 따로 존재합니다
+            throw new InvalidFileException("유효한 이미지 첨부가 아닙니다");
         }
 
         try {
