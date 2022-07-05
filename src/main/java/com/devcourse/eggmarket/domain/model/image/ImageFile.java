@@ -20,7 +20,7 @@ public interface ImageFile {
 
     static boolean isNotImage(MultipartFile file) {
         if (file == null) {
-            return false;
+            return true;
         }
         return !isImageContentType(file.getContentType());
     }

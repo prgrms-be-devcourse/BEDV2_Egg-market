@@ -1,6 +1,7 @@
 package com.devcourse.eggmarket.domain.user.service;
 
-import com.devcourse.eggmarket.domain.model.image.ImageFile;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
+
 import com.devcourse.eggmarket.domain.model.image.ImageUpload;
 import com.devcourse.eggmarket.domain.model.image.ProfileImageFile;
 import com.devcourse.eggmarket.domain.user.converter.UserConverter;
@@ -16,6 +17,7 @@ import com.devcourse.eggmarket.domain.user.repository.UserRepository;
 import java.util.Collections;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,9 +26,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional(readOnly = true)
+@Slf4j
 public class DefaultUserService implements UserService {
 
     private final UserRepository userRepository;
@@ -46,11 +50,16 @@ public class DefaultUserService implements UserService {
     @Transactional
     public UserResponse.Basic save(Save userRequest) {
         User user = userRepository.save(userConverter.saveToUser(userRequest));
-        if (userRequest.profileImage() != null) {
-            ImageFile imageFile = ProfileImageFile.toImage(user.getId(),
-                userRequest.profileImage());
-            user.setImagePath(imageUpload.upload(imageFile));
-        }
+
+        Optional.ofNullable(userRequest.profileImage())
+            .ifPresent(multipart ->
+                supplyAsync(() -> uploadFile(user, multipart))
+                    .thenAccept(user::setImagePath)
+                    .exceptionally(ex -> {
+                        log.error(ex.getMessage());
+                        return null;
+                    })
+            );
 
         return userConverter.convertToUserResponseBasic(user);
     }
@@ -164,5 +173,11 @@ public class DefaultUserService implements UserService {
             }
             user.changeNickName(changeNickName);
         }
+
+    }
+
+    private String uploadFile(User user, MultipartFile multipartFile) {
+        return imageUpload.upload(
+            ProfileImageFile.toImage(user.getId(), multipartFile));
     }
 }
