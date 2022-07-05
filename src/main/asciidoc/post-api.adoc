@@ -123,3 +123,16 @@ include::{snippets}/post-get-attention/http-request.adoc[]
 .Response
 include::{snippets}/post-get-attention/http-response.adoc[]
 include::{snippets}/post-get-attention/response-fields.adoc[]
+
+== 검색
+
+=== GET /posts/search
+
+.Request
+include::{snippets}/post-search/http-request.adoc[]
+include::{snippets}/post-search/request-parameters.adoc[]
+
+
+.Response
+include::{snippets}/post-search/http-response.adoc[]
+include::{snippets}/post-search/response-fields.adoc[]

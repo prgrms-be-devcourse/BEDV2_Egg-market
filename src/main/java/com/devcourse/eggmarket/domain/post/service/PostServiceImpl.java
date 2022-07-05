@@ -157,6 +157,16 @@ public class PostServiceImpl implements PostService {
                 .collect(Collectors.toList()));
     }
 
+    @Override
+    public Posts search(String word) {
+        return new Posts(postRepository.findByTitleContains(word)
+            .stream()
+            .map(this::postResponseAddThumbnail)
+            .collect(Collectors.toList())
+        );
+    }
+
+
     private String uploadFile(Post post, ImageFile file) {
         return postImageRepository.save(
             PostImage.builder()

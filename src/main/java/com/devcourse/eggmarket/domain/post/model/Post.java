@@ -163,4 +163,5 @@ public class Post extends BaseEntity {
         this.postStatus = postStatus;
         this.buyer = buyer;
     }
+
 }

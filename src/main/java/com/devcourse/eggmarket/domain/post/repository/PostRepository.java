@@ -18,4 +18,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findAllLikedBy(@Param("userId") Long userId);
 
     Page<Post> findAllByCategory(Pageable pageable, Category category);
+
+    List<Post> findByTitleContains(String word);
 }

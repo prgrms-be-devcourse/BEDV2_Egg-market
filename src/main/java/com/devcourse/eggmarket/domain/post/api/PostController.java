@@ -11,6 +11,7 @@ import com.devcourse.eggmarket.global.common.SuccessResponse;
 import com.devcourse.eggmarket.global.common.ValueOfEnum;
 import java.net.URI;
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -118,4 +119,13 @@ public class PostController {
         );
     }
 
+    @GetMapping("/search")
+    ResponseEntity<SuccessResponse<PostResponse.Posts>> search(
+        @RequestParam @NotBlank(message = "검색할 내용을 입력해주세요") String word) {
+        return ResponseEntity.ok(
+            new SuccessResponse<>(
+                postService.search(word)
+            )
+        );
+    }
 }
