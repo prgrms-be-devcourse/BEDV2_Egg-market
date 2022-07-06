@@ -37,22 +37,19 @@ public class EvaluationController {
             .body(new SuccessResponse<>(evaluationId));
     }
 
-    @GetMapping
-    @RequestMapping("/reviewer/{id}")
+    @GetMapping("/reviewer/{id}")
     public ResponseEntity<SuccessResponse<EvaluationResponse>> getByReviewerId(@PathVariable Long id) {
         EvaluationResponse review = evaluationService.getByReviewerId(id);
         return ResponseEntity.ok(new SuccessResponse<>(review));
     }
 
-    @GetMapping
-    @RequestMapping("/reviewee/{id}")
+    @GetMapping("/reviewee/{id}")
     public ResponseEntity<SuccessResponse<EvaluationResponse>> getByRevieweeId(@PathVariable Long id) {
         EvaluationResponse review = evaluationService.getByRevieweeId(id);
         return ResponseEntity.ok(new SuccessResponse<>(review));
     }
 
-    @DeleteMapping
-    @RequestMapping("/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         evaluationService.delete(id);
         return ResponseEntity.noContent().build();
