@@ -38,6 +38,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -360,14 +361,15 @@ class PostServiceImplTest {
     @Test
     @DisplayName("제목을 기준으로 판매글 검색하기")
     void searchTest() {
-        String request = "title";
+        Pageable pageable = PageRequest.of(0, 3);
+        String word = "title";
         PostResponse.Posts response = PostStub.posts();
 
         doReturn(response)
             .when(postService)
-            .search(request);
+            .search(pageable, word);
 
-        assertThat(postService.search(request))
+        assertThat(postService.search(pageable, word))
             .usingRecursiveComparison()
             .isEqualTo(response);
     }

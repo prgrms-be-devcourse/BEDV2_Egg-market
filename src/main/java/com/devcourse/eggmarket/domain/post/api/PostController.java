@@ -120,11 +120,11 @@ public class PostController {
     }
 
     @GetMapping("/search")
-    ResponseEntity<SuccessResponse<PostResponse.Posts>> search(
+    ResponseEntity<SuccessResponse<PostResponse.Posts>> search(Pageable pageable,
         @RequestParam @NotBlank(message = "검색할 내용을 입력해주세요") String word) {
         return ResponseEntity.ok(
             new SuccessResponse<>(
-                postService.search(word)
+                postService.search(pageable, word)
             )
         );
     }

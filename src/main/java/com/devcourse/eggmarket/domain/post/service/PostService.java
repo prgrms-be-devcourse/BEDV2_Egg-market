@@ -25,6 +25,7 @@ public interface PostService {
 
     Posts getAllLikedBy(String userName);
 
-    PostResponse.Posts search(String word);
+    PostResponse.Posts search(Pageable pageable, String word);
+
 
 }

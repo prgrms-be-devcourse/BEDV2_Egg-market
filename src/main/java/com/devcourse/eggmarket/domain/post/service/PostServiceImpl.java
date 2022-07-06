@@ -159,11 +159,10 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Posts search(String word) {
-        return new Posts(postRepository.findByTitleContains(word)
-            .stream()
+    public Posts search(Pageable pageable, String word) {
+        return new Posts(postRepository.findAllByTitleContains(pageable, word)
             .map(this::postResponseAddThumbnail)
-            .toList()
+            .getContent()
         );
     }
 

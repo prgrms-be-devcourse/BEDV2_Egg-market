@@ -38,6 +38,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -494,15 +495,18 @@ class PostControllerTest {
     @WithMockUser
     @DisplayName("제목 검색 기능 테스트")
     void searchTest() throws Exception {
-        String request = "title";
+        Pageable pageable = PageRequest.of(0, 3);
+        String word = "title";
         PostResponse.Posts response = PostStub.posts();
 
         doReturn(response)
             .when(postService)
-            .search(request);
+            .search(pageable, word);
 
         ResultActions resultActions = mockMvc.perform(
             RestDocumentationRequestBuilders.get("/posts/search")
+                .param("page", String.valueOf(pageable.getPageNumber()))
+                .param("size", String.valueOf(pageable.getPageSize()))
                 .param("word", "title"));
 
         resultActions.andExpect(status().isOk())
@@ -510,6 +514,8 @@ class PostControllerTest {
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
                 requestParameters(
+                    parameterWithName("page").description("페이지 번호"),
+                    parameterWithName("size").description("페이지당 개수"),
                     parameterWithName("word").description("검색 문자열")
                 ),
                 responseFields(

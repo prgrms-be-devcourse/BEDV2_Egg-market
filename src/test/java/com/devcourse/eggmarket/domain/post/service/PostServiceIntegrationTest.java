@@ -26,6 +26,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @SpringBootTest
 class PostServiceIntegrationTest {
@@ -249,8 +251,9 @@ class PostServiceIntegrationTest {
     @Test
     @DisplayName("판매글 제목으로 검색 테스트")
     void searchTest() {
-        String request = "test";
-        PostResponse.Posts got = postService.search(request);
+        Pageable pageable = PageRequest.of(0, 2);
+        String word = "test";
+        PostResponse.Posts got = postService.search(pageable, word);
         PostResponse.Posts want = PostStub.searchPosts(notLikedPost1.getId(), notLikedPost2.getId());
 
         Assertions.assertThat(got)
