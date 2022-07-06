@@ -26,26 +26,25 @@ public class UserResponse {
         }
     }
 
-    public record Update(
-        Long id,
-        String phoneNumber,
-        String nickName
-    ) {
-
-        @Builder
-        public Update {
-        }
-    }
-
-    public record MannerTemperature(
+    public record Simple(
         Long id,
         String nickName,
         float mannerTemperature
     ) {
 
         @Builder
-        public MannerTemperature {
+        public Simple {
         }
     }
 
+    public record UpdateProfile(
+        Long id,
+        String imagePath
+    ) {
+
+        @Builder
+        public UpdateProfile{
+
+        }
+    }
 }

@@ -1,18 +1,18 @@
 package com.devcourse.eggmarket.domain.user.service;
 
 import com.devcourse.eggmarket.domain.user.dto.UserRequest;
+import com.devcourse.eggmarket.domain.user.dto.UserRequest.Update;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
-import com.devcourse.eggmarket.domain.user.dto.UserResponse.MannerTemperature;
+import com.devcourse.eggmarket.domain.user.dto.UserResponse.Simple;
 import com.devcourse.eggmarket.domain.user.model.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService extends UserDetailsService {
 
     Long save(UserRequest.Save userRequest);
 
     UserResponse.Basic getByUsername(String userName);
-
-    UserResponse.Update update(User user, UserRequest.Update userRequest);
 
     User getById(Long userId);
 
@@ -26,5 +26,9 @@ public interface UserService extends UserDetailsService {
 
     User getUserById(Long userId);
 
-    MannerTemperature getMannerTemperature(Long userId);
+    Simple getUserBySimple(Long userId);
+
+    Long updateUserInfo(User user, Update userRequest);
+
+    UserResponse.UpdateProfile updateUserProfile(User user, UserRequest.Profile profile);
 }

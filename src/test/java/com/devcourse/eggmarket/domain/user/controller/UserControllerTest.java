@@ -19,13 +19,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.devcourse.eggmarket.domain.stub.ImageStub;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest.FindNickname;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest.Save;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest.Update;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
+import com.devcourse.eggmarket.domain.user.dto.UserResponse.Simple;
 import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.repository.UserRepository;
 import com.devcourse.eggmarket.domain.user.service.UserService;
@@ -35,6 +38,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -103,6 +107,7 @@ class UserControllerTest {
     }
 
     @Test
+    @DisplayName("회원가입 기능 테스트")
     void signUp() throws Exception {
         //Given
         User newUser = User.builder()
@@ -113,7 +118,7 @@ class UserControllerTest {
             .build();
 
         SuccessResponse<Long> expectResponse =
-            new SuccessResponse<>(2L);
+            new SuccessResponse<>(userIdResponse + 1);
 
         UserRequest.Save saveRequest = new UserRequest.Save(
             newUser.getPhoneNumber(),
@@ -161,6 +166,7 @@ class UserControllerTest {
     }
 
     @Test
+    @DisplayName("로그인 기능 테스트")
     void login() throws Exception {
         //Given
         UserResponse.Basic expectResponse = UserResponse.Basic.builder()
@@ -200,6 +206,7 @@ class UserControllerTest {
     }
 
     @Test
+    @DisplayName("로그아웃 기능 테스트")
     void logoutTest() throws Exception {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         UserDetails userDetails = userService.loadUserByUsername(user.getNickName());
@@ -223,6 +230,7 @@ class UserControllerTest {
     }
 
     @Test
+    @DisplayName("회원 탈퇴 기능 테스트")
     void signOut() throws Exception {
         //Given
         SecurityContext securityContext = SecurityContextHolder.getContext();
@@ -259,6 +267,7 @@ class UserControllerTest {
     }
 
     @Test
+    @DisplayName("닉네임으로 회원정보 불러오기")
     void getUserName() throws Exception {
         //Given
         SuccessResponse<UserResponse.FindNickName> expectResult = new SuccessResponse<>(
@@ -268,7 +277,7 @@ class UserControllerTest {
         UserRequest.FindNickname request = new FindNickname(user.getPhoneNumber());
         //When
         MvcResult result = mockMvc.perform(
-                get("/users/nickname")
+                get("/user/nickname")
                     .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                     .param("phoneNumber", request.phoneNumber()))
             .andExpect(status().isOk())
@@ -294,6 +303,7 @@ class UserControllerTest {
     }
 
     @Test
+    @DisplayName("비밀번호 변경 테스트")
     void changePassword() throws Exception {
         //Given
         SecurityContext securityContext = SecurityContextHolder.getContext();
@@ -310,7 +320,7 @@ class UserControllerTest {
         );
 
         //When
-        MvcResult result = mockMvc.perform(patch("/users/password")
+        MvcResult result = mockMvc.perform(patch("/user/password")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userRequest)))
             .andExpect(status().isOk())
@@ -336,9 +346,9 @@ class UserControllerTest {
         assertThat(updateResult).usingRecursiveComparison().isEqualTo(response);
     }
 
-    // TODO 업데이트시 이미지 받을 수 있도록 수정해야함
     @Test
-    void update() throws Exception {
+    @DisplayName("유저 정보 변경 테스트")
+    void updateUserInfoTest() throws Exception {
         //Given
         SecurityContext securityContext = SecurityContextHolder.getContext();
         UserDetails userDetails = userService.loadUserByUsername(user.getNickName());
@@ -350,13 +360,11 @@ class UserControllerTest {
             securityContext);
 
         UserRequest.Update userRequest = new Update("010-1111-1111", "updateNick");
-        SuccessResponse<UserResponse.Update> expectResponse = new SuccessResponse<>(
-            new UserResponse.Update(userIdResponse,
-                userRequest.phoneNumber(), userRequest.nickName()));
+        SuccessResponse<Long> expectResponse = new SuccessResponse<>(userIdResponse);
 
         //When
         MvcResult result = mockMvc.perform(
-                put("/users")
+                put("/user/profile")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(userRequest))
             )
@@ -369,15 +377,12 @@ class UserControllerTest {
                     fieldWithPath("nickName").type(JsonFieldType.STRING).description("닉네임")
                 ),
                 responseFields(
-                    fieldWithPath("data.id").type(JsonFieldType.NUMBER).description("유저 ID"),
-                    fieldWithPath("data.phoneNumber").type(JsonFieldType.STRING)
-                        .description("전화번호"),
-                    fieldWithPath("data.nickName").type(JsonFieldType.STRING).description("닉네임")
+                    fieldWithPath("data").type(JsonFieldType.NUMBER).description("유저 ID")
                 )
             ))
             .andReturn();
 
-        SuccessResponse<UserResponse.Update> updateResult = objectMapper
+        SuccessResponse<Long> updateResult = objectMapper
             .readValue(result.getResponse().getContentAsString(),
                 new TypeReference<>() {
                 });
@@ -389,10 +394,43 @@ class UserControllerTest {
     }
 
     @Test
-    void getMannerTemperature() throws Exception {
+    @DisplayName("유저 프로필 이미지 변경 테스트")
+    void updateProfileTest() throws Exception {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        UserDetails userDetails = userService.loadUserByUsername(user.getNickName());
+        securityContext.setAuthentication(
+            new UsernamePasswordAuthenticationToken(userDetails, null,
+                userDetails.getAuthorities()));
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+            securityContext);
+
+        MockMultipartFile image = ImageStub.image1();
+        MvcResult result = mockMvc.perform(
+                multipart("/user/profile")
+                    .file(image)
+            )
+            .andExpect(status().isCreated())
+            .andDo(document("user-update-profile",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                requestParts(
+                    partWithName("image").description("유저 프로필 이미지")
+                ),
+                responseFields(
+                    fieldWithPath("data").type(JsonFieldType.NUMBER).description("유저 ID")
+                )
+            ))
+            .andReturn();
+
+    }
+
+    @Test
+    @DisplayName("유저 간단 정보 조회")
+    void getUserBySimpleTest() throws Exception {
         //Given
-        SuccessResponse<UserResponse.MannerTemperature> expectResponse = new SuccessResponse<>(
-            UserResponse.MannerTemperature.builder()
+        SuccessResponse<Simple> expectResponse = new SuccessResponse<>(
+            Simple.builder()
                 .id(userIdResponse)
                 .nickName(user.getNickName())
                 .mannerTemperature(user.getMannerTemperature())
@@ -401,10 +439,10 @@ class UserControllerTest {
 
         //When
         MvcResult result = mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/users/mannerTemperature/{id}",
+                RestDocumentationRequestBuilders.get("/users/{id}/simple",
                     userIdResponse))
             .andExpect(status().isOk())
-            .andDo(document("user-get-temperature",
+            .andDo(document("user-get-simple",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
                 pathParameters(
@@ -419,7 +457,7 @@ class UserControllerTest {
             ))
             .andReturn();
 
-        SuccessResponse<UserResponse.MannerTemperature> mannerTempResult = objectMapper
+        SuccessResponse<Simple> mannerTempResult = objectMapper
             .readValue(result.getResponse().getContentAsString(),
                 new TypeReference<>() {
                 });

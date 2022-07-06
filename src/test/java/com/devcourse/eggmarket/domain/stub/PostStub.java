@@ -97,8 +97,8 @@ public class PostStub {
             1,
             1,
             true,
-            List.of(ImageStub.image1(post.getId()).pathTobeStored(""),
-                ImageStub.image2(post.getId()).pathTobeStored(""))
+            List.of(ImageStub.uploadImage1(post.getId()).pathTobeStored(""),
+                ImageStub.uploadImage2(post.getId()).pathTobeStored(""))
         );
     }
 
