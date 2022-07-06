@@ -26,14 +26,14 @@ public class UserResponse {
         }
     }
 
-    public record MannerTemperature(
+    public record Simple(
         Long id,
         String nickName,
         float mannerTemperature
     ) {
 
         @Builder
-        public MannerTemperature {
+        public Simple {
         }
     }
 

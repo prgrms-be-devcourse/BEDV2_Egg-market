@@ -5,6 +5,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import com.devcourse.eggmarket.domain.stub.UserStub;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
+import com.devcourse.eggmarket.domain.user.dto.UserResponse.Simple;
 import com.devcourse.eggmarket.domain.user.model.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,40 +40,40 @@ class UserConverterTest {
         User request = UserStub.entity();
         UserResponse.Basic want = UserStub.basicResponse(request);
 
-        UserResponse.Basic got = userConverter.convertToUserResponseBasic(request);
+        UserResponse.Basic got = userConverter.convertToBasic(request);
 
         assertThat(got).usingRecursiveComparison().isEqualTo(want);
     }
 
     @Test
-    @DisplayName("User -> UserResponse.findNickName 변환 테스트")
-    void convertToUserFindNickNameTest() {
+    @DisplayName("User -> UserResponse.FindNickName 변환 테스트")
+    void convertToNickNameTest() {
         User request = UserStub.entity();
         UserResponse.FindNickName want = UserStub.nickNameResponse(request);
 
-        UserResponse.FindNickName got = userConverter.convertToUserFindNickName(request);
+        UserResponse.FindNickName got = userConverter.convertToNickName(request);
 
         assertThat(got).usingRecursiveComparison().isEqualTo(want);
     }
 
     @Test
-    @DisplayName("User -> UserResponse.MannerTemperature 변환 테스트")
-    void convertToMannerTemp() {
+    @DisplayName("User -> UserResponse.Simple 변환 테스트")
+    void convertToSimpleTest() {
         User request = UserStub.entity();
-        UserResponse.MannerTemperature want = UserStub.temperatureResponse(request);
+        Simple want = UserStub.simpleResponse(request);
 
-        UserResponse.MannerTemperature got = userConverter.convertToMannerTemp(request);
+        Simple got = userConverter.convertToSimple(request);
 
         assertThat(got).usingRecursiveComparison().isEqualTo(want);
     }
 
     @Test
     @DisplayName("User -> UserResponse.UpdateProfile 변환 테스트")
-    void convertToUserUpdateProfileTest() {
+    void convertToUpdateProfileTest() {
         User request = UserStub.imagePathEntity();
         UserResponse.UpdateProfile want = UserStub.updateProfileResponse(request);
 
-        UserResponse.UpdateProfile got = userConverter.convertToUserUpdateProfile(request);
+        UserResponse.UpdateProfile got = userConverter.convertToUpdateProfile(request);
 
         assertThat(got).usingRecursiveComparison().isEqualTo(want);
     }

@@ -22,13 +22,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.devcourse.eggmarket.domain.model.image.ImageFile;
 import com.devcourse.eggmarket.domain.stub.ImageStub;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest.FindNickname;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest.Save;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest.Update;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
+import com.devcourse.eggmarket.domain.user.dto.UserResponse.Simple;
 import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.repository.UserRepository;
 import com.devcourse.eggmarket.domain.user.service.UserService;
@@ -40,7 +40,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -278,7 +277,7 @@ class UserControllerTest {
         UserRequest.FindNickname request = new FindNickname(user.getPhoneNumber());
         //When
         MvcResult result = mockMvc.perform(
-                get("/users/nickname")
+                get("/user/nickname")
                     .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                     .param("phoneNumber", request.phoneNumber()))
             .andExpect(status().isOk())
@@ -321,7 +320,7 @@ class UserControllerTest {
         );
 
         //When
-        MvcResult result = mockMvc.perform(patch("/users/password")
+        MvcResult result = mockMvc.perform(patch("/user/password")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userRequest)))
             .andExpect(status().isOk())
@@ -365,7 +364,7 @@ class UserControllerTest {
 
         //When
         MvcResult result = mockMvc.perform(
-                put("/users/profile")
+                put("/user/profile")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(userRequest))
             )
@@ -408,7 +407,7 @@ class UserControllerTest {
 
         MockMultipartFile image = ImageStub.image1();
         MvcResult result = mockMvc.perform(
-                multipart("/users/profile/image")
+                multipart("/user/profile/image")
                     .file(image)
             )
             .andExpect(status().isCreated())
@@ -427,11 +426,11 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("")
-    void getMannerTemperature() throws Exception {
+    @DisplayName("유저 간단 정보 조회")
+    void getUserBySimpleTest() throws Exception {
         //Given
-        SuccessResponse<UserResponse.MannerTemperature> expectResponse = new SuccessResponse<>(
-            UserResponse.MannerTemperature.builder()
+        SuccessResponse<Simple> expectResponse = new SuccessResponse<>(
+            Simple.builder()
                 .id(userIdResponse)
                 .nickName(user.getNickName())
                 .mannerTemperature(user.getMannerTemperature())
@@ -440,10 +439,10 @@ class UserControllerTest {
 
         //When
         MvcResult result = mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/users/mannerTemperature/{id}",
+                RestDocumentationRequestBuilders.get("/users/{id}/simple",
                     userIdResponse))
             .andExpect(status().isOk())
-            .andDo(document("user-get-temperature",
+            .andDo(document("user-get-simple",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
                 pathParameters(
@@ -458,7 +457,7 @@ class UserControllerTest {
             ))
             .andReturn();
 
-        SuccessResponse<UserResponse.MannerTemperature> mannerTempResult = objectMapper
+        SuccessResponse<Simple> mannerTempResult = objectMapper
             .readValue(result.getResponse().getContentAsString(),
                 new TypeReference<>() {
                 });

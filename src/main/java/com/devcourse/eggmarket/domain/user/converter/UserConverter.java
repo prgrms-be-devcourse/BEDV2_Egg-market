@@ -2,7 +2,7 @@ package com.devcourse.eggmarket.domain.user.converter;
 
 import com.devcourse.eggmarket.domain.user.dto.UserRequest;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
-import com.devcourse.eggmarket.domain.user.dto.UserResponse.MannerTemperature;
+import com.devcourse.eggmarket.domain.user.dto.UserResponse.Simple;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse.UpdateProfile;
 import com.devcourse.eggmarket.domain.user.model.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -27,7 +27,7 @@ public class UserConverter {
             .build();
     }
 
-    public UserResponse.Basic convertToUserResponseBasic(User user) {
+    public UserResponse.Basic convertToBasic(User user) {
         return UserResponse.Basic.builder()
             .id(user.getId())
             .nickName(user.getNickName())
@@ -37,21 +37,21 @@ public class UserConverter {
             .build();
     }
 
-    public UserResponse.FindNickName convertToUserFindNickName(User user) {
+    public UserResponse.FindNickName convertToNickName(User user) {
         return UserResponse.FindNickName.builder()
             .nickName(user.getNickName())
             .build();
     }
 
-    public UserResponse.MannerTemperature convertToMannerTemp(User user) {
-        return UserResponse.MannerTemperature.builder()
+    public Simple convertToSimple(User user) {
+        return Simple.builder()
             .id(user.getId())
             .nickName(user.getNickName())
             .mannerTemperature(user.getMannerTemperature())
             .build();
     }
 
-    public UpdateProfile convertToUserUpdateProfile(User user) {
+    public UpdateProfile convertToUpdateProfile(User user) {
         return UserResponse.UpdateProfile.builder()
             .id(user.getId())
             .imagePath(user.getImagePath())

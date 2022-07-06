@@ -10,7 +10,7 @@ import com.devcourse.eggmarket.domain.user.dto.UserRequest.Save;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest.Update;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse.FindNickName;
-import com.devcourse.eggmarket.domain.user.dto.UserResponse.MannerTemperature;
+import com.devcourse.eggmarket.domain.user.dto.UserResponse.Simple;
 import com.devcourse.eggmarket.domain.user.exception.NotExistUserException;
 import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.repository.UserRepository;
@@ -71,7 +71,7 @@ public class DefaultUserService implements UserService {
             throw new NotExistUserException();
         }
 
-        return userConverter.convertToUserResponseBasic(user.get());
+        return userConverter.convertToBasic(user.get());
     }
 
     @Override
@@ -89,7 +89,7 @@ public class DefaultUserService implements UserService {
         updateProfile(user, profile);
         User updateUser = userRepository.save(user);
 
-        return userConverter.convertToUserUpdateProfile(updateUser);
+        return userConverter.convertToUpdateProfile(updateUser);
     }
 
 
@@ -122,7 +122,7 @@ public class DefaultUserService implements UserService {
             throw new NoSuchElementException("해당 핸드폰 번호를 가진 유저는 존재하지 않습니다.");
         }
 
-        return userConverter.convertToUserFindNickName(foundUser.get());
+        return userConverter.convertToNickName(foundUser.get());
     }
 
     @Override
@@ -145,10 +145,10 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public MannerTemperature getMannerTemperature(Long userId) {
+    public Simple getUserBySimple(Long userId) {
         User user = getUserById(userId);
 
-        return userConverter.convertToMannerTemp(user);
+        return userConverter.convertToSimple(user);
     }
 
     @Override

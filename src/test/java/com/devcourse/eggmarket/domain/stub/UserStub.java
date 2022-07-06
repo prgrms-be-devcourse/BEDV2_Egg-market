@@ -5,7 +5,7 @@ import com.devcourse.eggmarket.domain.user.dto.UserRequest.Save;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse.Basic;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse.FindNickName;
-import com.devcourse.eggmarket.domain.user.dto.UserResponse.MannerTemperature;
+import com.devcourse.eggmarket.domain.user.dto.UserResponse.Simple;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse.UpdateProfile;
 import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.model.UserRole;
@@ -68,8 +68,8 @@ public class UserStub {
         return new FindNickName(user.getNickName());
     }
 
-    public static MannerTemperature temperatureResponse(User user) {
-        return MannerTemperature.builder()
+    public static Simple simpleResponse(User user) {
+        return Simple.builder()
             .id(user.getId())
             .nickName(user.getNickName())
             .mannerTemperature(user.getMannerTemperature())

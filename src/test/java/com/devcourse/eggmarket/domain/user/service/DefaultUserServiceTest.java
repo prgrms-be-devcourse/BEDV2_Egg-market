@@ -5,10 +5,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest.Update;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
+import com.devcourse.eggmarket.domain.user.dto.UserResponse.Simple;
 import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -46,7 +48,7 @@ class DefaultUserServiceTest {
     }
 
     @Test
-    void save() {
+    void saveTest() {
         //Given
         User newUser = User.builder()
             .nickName("test2")
@@ -62,12 +64,12 @@ class DefaultUserServiceTest {
         Long result = userService.save(saveRequest);
 
         //Then
-        assertThat(userRepository.findById(result).isPresent())
-            .isTrue();
+        assertThat(userRepository.findById(result))
+            .isPresent();
     }
 
     @Test
-    void getByUsername() {
+    void getByUsernameTest() {
         //Given
         UserResponse.Basic expectResponse = UserResponse.Basic.builder()
             .nickName(user.getNickName())
@@ -98,7 +100,8 @@ class DefaultUserServiceTest {
     }
 
     @Test
-    void getUser() {
+    @DisplayName("닉네임을 기준으로 유저 조회 테스트")
+    void getUserTest() {
         //When
         UserDetails userDetails = userService.loadUserByUsername(user.getNickName());
         SecurityContext securityContext = SecurityContextHolder.getContext();
@@ -113,7 +116,8 @@ class DefaultUserServiceTest {
     }
 
     @Test
-    void deleteById() {
+    @DisplayName("유저 아이디를 기준으로 삭제 테스트")
+    void deleteByIdTest() {
         //When
         Long userId = userService.delete(user);
 
@@ -122,7 +126,8 @@ class DefaultUserServiceTest {
     }
 
     @Test
-    void getUserName() {
+    @DisplayName("유저 닉네임 조회 기능 테스트")
+    void getUserNameTest() {
         //Given
         UserResponse.FindNickName expectResult = UserResponse.FindNickName.builder()
             .nickName(user.getNickName()).build();
@@ -135,7 +140,8 @@ class DefaultUserServiceTest {
     }
 
     @Test
-    void updatePassword() {
+    @DisplayName("패스워드 변경 테스트")
+    void updatePasswordTest() {
         //Given
         UserRequest.ChangePassword userRequest = new UserRequest.ChangePassword(
             "NewPass!1"
@@ -149,16 +155,17 @@ class DefaultUserServiceTest {
     }
 
     @Test
-    void getMannerTemperature() {
+    @DisplayName("유저 간단 조회 테스트")
+    void getUserBySimpleTest() {
         //Given
-        UserResponse.MannerTemperature expectResponse = UserResponse.MannerTemperature.builder()
+        Simple expectResponse = Simple.builder()
             .id(user.getId())
             .nickName(user.getNickName())
             .mannerTemperature(user.getMannerTemperature())
             .build();
 
         //When
-        UserResponse.MannerTemperature result = userService.getMannerTemperature(user.getId());
+        Simple result = userService.getUserBySimple(user.getId());
 
         //Then
         assertThat(result).usingRecursiveComparison().isEqualTo(expectResponse);

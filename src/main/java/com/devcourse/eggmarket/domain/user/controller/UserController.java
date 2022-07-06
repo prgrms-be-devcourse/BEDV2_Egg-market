@@ -87,7 +87,7 @@ public class UserController {
         }
     }
 
-    @GetMapping(value = "/users/nickname", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @GetMapping(value = "/user/nickname", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<SuccessResponse<UserResponse.FindNickName>> findNickname(
         @ModelAttribute @Valid UserRequest.FindNickname userRequest) {
         return ResponseEntity.ok(
@@ -98,7 +98,7 @@ public class UserController {
     }
 
 
-    @PatchMapping("/users/password")
+    @PatchMapping("/user/password")
     public ResponseEntity<SuccessResponse<Boolean>> changePassword(HttpServletRequest request,
         Authentication authentication,
         @RequestBody UserRequest.ChangePassword userRequest) {
@@ -126,7 +126,7 @@ public class UserController {
             securityContext);
     }
 
-    @PutMapping(value = "/users/profile")
+    @PutMapping( "/user/profile")
     public ResponseEntity<SuccessResponse<Long>> updateUserInfo(
         HttpServletRequest request,
         Authentication authentication,
@@ -142,7 +142,7 @@ public class UserController {
             new SuccessResponse<>(userService.updateUserInfo(user, userRequest)));
     }
 
-    @PostMapping(value = "/users/profile/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/user/profile/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<SuccessResponse<Long>> updateProfile(
         HttpServletRequest request,
         Authentication authentication,
@@ -163,12 +163,12 @@ public class UserController {
             );
     }
 
-    @GetMapping("/users/mannerTemperature/{id}")
-    public ResponseEntity<SuccessResponse<UserResponse.MannerTemperature>> getMannerTemperature
+    @GetMapping("/users/{id}/simple")
+    public ResponseEntity<SuccessResponse<UserResponse.Simple>> getUserBySimple
         (
             @PathVariable Long id) {
         return ResponseEntity.ok(
-            new SuccessResponse<>(userService.getMannerTemperature(id)));
+            new SuccessResponse<>(userService.getUserBySimple(id)));
     }
 
 }
