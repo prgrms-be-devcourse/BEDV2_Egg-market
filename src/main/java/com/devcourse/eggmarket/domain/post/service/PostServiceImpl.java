@@ -84,8 +84,6 @@ public class PostServiceImpl implements PostService {
             .map(img -> PostImageFile.toImage(savedPost.getId(), img, order.getAndIncrement()))
             .forEach(file -> uploadFile(savedPost, file));
 
-        // TODO : 이미지 개수 , HttpRequest 용량 관련 에러 처리
-
         return savedPost.getId();
     }
 

@@ -1,5 +1,6 @@
 package com.devcourse.eggmarket.global.error;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.validation.BindingResult;
@@ -21,9 +22,16 @@ public class ErrorField extends ErrorMessage {
             .map(error ->
                 new ErrorField(
                     ((FieldError) error).getField(),
-                    String.valueOf(((FieldError) error).getRejectedValue()),
+                    String.valueOf(rejectedValue(((FieldError) error).getRejectedValue())),
                     error.getDefaultMessage()))
             .collect(Collectors.toList());
+    }
+
+    private static Object rejectedValue(Object value) {
+        if (Collection.class.isAssignableFrom(value.getClass())) {
+            return ((Collection<?>) value).size();
+        }
+        return value;
     }
 
     public String getField() {

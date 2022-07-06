@@ -22,7 +22,10 @@ public enum ErrorCode {
     NOT_ALLOWED_USER("C03", "해당 댓글에 대한 권한이 없는 사용자입니다", HttpStatus.FORBIDDEN),
 
     // post error
-    NOT_VALID_CATEGORY("P01", "존재하지 않는 카테고리 입니다.", HttpStatus.BAD_REQUEST);
+    NOT_VALID_CATEGORY("P01", "존재하지 않는 카테고리 입니다.", HttpStatus.BAD_REQUEST),
+
+    // image file error
+    FILE_SIZE_EXCEED("F01", "파일 크기는 1MB 를 넘을 수 없습니다", HttpStatus.PAYLOAD_TOO_LARGE);
 
     private final String code;
     private final String message;
