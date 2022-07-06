@@ -14,6 +14,7 @@ import com.devcourse.eggmarket.domain.evaluation.model.Evaluation;
 import com.devcourse.eggmarket.domain.evaluation.repository.EvaluationRepository;
 import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.service.UserService;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -36,6 +37,7 @@ class EvaluationServiceTest {
     private EvaluationConverter evaluationConverter;
 
     @Test
+    @DisplayName("평가 저장 테스트")
     void save() {
         EvaluationRequest.Save request = new Save(
             1L, 2L, 3L, 5, "감사합니다."
@@ -69,6 +71,7 @@ class EvaluationServiceTest {
     }
 
     @Test
+    @DisplayName("리뷰어 아이디로 조회 테스트")
     void getByReviewerId() {
         Evaluation evaluation = Evaluation.builder()
             .reviewerId(1L)
@@ -91,12 +94,11 @@ class EvaluationServiceTest {
             "수고하셨습니다."
         );
 
+        given(evaluationRepository.existsByReviewerId(any(Long.class))).willReturn(true);
         given(evaluationRepository.getByReviewerId(any(Long.class))).willReturn(evaluation);
         given(userService.getById(any(Long.class))).willReturn(reviewer);
         given(evaluationConverter.convertToEvaluationResponse(any(String.class), any(String.class)))
             .willReturn(evaluationResponse);
-        given(evaluationRepository.existsByRevieweeId(any(Long.class))).willReturn(true);
-        // evaluationRepository.existsByReviewerId(reviewerId)
 
         evaluationService.getByReviewerId(1L);
 
@@ -104,6 +106,7 @@ class EvaluationServiceTest {
     }
 
     @Test
+    @DisplayName("리뷰이 아이디로 조회 테스트")
     void getByRevieweeId() {
         Evaluation evaluation = Evaluation.builder()
             .reviewerId(1L)
@@ -126,6 +129,7 @@ class EvaluationServiceTest {
             "감사합니다."
         );
 
+        given(evaluationRepository.existsByRevieweeId(any(Long.class))).willReturn(true);
         given(evaluationRepository.getByRevieweeId(any(Long.class))).willReturn(evaluation);
         given(userService.getById(any(Long.class))).willReturn(reviewee);
         given(evaluationConverter.convertToEvaluationResponse(any(String.class), any(String.class)))
@@ -137,6 +141,7 @@ class EvaluationServiceTest {
     }
 
     @Test
+    @DisplayName("평가 삭제 테스트")
     void deleteById() {
         Evaluation evaluation = Evaluation.builder()
             .reviewerId(1L)
@@ -146,9 +151,12 @@ class EvaluationServiceTest {
             .content("감사합니다")
             .build();
 
+        given(evaluationRepository.existsByReviewerId(any(Long.class))).willReturn(true);
         given(evaluationRepository.getByReviewerId(any(Long.class))).willReturn(evaluation);
         willDoNothing().given(evaluationRepository).deleteById(any(Long.class));
 
-        then(evaluationRepository).should(times(1)).deleteById(any(Long.class));
+        evaluationService.delete(1L);
+
+        then(evaluationRepository).should(times(1)).deleteById(1L);
     }
 }
