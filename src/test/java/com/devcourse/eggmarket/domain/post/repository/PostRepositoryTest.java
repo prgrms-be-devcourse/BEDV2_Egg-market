@@ -13,6 +13,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @SpringBootTest
 class PostRepositoryTest {
@@ -80,8 +82,10 @@ class PostRepositoryTest {
             .category(Category.BEAUTY)
             .seller(writer)
             .build();
+
         userRepository.save(writer);
         userRepository.save(notWriter);
+
         postRepository.save(likedPost1);
         postRepository.save(likedPost2);
         postRepository.save(notLikedPost1);
@@ -108,12 +112,14 @@ class PostRepositoryTest {
     }
 
     @Test
-    @DisplayName("특정한 사용자가 관심목록에 추가 한 모든 게시글을 찾아올 수 있다")
+    @DisplayName("특정한 사용자가 관심목록에 추가 한 게시글들을 최신순으로 가져올 수 있다")
     void getAttentiontest() {
-        int likedPostsCount = postRepository.findAllLikedBy(notWriter.getId()).size();
+        Pageable pageable = PageRequest.of(0, 15);
 
-        Assertions.assertThat(likedPostsCount)
-            .isEqualTo(2);
+        List<Post> likedList = postRepository.findAllLikedBy(notWriter.getId(), 1L, pageable);
+
+        Assertions.assertThat(likedList.get(0).getId())
+            .isEqualTo(3L);
     }
 
 }

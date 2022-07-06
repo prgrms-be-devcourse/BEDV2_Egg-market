@@ -82,7 +82,8 @@ public class PostController {
     }
 
     @PostMapping("/{id}/attention")
-    public ResponseEntity<SuccessResponse<PostAttentionCount>> attention(@PathVariable("id") Long postId,
+    public ResponseEntity<SuccessResponse<PostAttentionCount>> attention(
+        @PathVariable(value = "id") Long postId,
         Authentication authentication) {
         return ResponseEntity.ok(
             new SuccessResponse<>(
@@ -92,10 +93,11 @@ public class PostController {
     }
 
     @GetMapping("/attention")
-    public ResponseEntity<SuccessResponse<Posts>> allAttention(Authentication authentication) {
+    public ResponseEntity<SuccessResponse<Posts>> allAttention(Authentication authentication,
+        @RequestParam(required = false) Long lastId) {
         return ResponseEntity.ok(
             new SuccessResponse<>(
-                postService.getAllLikedBy(authentication.getName())
+                postService.getAllLikedBy(authentication.getName(), lastId)
             )
         );
     }
