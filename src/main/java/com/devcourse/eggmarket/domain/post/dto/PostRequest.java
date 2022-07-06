@@ -1,6 +1,7 @@
 package com.devcourse.eggmarket.domain.post.dto;
 
 
+import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage.FILE_NUMBER_LIMIT_EXCEED;
 import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage.NOT_BLANK_CATEGORY;
 import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage.NOT_BLANK_CONTENT;
 import static com.devcourse.eggmarket.domain.post.exception.PostExceptionMessage.NOT_BLANK_POST_STATUS;
@@ -45,6 +46,7 @@ public class PostRequest {
         @ValueOfEnum(enumClass = Category.class, message = NOT_VALID_CATEGORY)
         String category,
 
+        @Size(max = 10, message = FILE_NUMBER_LIMIT_EXCEED)
         List<MultipartFile> images
     ) {
 

@@ -40,4 +40,6 @@ public class PostExceptionMessage {
     public static final String NOT_EXIST_POST = "존재하지 않는 판매글 입니다. 조회한 판매글 번호 : ";
 
     public static final String NOT_MATCHED_SELLER_POST = "판매자와 로그인 유저가 다릅니다. 판매자, 로그인 유저 : ";
+
+    public static final String FILE_NUMBER_LIMIT_EXCEED = "첨부 파일은 10개를 넘을 수 없습니다";
 }

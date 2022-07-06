@@ -43,7 +43,7 @@ public class PostController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    ResponseEntity<SuccessResponse<Long>> write(@Valid PostRequest.Save request,
+    public ResponseEntity<SuccessResponse<Long>> write(@Valid PostRequest.Save request,
         Authentication authentication) {
         Long response = postService.save(request, authentication.getName());
         final URI location = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -56,7 +56,7 @@ public class PostController {
     }
 
     @PatchMapping("/{id}")
-    ResponseEntity<SuccessResponse<Long>> updatePost(
+    public ResponseEntity<SuccessResponse<Long>> updatePost(
         @RequestBody @Valid PostRequest.UpdatePost request,
         Authentication authentication,
         @PathVariable Long id) {
@@ -66,7 +66,7 @@ public class PostController {
     }
 
     @PatchMapping("/{id}/purchase")
-    ResponseEntity<SuccessResponse<Long>> updatePurchase(
+    public ResponseEntity<SuccessResponse<Long>> updatePurchase(
         @RequestBody @Valid PostRequest.UpdatePurchaseInfo request,
         Authentication authentication,
         @PathVariable Long id) {
@@ -76,13 +76,13 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<Void> delete(@PathVariable Long id, Authentication authentication) {
+    public ResponseEntity<Void> delete(@PathVariable Long id, Authentication authentication) {
         postService.deleteById(id, authentication.getName());
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/attention")
-    ResponseEntity<SuccessResponse<PostAttentionCount>> attention(@PathVariable("id") Long postId,
+    public ResponseEntity<SuccessResponse<PostAttentionCount>> attention(@PathVariable("id") Long postId,
         Authentication authentication) {
         return ResponseEntity.ok(
             new SuccessResponse<>(
@@ -92,7 +92,7 @@ public class PostController {
     }
 
     @GetMapping("/attention")
-    ResponseEntity<SuccessResponse<Posts>> allAttention(Authentication authentication) {
+    public ResponseEntity<SuccessResponse<Posts>> allAttention(Authentication authentication) {
         return ResponseEntity.ok(
             new SuccessResponse<>(
                 postService.getAllLikedBy(authentication.getName())
@@ -101,14 +101,14 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<SuccessResponse<PostResponse.SinglePost>> getPost(@PathVariable Long id,
+    public ResponseEntity<SuccessResponse<PostResponse.SinglePost>> getPost(@PathVariable Long id,
         Authentication authentication) {
         PostResponse.SinglePost response = postService.getById(id, authentication.getName());
         return ResponseEntity.ok(new SuccessResponse<>(response));
     }
 
     @GetMapping
-    ResponseEntity<SuccessResponse<PostResponse.Posts>> getPosts(Pageable pageable,
+    public ResponseEntity<SuccessResponse<PostResponse.Posts>> getPosts(Pageable pageable,
         @RequestParam(required = false) @ValueOfEnum(enumClass = Category.class) String category) {
         return ResponseEntity.ok(
             new SuccessResponse<>(
@@ -120,7 +120,7 @@ public class PostController {
     }
 
     @GetMapping("/search")
-    ResponseEntity<SuccessResponse<PostResponse.Posts>> search(Pageable pageable,
+    public ResponseEntity<SuccessResponse<PostResponse.Posts>> search(Pageable pageable,
         @RequestParam @NotBlank(message = "검색할 내용을 입력해주세요") String word) {
         return ResponseEntity.ok(
             new SuccessResponse<>(
