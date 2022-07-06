@@ -407,7 +407,7 @@ class UserControllerTest {
 
         MockMultipartFile image = ImageStub.image1();
         MvcResult result = mockMvc.perform(
-                multipart("/user/profile/image")
+                multipart("/user/profile")
                     .file(image)
             )
             .andExpect(status().isCreated())

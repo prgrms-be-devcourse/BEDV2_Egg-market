@@ -142,7 +142,7 @@ public class UserController {
             new SuccessResponse<>(userService.updateUserInfo(user, userRequest)));
     }
 
-    @PostMapping(value = "/user/profile/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/user/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<SuccessResponse<Long>> updateProfile(
         HttpServletRequest request,
         Authentication authentication,
@@ -150,10 +150,13 @@ public class UserController {
     ) {
         User user = userService.getUser(authentication.getName());
 
-        UserResponse.UpdateProfile response = userService.updateUserProfile(user, profile.image());
+        UserResponse.UpdateProfile response = userService.updateUserProfile(user, profile);
+        String filename = response.imagePath().substring(
+            response.imagePath().lastIndexOf("/") + 1
+        );
         final URI location = ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{image}")
-            .buildAndExpand(response.imagePath())
+            .buildAndExpand(filename)
             .toUri();
         return ResponseEntity.created(location)
             .body(

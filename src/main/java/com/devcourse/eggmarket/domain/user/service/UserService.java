@@ -30,5 +30,5 @@ public interface UserService extends UserDetailsService {
 
     Long updateUserInfo(User user, Update userRequest);
 
-    UserResponse.UpdateProfile updateUserProfile(User user, MultipartFile profile);
+    UserResponse.UpdateProfile updateUserProfile(User user, UserRequest.Profile profile);
 }

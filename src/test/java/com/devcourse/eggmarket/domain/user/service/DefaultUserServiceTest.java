@@ -2,10 +2,13 @@ package com.devcourse.eggmarket.domain.user.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.devcourse.eggmarket.domain.stub.ImageStub;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest;
+import com.devcourse.eggmarket.domain.user.dto.UserRequest.Profile;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest.Update;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse.Simple;
+import com.devcourse.eggmarket.domain.user.dto.UserResponse.UpdateProfile;
 import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -48,6 +51,7 @@ class DefaultUserServiceTest {
     }
 
     @Test
+    @DisplayName("유저 정보 DB 저장 테스트")
     void saveTest() {
         //Given
         User newUser = User.builder()
@@ -69,6 +73,7 @@ class DefaultUserServiceTest {
     }
 
     @Test
+    @DisplayName("유저 정보 조회 테스트")
     void getByUsernameTest() {
         //Given
         UserResponse.Basic expectResponse = UserResponse.Basic.builder()
@@ -86,6 +91,7 @@ class DefaultUserServiceTest {
     }
 
     @Test
+    @DisplayName("유저 정보만 변경 테스트")
     void updateUserInfoTest() {
         //Given
         UserRequest.Update userRequest = new Update("01011111111", "updateNick");
@@ -97,6 +103,19 @@ class DefaultUserServiceTest {
         //Then
         assertThat(result).usingRecursiveComparison().isEqualTo(expectResponse);
 
+    }
+
+    @Test
+    @DisplayName("유저 프로필 변경 테스트")
+    void updateUserProfileTest() {
+        UserRequest.Profile userRequest = new Profile(ImageStub.image1());
+        UserResponse.UpdateProfile expectResponse = UserResponse.UpdateProfile.builder()
+            .id(user.getId())
+            .build();
+
+        UserResponse.UpdateProfile result = userService.updateUserProfile(user, userRequest);
+
+        assertThat(result.id()).usingRecursiveComparison().isEqualTo(expectResponse.id());
     }
 
     @Test

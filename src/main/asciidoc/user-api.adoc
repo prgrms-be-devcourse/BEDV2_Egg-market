@@ -91,7 +91,7 @@ include::{snippets}/user-update/response-fields.adoc[]
 
 == 유저 프로필 변경
 
-=== POST /user/profile/image
+=== POST /user/profile
 
 .Request
 include::{snippets}/user-update-profile/http-request.adoc[]

@@ -85,8 +85,8 @@ public class DefaultUserService implements UserService {
 
     @Override
     @Transactional
-    public UserResponse.UpdateProfile updateUserProfile(User user, MultipartFile profile) {
-        updateProfile(user, profile);
+    public UserResponse.UpdateProfile updateUserProfile(User user, UserRequest.Profile profile) {
+        updateProfile(user, profile.image());
         User updateUser = userRepository.save(user);
 
         return userConverter.convertToUpdateProfile(updateUser);
@@ -190,8 +190,10 @@ public class DefaultUserService implements UserService {
         if (profilePath != null) {
             imageUpload.deleteFile(profilePath);
         }
-        imageUpload.upload(
-            ProfileImageFile.toImage(user.getId(), profile)
+        user.setImagePath(
+            imageUpload.upload(
+                ProfileImageFile.toImage(user.getId(), profile)
+            )
         );
     }
 
