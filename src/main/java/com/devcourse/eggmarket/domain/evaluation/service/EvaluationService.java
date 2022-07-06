@@ -67,9 +67,10 @@ public class EvaluationService {
     @Transactional
     public void delete(Long reviewerId) {
         if (!evaluationRepository.existsByReviewerId(reviewerId)) {
-            return ;
+            throw new NotExistUserException();
         }
         Evaluation evaluation = evaluationRepository.getByReviewerId(reviewerId);
+        System.out.println(evaluation.getId());
         evaluationRepository.deleteById(evaluation.getId());
     }
 }
