@@ -116,10 +116,10 @@ class PostRepositoryTest {
     void getAttentiontest() {
         Pageable pageable = PageRequest.of(0, 15);
 
-        List<Post> likedList = postRepository.findAllLikedBy(notWriter.getId(), 1L, pageable);
+        List<Post> likedList = postRepository.findAllLikedBy(notWriter.getId(), 0L, pageable);
 
         Assertions.assertThat(likedList.get(0).getId())
-            .isEqualTo(3L);
+            .isEqualTo(likedPost2.getId());
     }
 
 }
