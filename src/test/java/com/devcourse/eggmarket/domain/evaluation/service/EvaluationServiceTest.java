@@ -144,6 +144,7 @@ class EvaluationServiceTest {
     @DisplayName("평가 삭제 테스트")
     void deleteById() {
         Evaluation evaluation = Evaluation.builder()
+            .id(4L)
             .reviewerId(1L)
             .revieweeId(2L)
             .postId(3L)
@@ -155,8 +156,8 @@ class EvaluationServiceTest {
         given(evaluationRepository.getByReviewerId(any(Long.class))).willReturn(evaluation);
         willDoNothing().given(evaluationRepository).deleteById(any(Long.class));
 
-        evaluationService.delete(1L);
+        evaluationService.delete(any(Long.class));
 
-        then(evaluationRepository).should(times(1)).deleteById(1L);
+        then(evaluationRepository).should(times(1)).deleteById(any(Long.class));
     }
 }
