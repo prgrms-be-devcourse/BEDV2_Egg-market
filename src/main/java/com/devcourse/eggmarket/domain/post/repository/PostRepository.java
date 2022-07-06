@@ -17,7 +17,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
         + "WHERE pa.user.id = :userId")
     List<Post> findAllLikedBy(@Param("userId") Long userId);
 
-    Page<Post> findAllByCategory(Pageable pageable, Category category);
+    List<Post> findAllByCategory(Pageable pageable, Category category);
 
-    Page<Post> findAllByTitleContains(Pageable pageable, String word);
+    List<Post> findAllByTitleContains(Pageable pageable, String word);
 }

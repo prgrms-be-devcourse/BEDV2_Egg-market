@@ -141,8 +141,9 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostResponse.Posts getAllByCategory(Pageable pageable, Category category) {
         return new Posts(postRepository.findAllByCategory(pageable, category)
+            .stream()
             .map(this::postResponseAddThumbnail)
-            .getContent()
+            .toList()
         );
     }
 
@@ -151,16 +152,19 @@ public class PostServiceImpl implements PostService {
         User loginUser = userService.getUser(userName);
 
         return new Posts(
-            postRepository.findAllLikedBy(loginUser.getId()).stream()
+            postRepository.findAllLikedBy(loginUser.getId())
+                .stream()
                 .map(this::postResponseAddThumbnail)
-                .collect(Collectors.toList()));
+                .toList()
+        );
     }
 
     @Override
     public Posts search(Pageable pageable, String word) {
         return new Posts(postRepository.findAllByTitleContains(pageable, word)
+            .stream()
             .map(this::postResponseAddThumbnail)
-            .getContent()
+            .toList()
         );
     }
 
