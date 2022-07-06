@@ -1,13 +1,12 @@
 package com.devcourse.eggmarket.domain.user.service;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import com.devcourse.eggmarket.domain.user.dto.UserRequest;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest.Update;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
 import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.repository.UserRepository;
-import javax.servlet.http.HttpSession;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,9 +16,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-
-import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 class DefaultUserServiceTest {
@@ -59,22 +55,15 @@ class DefaultUserServiceTest {
             .role("USER")
             .build();
 
-        UserResponse.Basic expectResponse = UserResponse.Basic.builder()
-            .nickName(newUser.getNickName())
-            .mannerTemperature(36.5F)
-            .role(newUser.getRole().toString())
-            .build();
-
         UserRequest.Save saveRequest = new UserRequest.Save(newUser.getPhoneNumber(),
             newUser.getNickName(), newUser.getPassword(), false, null);
 
         //When
-        UserResponse.Basic result = userService.save(saveRequest);
+        Long result = userService.save(saveRequest);
 
         //Then
-        assertThat(result).usingRecursiveComparison().ignoringFields("id")
-            .isEqualTo(expectResponse);
-
+        assertThat(userRepository.findById(result).isPresent())
+            .isTrue();
     }
 
     @Test

@@ -42,16 +42,16 @@ public class UserController {
     }
 
     @PostMapping(value = "/signup", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<SuccessResponse<UserResponse.Basic>> signUp(
+    public ResponseEntity<SuccessResponse<Long>> signUp(
         @ModelAttribute @Valid UserRequest.Save request) {
-        UserResponse.Basic response = userService.save(request);
+        Long createdUserId = userService.save(request);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
-            .buildAndExpand(response.id())
+            .buildAndExpand(createdUserId)
             .toUri();
 
         return ResponseEntity.created(location)
-            .body(new SuccessResponse<>(response));
+            .body(new SuccessResponse<>(createdUserId));
     }
 
     @PostMapping("/login")
