@@ -5,6 +5,7 @@ import com.devcourse.eggmarket.domain.post.model.Post;
 import com.devcourse.eggmarket.domain.post.model.PostAttention;
 import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.repository.UserRepository;
+import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-public class PostRepositoryTest {
+class PostRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
@@ -29,7 +30,8 @@ public class PostRepositoryTest {
     private User notWriter;
     private Post likedPost1;
     private Post likedPost2;
-    private Post notLikedPost;
+    private Post notLikedPost1;
+    private Post notLikedPost2;
 
     @BeforeEach
     void setUp() {
@@ -63,19 +65,27 @@ public class PostRepositoryTest {
             .seller(writer)
             .build();
 
-        notLikedPost = Post.builder()
+        notLikedPost1 = Post.builder()
             .price(1400)
-            .title("title11")
+            .title("test2")
             .content("content12")
             .category(Category.BEAUTY)
             .seller(writer)
             .build();
 
+        notLikedPost2 = Post.builder()
+            .price(1400)
+            .title("test1")
+            .content("content12")
+            .category(Category.BEAUTY)
+            .seller(writer)
+            .build();
         userRepository.save(writer);
         userRepository.save(notWriter);
         postRepository.save(likedPost1);
         postRepository.save(likedPost2);
-        postRepository.save(notLikedPost);
+        postRepository.save(notLikedPost1);
+        postRepository.save(notLikedPost2);
 
         postAttentionRepository.save(new PostAttention(likedPost1, notWriter));
         postAttentionRepository.save(new PostAttention(likedPost2, notWriter));
@@ -90,7 +100,7 @@ public class PostRepositoryTest {
 
     @Test
     @DisplayName("조회해 온 포스트 엔티티에 대한 관심개수를 알 수 있다")
-    public void attentionCount() {
+    void attentionCountTest() {
         Post foundPost = postRepository.findById(this.likedPost1.getId()).get();
 
         Assertions.assertThat(foundPost.getAttentionCount())
@@ -99,10 +109,11 @@ public class PostRepositoryTest {
 
     @Test
     @DisplayName("특정한 사용자가 관심목록에 추가 한 모든 게시글을 찾아올 수 있다")
-    public void test() {
+    void getAttentiontest() {
         int likedPostsCount = postRepository.findAllLikedBy(notWriter.getId()).size();
 
         Assertions.assertThat(likedPostsCount)
             .isEqualTo(2);
     }
+
 }

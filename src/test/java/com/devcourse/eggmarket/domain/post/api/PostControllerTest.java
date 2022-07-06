@@ -38,9 +38,11 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -468,6 +470,54 @@ class PostControllerTest {
             .andDo(document("post-get-attention",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
+                responseFields(
+                    fieldWithPath("data.posts[].id").type(JsonFieldType.NUMBER)
+                        .description("판매글 ID"),
+                    fieldWithPath("data.posts[].price").type(JsonFieldType.NUMBER)
+                        .description("판매글 가격"),
+                    fieldWithPath("data.posts[].title").type(JsonFieldType.STRING)
+                        .description("제목"),
+                    fieldWithPath("data.posts[].postStatus").type(JsonFieldType.STRING)
+                        .description("판매 상태"),
+                    fieldWithPath("data.posts[].createdAt").type(JsonFieldType.STRING)
+                        .description("판매글 생성 시간"),
+                    fieldWithPath("data.posts[].attentionCount").type(JsonFieldType.NUMBER)
+                        .description("찜 개수"),
+                    fieldWithPath("data.posts[].commentCount").type(JsonFieldType.NUMBER)
+                        .description("댓글 개수"),
+                    fieldWithPath("data.posts[].imagePath").type(JsonFieldType.STRING)
+                        .description("대표 이미지")
+                )
+            ));
+    }
+
+    @Test
+    @WithMockUser
+    @DisplayName("제목 검색 기능 테스트")
+    void searchTest() throws Exception {
+        Pageable pageable = PageRequest.of(0, 3);
+        String word = "title";
+        PostResponse.Posts response = PostStub.posts();
+
+        doReturn(response)
+            .when(postService)
+            .search(pageable, word);
+
+        ResultActions resultActions = mockMvc.perform(
+            RestDocumentationRequestBuilders.get("/posts/search")
+                .param("page", String.valueOf(pageable.getPageNumber()))
+                .param("size", String.valueOf(pageable.getPageSize()))
+                .param("word", "title"));
+
+        resultActions.andExpect(status().isOk())
+            .andDo(document("post-search",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                requestParameters(
+                    parameterWithName("page").description("페이지 번호"),
+                    parameterWithName("size").description("페이지당 개수"),
+                    parameterWithName("word").description("검색 문자열")
+                ),
                 responseFields(
                     fieldWithPath("data.posts[].id").type(JsonFieldType.NUMBER)
                         .description("판매글 ID"),

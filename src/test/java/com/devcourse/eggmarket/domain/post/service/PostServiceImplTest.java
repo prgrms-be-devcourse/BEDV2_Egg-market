@@ -15,7 +15,6 @@ import static org.mockito.Mockito.verify;
 
 import com.devcourse.eggmarket.domain.comment.model.Comment;
 import com.devcourse.eggmarket.domain.comment.repository.CommentRepository;
-import com.devcourse.eggmarket.domain.model.image.ImageFile;
 import com.devcourse.eggmarket.domain.post.converter.PostConverter;
 import com.devcourse.eggmarket.domain.post.dto.PostRequest;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse;
@@ -23,11 +22,9 @@ import com.devcourse.eggmarket.domain.post.exception.NotExistPostException;
 import com.devcourse.eggmarket.domain.post.exception.NotMatchedSellerException;
 import com.devcourse.eggmarket.domain.post.model.Category;
 import com.devcourse.eggmarket.domain.post.model.Post;
-import com.devcourse.eggmarket.domain.post.model.PostImage;
 import com.devcourse.eggmarket.domain.post.repository.PostAttentionRepository;
 import com.devcourse.eggmarket.domain.post.repository.PostImageRepository;
 import com.devcourse.eggmarket.domain.post.repository.PostRepository;
-import com.devcourse.eggmarket.domain.stub.ImageStub;
 import com.devcourse.eggmarket.domain.stub.PostStub;
 import com.devcourse.eggmarket.domain.stub.UserStub;
 import com.devcourse.eggmarket.domain.user.model.User;
@@ -41,6 +38,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -356,6 +354,22 @@ class PostServiceImplTest {
             .getAllByCategory(request, category);
 
         assertThat(postService.getAllByCategory(request, category))
+            .usingRecursiveComparison()
+            .isEqualTo(response);
+    }
+
+    @Test
+    @DisplayName("제목을 기준으로 판매글 검색하기")
+    void searchTest() {
+        Pageable pageable = PageRequest.of(0, 3);
+        String word = "title";
+        PostResponse.Posts response = PostStub.posts();
+
+        doReturn(response)
+            .when(postService)
+            .search(pageable, word);
+
+        assertThat(postService.search(pageable, word))
             .usingRecursiveComparison()
             .isEqualTo(response);
     }

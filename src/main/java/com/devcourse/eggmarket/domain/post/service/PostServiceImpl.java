@@ -158,6 +158,14 @@ public class PostServiceImpl implements PostService {
                 .collect(Collectors.toList()));
     }
 
+    @Override
+    public Posts search(Pageable pageable, String word) {
+        return new Posts(postRepository.findAllByTitleContains(pageable, word)
+            .map(this::postResponseAddThumbnail)
+            .getContent()
+        );
+    }
+
     private void uploadFile(Post post, ImageFile file) {
         postImageRepository.save(
             PostImage.builder()

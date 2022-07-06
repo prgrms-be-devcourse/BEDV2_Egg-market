@@ -3,6 +3,7 @@ package com.devcourse.eggmarket.domain.post.service;
 import com.devcourse.eggmarket.domain.comment.model.Comment;
 import com.devcourse.eggmarket.domain.comment.repository.CommentRepository;
 import com.devcourse.eggmarket.domain.post.dto.PostRequest.UpdatePurchaseInfo;
+import com.devcourse.eggmarket.domain.post.dto.PostResponse;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse.Posts;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse.SinglePost;
 import com.devcourse.eggmarket.domain.post.exception.InvalidBuyerException;
@@ -25,6 +26,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @SpringBootTest
 class PostServiceIntegrationTest {
@@ -56,6 +59,8 @@ class PostServiceIntegrationTest {
     private User commentWriter;
     private Post likedPost1;
     private Post likedPost2;
+    private Post notLikedPost1;
+    private Post notLikedPost2;
 
     @BeforeEach
     void setUp() {
@@ -103,6 +108,21 @@ class PostServiceIntegrationTest {
             .seller(writerLikedOwnPost)
             .build();
 
+        notLikedPost1 = Post.builder()
+            .title("test1")
+            .content("content")
+            .price(1000)
+            .category(Category.BEAUTY)
+            .seller(writerLikedOwnPost)
+            .build();
+        notLikedPost2 = Post.builder()
+            .title("test2")
+            .content("content")
+            .price(2500)
+            .category(Category.BEAUTY)
+            .seller(writerLikedOwnPost)
+            .build();
+
         Comment comment1 = new Comment(likedPost1, commentWriter, "I want to buy your stuff");
 
         userRepository.save(writerLikedOwnPost);
@@ -112,6 +132,8 @@ class PostServiceIntegrationTest {
 
         postRepository.save(likedPost1);
         postRepository.save(likedPost2);
+        postRepository.save(notLikedPost1);
+        postRepository.save(notLikedPost2);
 
         postAttentionRepository.save(new PostAttention(likedPost1, writerLikedOwnPost));
         postAttentionRepository.save(new PostAttention(likedPost2, writerLikedOwnPost));
@@ -224,5 +246,19 @@ class PostServiceIntegrationTest {
         SinglePost want = PostStub.singlePostResponse(likedPost1);
 
         Assertions.assertThat(got.id()).isEqualTo(want.id());
+    }
+
+    @Test
+    @DisplayName("판매글 제목으로 검색 테스트")
+    void searchTest() {
+        Pageable pageable = PageRequest.of(0, 2);
+        String word = "test";
+        PostResponse.Posts got = postService.search(pageable, word);
+        PostResponse.Posts want = PostStub.searchPosts(notLikedPost1.getId(), notLikedPost2.getId());
+
+        Assertions.assertThat(got)
+            .usingRecursiveComparison()
+            .ignoringFields("posts.createdAt")
+            .isEqualTo(want);
     }
 }
