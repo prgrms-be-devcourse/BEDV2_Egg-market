@@ -119,7 +119,7 @@ class UserControllerTest {
             .build();
 
         SuccessResponse<Long> expectResponse =
-            new SuccessResponse<>(user.getId());
+            new SuccessResponse<>(userIdResponse + 1);
 
         UserRequest.Save saveRequest = new UserRequest.Save(
             newUser.getPhoneNumber(),
