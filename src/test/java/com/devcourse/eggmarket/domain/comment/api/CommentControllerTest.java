@@ -28,9 +28,14 @@ import com.devcourse.eggmarket.domain.user.model.UserRole;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
+import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -205,5 +210,17 @@ class CommentControllerTest {
                         .description("댓글 작성 시간")
                 )
             ));
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @DisplayName("비어있는 댓글 작성 요청 객체 검증시 검증조건 위반이 발생한다")
+    void emptyCommentViolation(String content) {
+        CommentRequest.Save saveRequest = new CommentRequest.Save(content);
+
+        Set<ConstraintViolation<Save>> violations = validator.validate(saveRequest);
+
+        Assertions.assertThat(violations.isEmpty())
+            .isFalse();
     }
 }
