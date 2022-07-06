@@ -76,12 +76,20 @@ public class DefaultUserService implements UserService {
 
     @Override
     @Transactional
-    public UserResponse.Update update(User user, Update userRequest) {
-        registerPhoneNumber(user, userRequest.phoneNumber());
-        registerNickName(user, userRequest.nickName());
-        userRepository.save(user);
+    public Long updateUserInfo(User user, Update userRequest) {
+        updatePhoneNumber(user, userRequest.phoneNumber());
+        updateNickName(user, userRequest.nickName());
 
-        return userConverter.convertToUpdate(user);
+        return userRepository.save(user).getId();
+    }
+
+    @Override
+    @Transactional
+    public UserResponse.UpdateProfile updateUserProfile(User user, MultipartFile profile) {
+        updateProfile(user, profile);
+        User updateUser = userRepository.save(user);
+
+        return userConverter.convertToUserUpdateProfile(updateUser);
     }
 
 
@@ -157,7 +165,7 @@ public class DefaultUserService implements UserService {
                 () -> new UsernameNotFoundException("Could not found user for " + username));
     }
 
-    private void registerPhoneNumber(User user, String changePhoneNumber) {
+    private void updatePhoneNumber(User user, String changePhoneNumber) {
         if (!user.getPhoneNumber().equals(changePhoneNumber)) {
             if (userRepository.findByPhoneNumber(changePhoneNumber).isPresent()) {
                 throw new DuplicateKeyException("이미 등록된 번호입니다.");
@@ -166,7 +174,7 @@ public class DefaultUserService implements UserService {
         }
     }
 
-    private void registerNickName(User user, String changeNickName) {
+    private void updateNickName(User user, String changeNickName) {
         if (!user.getNickName().equals(changeNickName)) {
             if (userRepository.findByNickName(changeNickName).isPresent()) {
                 throw new DuplicateKeyException("해당 닉네임은 이미 등록되어 있습니다.");
@@ -176,8 +184,21 @@ public class DefaultUserService implements UserService {
 
     }
 
+    private void updateProfile(User user, MultipartFile profile) {
+        String profilePath = user.getImagePath();
+
+        if (profilePath != null) {
+            imageUpload.deleteFile(profilePath);
+        }
+        imageUpload.upload(
+            ProfileImageFile.toImage(user.getId(), profile)
+        );
+    }
+
     private String uploadFile(User user, MultipartFile multipartFile) {
         return imageUpload.upload(
             ProfileImageFile.toImage(user.getId(), multipartFile));
     }
+
+
 }

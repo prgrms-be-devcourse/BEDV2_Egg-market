@@ -45,7 +45,7 @@ public class UserController {
     public ResponseEntity<SuccessResponse<Long>> signUp(
         @ModelAttribute @Valid UserRequest.Save request) {
         Long createdUserId = userService.save(request);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+        final URI location = ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
             .buildAndExpand(createdUserId)
             .toUri();
@@ -126,9 +126,9 @@ public class UserController {
             securityContext);
     }
 
-    @PutMapping("/users")
-    public ResponseEntity<SuccessResponse<UserResponse.Update>> update(HttpServletRequest
-        request,
+    @PutMapping(value = "/users/profile")
+    public ResponseEntity<SuccessResponse<Long>> updateUserInfo(
+        HttpServletRequest request,
         Authentication authentication,
         @RequestBody @Valid UserRequest.Update userRequest) {
         User user = userService.getUser(authentication.getName());
@@ -139,7 +139,28 @@ public class UserController {
         createNewSession(request, userDetails, securityContext);
 
         return ResponseEntity.ok(
-            new SuccessResponse<>(userService.update(user, userRequest)));
+            new SuccessResponse<>(userService.updateUserInfo(user, userRequest)));
+    }
+
+    @PostMapping(value = "/users/profile/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<SuccessResponse<Long>> updateProfile(
+        HttpServletRequest request,
+        Authentication authentication,
+        @ModelAttribute UserRequest.Profile profile
+    ) {
+        User user = userService.getUser(authentication.getName());
+
+        UserResponse.UpdateProfile response = userService.updateUserProfile(user, profile.image());
+        final URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+            .path("/{image}")
+            .buildAndExpand(response.imagePath())
+            .toUri();
+        return ResponseEntity.created(location)
+            .body(
+                new SuccessResponse<>(
+                    response.id()
+                )
+            );
     }
 
     @GetMapping("/users/mannerTemperature/{id}")

@@ -140,12 +140,12 @@ class PostServiceIntegrationTest {
 
         postImageRepository.save(PostImage.builder()
             .post(likedPost1)
-            .imagePath(ImageStub.image1(likedPost1.getId()).pathTobeStored(""))
+            .imagePath(ImageStub.uploadImage1(likedPost1.getId()).pathTobeStored(""))
             .build()
         );
         postImageRepository.save(PostImage.builder()
             .post(likedPost1)
-            .imagePath(ImageStub.image2(likedPost1.getId()).pathTobeStored(""))
+            .imagePath(ImageStub.uploadImage2(likedPost1.getId()).pathTobeStored(""))
             .build()
         );
         commentRepository.save(comment1);

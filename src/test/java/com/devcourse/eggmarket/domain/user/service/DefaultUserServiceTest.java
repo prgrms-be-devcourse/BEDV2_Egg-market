@@ -84,14 +84,13 @@ class DefaultUserServiceTest {
     }
 
     @Test
-    void update() {
+    void updateUserInfoTest() {
         //Given
         UserRequest.Update userRequest = new Update("01011111111", "updateNick");
-        UserResponse.Update expectResponse = new UserResponse.Update(user.getId(),
-            userRequest.phoneNumber(), userRequest.nickName());
+        Long expectResponse = user.getId();
 
         //When
-        UserResponse.Update result = userService.update(user, userRequest);
+        Long result = userService.updateUserInfo(user, userRequest);
 
         //Then
         assertThat(result).usingRecursiveComparison().isEqualTo(expectResponse);
