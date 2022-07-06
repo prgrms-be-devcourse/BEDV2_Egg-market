@@ -184,13 +184,15 @@ class PostServiceIntegrationTest {
     }
 
     @Test
-    @DisplayName("로그인 사용자는 자신의 관심목록을 확인한다")
+    @DisplayName("로그인 사용자의 관심목록에서 lastId 이후부터 최신순으로 가져온다")
     void getAllLikedPosts() {
+        Long lastId = 1L;
+
         Posts allLikedPosts = postService.getAllLikedBy(
-            writerLikedOwnPost.getNickName());
+            writerLikedOwnPost.getNickName(), lastId);
 
         Assertions.assertThat(allLikedPosts.posts().size())
-            .isEqualTo(2);
+            .isEqualTo(2L);
     }
 
     @Test

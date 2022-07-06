@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +38,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 @Service
 public class PostServiceImpl implements PostService {
+
+    private static final int POST_PAGING_SIZE = 15;
+    private static final int POST_PAGE = 0;
 
     private final PostRepository postRepository;
 
@@ -148,15 +152,14 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Posts getAllLikedBy(String userName) {
+    public Posts getAllLikedBy(String userName, Long lastId) {
         User loginUser = userService.getUser(userName);
 
         return new Posts(
-            postRepository.findAllLikedBy(loginUser.getId())
-                .stream()
-                .map(this::postResponseAddThumbnail)
-                .toList()
-        );
+            findAllLikedBy(loginUser.getId(), Optional.ofNullable(lastId).orElse(0L))
+            .stream()
+            .map(this::postResponseAddThumbnail)
+            .collect(Collectors.toList()));
     }
 
     @Override
@@ -166,6 +169,11 @@ public class PostServiceImpl implements PostService {
             .map(this::postResponseAddThumbnail)
             .toList()
         );
+    }
+
+    private List<Post> findAllLikedBy(Long userId, Long lastId) {
+        return postRepository.findAllLikedBy(userId, lastId,
+            PageRequest.of(POST_PAGE, POST_PAGING_SIZE));
     }
 
     private void uploadFile(Post post, ImageFile file) {
