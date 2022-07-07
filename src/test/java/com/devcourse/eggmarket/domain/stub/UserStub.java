@@ -19,7 +19,7 @@ public class UserStub {
         return new User(1L,
             "010-1234-5678",
             "test",
-            "test1234!@#$",
+            "Test1234!@#$",
             36.5F,
             null,
             UserRole.USER);
@@ -29,7 +29,7 @@ public class UserStub {
         return new User(2L,
             "010-2234-5678",
             "tests",
-            "test1234!@#$s",
+            "Test1234!@#$s",
             36.5F,
             null,
             UserRole.USER);
@@ -39,7 +39,7 @@ public class UserStub {
         return new User(2L,
             "010-2234-5678",
             "tests",
-            "test1234!@#$s",
+            "Test1234!@#$s",
             36.5F,
             "http://example.com/profile/2.png",
             UserRole.USER);
@@ -48,7 +48,17 @@ public class UserStub {
         return new UserRequest.Save(
             "010-1234-5678",
             "test",
-            "test1234!@#$",
+            "Test1234!@#$",
+            false,
+            null
+        );
+    }
+
+    public static Save saveRequest2() {
+        return new UserRequest.Save(
+            "010-1334-5678",
+            "buyer",
+            "Test1234!@#$",
             false,
             null
         );
