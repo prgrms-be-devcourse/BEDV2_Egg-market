@@ -50,7 +50,6 @@ class PostConverterTest {
     @DisplayName("Post , 현재 로그인 한 사용자의 관심목록 추가 여부 정보를 사용하여 PostResponse 를 생성한다")
     public void makeSinglePostResponseTest() {
         User writer = User.builder()
-//            .id(1L)
             .phoneNumber("123456789")
             .nickName("user01")
             .password("User01234*")
@@ -79,7 +78,7 @@ class PostConverterTest {
             post.getCategory().toString(),
             post.getCreatedAt(),
             post.getAttentionCount(),
-            0, // TODO : Comment 개수
+            0, // 커멘트 개수
             isLoginUserLikePost,
             Collections.emptyList()
         );

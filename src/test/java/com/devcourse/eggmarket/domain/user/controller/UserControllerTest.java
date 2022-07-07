@@ -336,7 +336,6 @@ class UserControllerTest {
         assertThat(updateResult).usingRecursiveComparison().isEqualTo(response);
     }
 
-    // TODO 업데이트시 이미지 받을 수 있도록 수정해야함
     @Test
     void update() throws Exception {
         //Given

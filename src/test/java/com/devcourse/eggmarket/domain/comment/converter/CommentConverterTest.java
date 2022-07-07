@@ -27,7 +27,7 @@ class CommentConverterTest {
 
     @BeforeEach
     void setUp() {
-        seller = User.builder() // FIXME: id 세팅 불가능한 상황
+        seller = User.builder()
             .phoneNumber("010123456")
             .nickName("abc")
             .password("abcDEF12*")
