@@ -45,7 +45,6 @@ public class PostConverter {
 
         return new PostResponse.SinglePost(
             post.getId(),
-            // TODO : UserConverter 사용 고려 (주의: 순환참조되지 않도록 -> 즉 PostConverter 에서 UserConverter 를 사용한다면 UserConverter 에서는 PostConverter 를 사용하면 안됩니다)
             new UserResponse.Basic(
                 seller.getId(),
                 seller.getNickName(),

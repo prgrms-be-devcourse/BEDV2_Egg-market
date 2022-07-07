@@ -12,8 +12,8 @@ public class PostImageFile implements ImageFile {
     private final ImageType type;
     private final byte[] bytes;
     private final String fileName;
-    private final int order; // 이미지 순서
-    private final long id; // 판매글 id
+    private final int order;
+    private final long id;
 
     private PostImageFile(ImageType type, byte[] bytes, int order,
         String fileName,

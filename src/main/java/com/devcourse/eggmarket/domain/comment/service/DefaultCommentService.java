@@ -77,8 +77,7 @@ public class DefaultCommentService implements CommentService {
 
     @Override
     public Comments getAllComments(String userName, Long postId, Long lastId) {
-        User loginUser = getLoginUser(
-            userName); // FIXME : 이를 확인한다는 것은, 인가된 사용자만이 댓글 목록을 조회할 수 있음을 의미
+        getLoginUser(userName);
         Post post = getExistingPost(postId);
 
         Pageable pageRequest = PageRequest.of(COMMENT_PAGE, COMMENT_PAGING_SIZE);
