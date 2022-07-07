@@ -102,7 +102,6 @@ class EvaluationControllerTest {
 
         ResultActions resultActions = this.mockMvc.perform(
             get("/evaluation/reviewer/{id}", 1L)
-                .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
         );
 
@@ -135,7 +134,6 @@ class EvaluationControllerTest {
 
         ResultActions resultActions = this.mockMvc.perform(
             get("/evaluation/reviewee/{id}", 1L)
-                .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
         );
 
@@ -162,7 +160,6 @@ class EvaluationControllerTest {
 
         ResultActions resultActions = this.mockMvc.perform(
             delete("/evaluation/{id}", 1L)
-                .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .with(csrf())
         );
