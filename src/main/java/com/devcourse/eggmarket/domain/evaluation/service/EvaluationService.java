@@ -43,7 +43,7 @@ public class EvaluationService {
     }
 
     public EvaluationResponse getByReviewerId(Long reviewerId) {
-        if (!checkExistsEvaluationByReviewerId(reviewerId)) {
+        if (!evaluationRepository.existsByReviewerId(reviewerId)) {
             throw new NotExistUserException();
         }
         Evaluation evaluation = evaluationRepository.getByReviewerId(reviewerId);
@@ -54,7 +54,7 @@ public class EvaluationService {
     }
 
     public EvaluationResponse getByRevieweeId(Long revieweeId) {
-        if (!checkExistsEvaluationByRevieweeId(revieweeId)) {
+        if (!evaluationRepository.existsByRevieweeId(revieweeId)) {
             throw new NotExistUserException();
         }
         Evaluation evaluation = evaluationRepository.getByRevieweeId(revieweeId);
@@ -66,20 +66,10 @@ public class EvaluationService {
 
     @Transactional
     public void delete(Long reviewerId) {
-        if (!checkExistsEvaluationByReviewerId(reviewerId)) {
-            return ;
+        if (!evaluationRepository.existsByReviewerId(reviewerId)) {
+            throw new NotExistUserException();
         }
         Evaluation evaluation = evaluationRepository.getByReviewerId(reviewerId);
-
         evaluationRepository.deleteById(evaluation.getId());
     }
-
-    private boolean checkExistsEvaluationByReviewerId(Long reviewerId) {
-        return evaluationRepository.existsByReviewerId(reviewerId);
-    }
-
-    private boolean checkExistsEvaluationByRevieweeId(Long revieweeId) {
-        return evaluationRepository.existsByRevieweeId(revieweeId);
-    }
-
 }
