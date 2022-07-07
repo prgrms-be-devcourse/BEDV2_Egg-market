@@ -10,6 +10,7 @@ import com.devcourse.eggmarket.domain.post.model.Post;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
 import com.devcourse.eggmarket.domain.user.model.User;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.provider.Arguments;
@@ -102,6 +103,84 @@ public class PostStub {
         );
     }
 
+    public static SinglePost noDependencySinglePostResponse(Post post) {
+        User seller = post.getSeller();
+        return new PostResponse.SinglePost(
+            post.getId(),
+            new UserResponse.Basic(
+                seller.getId(),
+                seller.getNickName(),
+                seller.getMannerTemperature(),
+                seller.getRole().name(),
+                seller.getImagePath()
+            ),
+            post.getPrice(),
+            post.getTitle(),
+            post.getContent(),
+            post.getPostStatus().name(),
+            post.getCategory().name(),
+            post.getCreatedAt() == null ? LocalDateTime.now() : post.getCreatedAt(),
+            0,
+            0,
+            false,
+            new ArrayList<>()
+        );
+    }
+
+    public static PostResponse.Posts posts(Post post1, Post post2, Post post3) {
+        return new PostResponse.Posts(
+            List.of(
+                new PostsElement(
+                    post1.getId(),
+                    post1.getPrice(),
+                    post1.getTitle(),
+                    post1.getPostStatus().toString(),
+                    post1.getCreatedAt(),
+                    post1.getAttentionCount(),
+                    post1.getCommentCount(),
+                    ""
+                ),
+                new PostsElement(
+                    post2.getId(),
+                    post2.getPrice(),
+                    post2.getTitle(),
+                    post2.getPostStatus().toString(),
+                    post2.getCreatedAt(),
+                    post2.getAttentionCount(),
+                    post2.getCommentCount(),
+                    ""
+                ),
+                new PostsElement(
+                    post3.getId(),
+                    post3.getPrice(),
+                    post3.getTitle(),
+                    post3.getPostStatus().toString(),
+                    post3.getCreatedAt(),
+                    post3.getAttentionCount(),
+                    post3.getCommentCount(),
+                    ""
+                )
+            )
+        );
+    }
+
+    public static PostResponse.Posts posts(Post post1) {
+        return new PostResponse.Posts(
+            List.of(
+                new PostsElement(
+                    post1.getId(),
+                    post1.getPrice(),
+                    post1.getTitle(),
+                    post1.getPostStatus().toString(),
+                    post1.getCreatedAt(),
+                    post1.getAttentionCount(),
+                    post1.getCommentCount(),
+                    ""
+                )
+            )
+        );
+    }
+
     public static PostResponse.Posts posts() {
         return new PostResponse.Posts(
             List.of(
@@ -176,6 +255,32 @@ public class PostStub {
         );
     }
 
+    public static PostResponse.Posts posts(Post post1, Post post2) {
+        return new PostResponse.Posts(
+            List.of(
+                new PostsElement(
+                    post1.getId(),
+                    post1.getPrice(),
+                    post1.getTitle(),
+                    post1.getPostStatus().toString(),
+                    post1.getCreatedAt(),
+                    post1.getAttentionCount(),
+                    post1.getCommentCount(),
+                    ""
+                ),
+                new PostsElement(
+                    post2.getId(),
+                    post2.getPrice(),
+                    post2.getTitle(),
+                    post2.getPostStatus().toString(),
+                    post2.getCreatedAt(),
+                    post2.getAttentionCount(),
+                    post2.getCommentCount(),
+                    ""
+                )
+            )
+        );
+    }
     public static Posts searchPosts(Long id1, Long id2) {
         return new Posts(
             List.of(

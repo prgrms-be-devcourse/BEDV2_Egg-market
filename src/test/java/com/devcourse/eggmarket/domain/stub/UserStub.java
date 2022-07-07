@@ -48,7 +48,17 @@ public class UserStub {
         return new UserRequest.Save(
             "010-1234-5678",
             "test",
-            "test1234!@#$",
+            "Test1234!@#$",
+            false,
+            null
+        );
+    }
+
+    public static Save saveRequest2() {
+        return new UserRequest.Save(
+            "010-1334-5678",
+            "buyer",
+            "Test1234!@#$",
             false,
             null
         );

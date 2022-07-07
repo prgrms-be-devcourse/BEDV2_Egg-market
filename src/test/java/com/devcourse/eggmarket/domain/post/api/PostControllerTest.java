@@ -14,6 +14,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -41,6 +42,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -142,7 +144,7 @@ class PostControllerTest {
             .updatePost(anyLong(), any(PostRequest.UpdatePost.class), anyString());
 
         ResultActions resultActions = mockMvc.perform(
-            MockMvcRequestBuilders.patch("/posts/" + postId)
+            RestDocumentationRequestBuilders.patch("/posts/{id}", postId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(request))
                 .with(csrf().asHeader())
@@ -157,6 +159,9 @@ class PostControllerTest {
                     fieldWithPath("content").type(JsonFieldType.STRING).description("본문"),
                     fieldWithPath("price").type(JsonFieldType.NUMBER).description("가격"),
                     fieldWithPath("category").type(JsonFieldType.STRING).description("카테고리")
+                ),
+                pathParameters(
+                    parameterWithName("id").description("판매글 ID")
                 ),
                 responseFields(
                     fieldWithPath("data").type(JsonFieldType.NUMBER).description("판매글 ID")
@@ -173,7 +178,7 @@ class PostControllerTest {
         Long postId = 1L;
 
         ResultActions resultActions = mockMvc.perform(
-            MockMvcRequestBuilders.patch("/posts/" + postId)
+            MockMvcRequestBuilders.patch("/posts/{id}", postId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(request))
                 .with(csrf().asHeader())
@@ -194,7 +199,7 @@ class PostControllerTest {
             .updatePurchaseInfo(anyLong(), any(PostRequest.UpdatePurchaseInfo.class), anyString());
 
         ResultActions resultActions = mockMvc.perform(
-            MockMvcRequestBuilders.patch("/posts/" + postId + "/purchase")
+            RestDocumentationRequestBuilders.patch("/posts/{id}/purchase", postId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(request))
                 .with(csrf().asHeader())
@@ -207,6 +212,9 @@ class PostControllerTest {
                 requestFields(
                     fieldWithPath("postStatus").type(JsonFieldType.STRING).description("제목"),
                     fieldWithPath("buyerId").type(JsonFieldType.NUMBER).description("구매자 ID")
+                ),
+                pathParameters(
+                    parameterWithName("id").description("판매글 ID")
                 ),
                 responseFields(
                     fieldWithPath("data").type(JsonFieldType.NUMBER).description("판매글 ID")
@@ -222,7 +230,7 @@ class PostControllerTest {
         Long postId = 1L;
 
         ResultActions resultActions = mockMvc.perform(
-            MockMvcRequestBuilders.patch("/posts/" + postId + "/purchase")
+            MockMvcRequestBuilders.patch("/posts/{id}/purchase", postId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(request))
                 .with(csrf().asHeader())
@@ -238,12 +246,16 @@ class PostControllerTest {
         Long request = 1L;
 
         ResultActions resultActions = mockMvc.perform(
-            MockMvcRequestBuilders.delete("/posts/" + request)
+            RestDocumentationRequestBuilders.delete("/posts/{id}", request)
                 .with(csrf().asHeader())
         );
 
         resultActions.andExpect(status().isNoContent())
-            .andDo(document("post-delete"));
+            .andDo(document("post-delete",
+                preprocessRequest(prettyPrint()),
+                pathParameters(
+                    parameterWithName("id").description("판매글 ID")
+                )));
     }
 
     @Test
@@ -261,13 +273,16 @@ class PostControllerTest {
             .getById(anyLong(), anyString());
 
         ResultActions resultActions = mockMvc.perform(
-            MockMvcRequestBuilders.get("/posts/" + request)
+            RestDocumentationRequestBuilders.get("/posts/{id}", request)
         );
 
         resultActions.andExpect(status().isOk())
             .andDo(document("post-get-detail",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
+                pathParameters(
+                    parameterWithName("id").description("판매글 ID")
+                ),
                 responseFields(
                     fieldWithPath("data.id").type(JsonFieldType.NUMBER).description("판매글 ID"),
                     fieldWithPath("data.seller.id").type(JsonFieldType.NUMBER)
@@ -341,7 +356,7 @@ class PostControllerTest {
 
     @Test
     @WithMockUser
-    @DisplayName("판매글 특정 기준으로 정렬 조회 테스트")
+    @DisplayName("판매글 가격 기준으로 정렬 조회 테스트")
     void getPostsPriceTest() throws Exception {
         PostResponse.Posts response = PostStub.priceSortPosts();
 
@@ -437,7 +452,7 @@ class PostControllerTest {
             .toggleAttention(anyString(), anyLong());
 
         ResultActions resultActions = mockMvc.perform(
-            MockMvcRequestBuilders.post("/posts/" + request + "/attention")
+            RestDocumentationRequestBuilders.post("/posts/{id}/attention", request)
                 .with(csrf().asHeader())
         );
 
@@ -445,6 +460,9 @@ class PostControllerTest {
             .andDo(document("post-attention",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
+                pathParameters(
+                    parameterWithName("id").description("판매글 ID")
+                ),
                 responseFields(
                     fieldWithPath("data.likeCount").type(JsonFieldType.NUMBER).description("총 찜 개수")
                 )

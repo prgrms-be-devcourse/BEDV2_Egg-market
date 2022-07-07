@@ -77,6 +77,7 @@ class DefaultUserServiceTest {
     void getByUsernameTest() {
         //Given
         UserResponse.Basic expectResponse = UserResponse.Basic.builder()
+            .id(user.getId())
             .nickName(user.getNickName())
             .mannerTemperature(36.5F)
             .role(user.getRole().toString())
@@ -86,8 +87,7 @@ class DefaultUserServiceTest {
         UserResponse.Basic result = userService.getByUsername(user.getNickName());
 
         //Then
-        assertThat(result).usingRecursiveComparison().ignoringFields("id")
-            .isEqualTo(expectResponse);
+        assertThat(result).usingRecursiveComparison().isEqualTo(expectResponse);
     }
 
     @Test
