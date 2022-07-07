@@ -1,0 +1,54 @@
+:hardbreaks:
+ifndef::snippets[]
+:snippets: ../../../target/generated-snippets
+endif::[]
+
+= 평가 관리
+
+== 평가 생성
+
+=== POST /evaluation
+
+.Request
+include::{snippets}/evaluation-save/http-request.adoc[]
+include::{snippets}/evaluation-save/request-fields.adoc[]
+
+.Response
+include::{snippets}/evaluation-save/http-response.adoc[]
+include::{snippets}/evaluation-save/response-fields.adoc[]
+
+== 평가 단일 조회
+
+=== GET /evaluation/reviewer/{id}
+
+.Request
+include::{snippets}/evaluation-reviewer-get/http-request.adoc[]
+include::{snippets}/evaluation-reviewer-get/path-parameters.adoc[]
+
+.Response
+include::{snippets}/evaluation-reviewer-get/http-response.adoc[]
+include::{snippets}/evaluation-reviewer-get/response-fields.adoc[]
+
+== 피평가 단일 조회
+
+=== GET /evaluation/reviewee/{id}
+
+.Request
+include::{snippets}/evaluation-reviewee-get/http-request.adoc[]
+include::{snippets}/evaluation-reviewee-get/path-parameters.adoc[]
+
+.Response
+include::{snippets}/evaluation-reviewee-get/http-response.adoc[]
+include::{snippets}/evaluation-reviewee-get/response-fields.adoc[]
+
+
+== 판매글 삭제
+
+=== DELETE /evaluation/{id}
+
+.Request
+include::{snippets}/evaluation-delete/http-request.adoc[]
+include::{snippets}/evaluation-delete/path-parameters.adoc[]
+
+.Response
+include::{snippets}/evaluation-delete/http-response.adoc[]
