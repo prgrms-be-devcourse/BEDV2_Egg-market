@@ -23,7 +23,7 @@ public interface PostService {
 
     PostResponse.Posts getAllByCategory(Pageable pageable, Category category);
 
-    Posts getAllLikedBy(String userName);
+    Posts getAllLikedBy(String userName, Long lastId);
 
     PostResponse.Posts search(Pageable pageable, String word);
 

@@ -10,7 +10,7 @@ import com.devcourse.eggmarket.domain.user.dto.UserRequest.Save;
 import com.devcourse.eggmarket.domain.user.dto.UserRequest.Update;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse;
 import com.devcourse.eggmarket.domain.user.dto.UserResponse.FindNickName;
-import com.devcourse.eggmarket.domain.user.dto.UserResponse.MannerTemperature;
+import com.devcourse.eggmarket.domain.user.dto.UserResponse.Simple;
 import com.devcourse.eggmarket.domain.user.exception.NotExistUserException;
 import com.devcourse.eggmarket.domain.user.model.User;
 import com.devcourse.eggmarket.domain.user.repository.UserRepository;
@@ -71,17 +71,25 @@ public class DefaultUserService implements UserService {
             throw new NotExistUserException();
         }
 
-        return userConverter.convertToUserResponseBasic(user.get());
+        return userConverter.convertToBasic(user.get());
     }
 
     @Override
     @Transactional
-    public UserResponse.Update update(User user, Update userRequest) {
-        registerPhoneNumber(user, userRequest.phoneNumber());
-        registerNickName(user, userRequest.nickName());
-        userRepository.save(user);
+    public Long updateUserInfo(User user, Update userRequest) {
+        updatePhoneNumber(user, userRequest.phoneNumber());
+        updateNickName(user, userRequest.nickName());
 
-        return userConverter.convertToUpdate(user);
+        return userRepository.save(user).getId();
+    }
+
+    @Override
+    @Transactional
+    public UserResponse.UpdateProfile updateUserProfile(User user, UserRequest.Profile profile) {
+        updateProfile(user, profile.image());
+        User updateUser = userRepository.save(user);
+
+        return userConverter.convertToUpdateProfile(updateUser);
     }
 
 
@@ -114,7 +122,7 @@ public class DefaultUserService implements UserService {
             throw new NoSuchElementException("해당 핸드폰 번호를 가진 유저는 존재하지 않습니다.");
         }
 
-        return userConverter.convertToUserFindNickName(foundUser.get());
+        return userConverter.convertToNickName(foundUser.get());
     }
 
     @Override
@@ -137,10 +145,10 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public MannerTemperature getMannerTemperature(Long userId) {
+    public Simple getUserBySimple(Long userId) {
         User user = getUserById(userId);
 
-        return userConverter.convertToMannerTemp(user);
+        return userConverter.convertToSimple(user);
     }
 
     @Override
@@ -157,7 +165,7 @@ public class DefaultUserService implements UserService {
                 () -> new UsernameNotFoundException("Could not found user for " + username));
     }
 
-    private void registerPhoneNumber(User user, String changePhoneNumber) {
+    private void updatePhoneNumber(User user, String changePhoneNumber) {
         if (!user.getPhoneNumber().equals(changePhoneNumber)) {
             if (userRepository.findByPhoneNumber(changePhoneNumber).isPresent()) {
                 throw new DuplicateKeyException("이미 등록된 번호입니다.");
@@ -166,7 +174,7 @@ public class DefaultUserService implements UserService {
         }
     }
 
-    private void registerNickName(User user, String changeNickName) {
+    private void updateNickName(User user, String changeNickName) {
         if (!user.getNickName().equals(changeNickName)) {
             if (userRepository.findByNickName(changeNickName).isPresent()) {
                 throw new DuplicateKeyException("해당 닉네임은 이미 등록되어 있습니다.");
@@ -176,8 +184,23 @@ public class DefaultUserService implements UserService {
 
     }
 
+    private void updateProfile(User user, MultipartFile profile) {
+        String profilePath = user.getImagePath();
+
+        if (profilePath != null) {
+            imageUpload.deleteFile(profilePath);
+        }
+        user.setImagePath(
+            imageUpload.upload(
+                ProfileImageFile.toImage(user.getId(), profile)
+            )
+        );
+    }
+
     private String uploadFile(User user, MultipartFile multipartFile) {
         return imageUpload.upload(
             ProfileImageFile.toImage(user.getId(), multipartFile));
     }
+
+
 }
