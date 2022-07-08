@@ -10,6 +10,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
@@ -89,8 +90,11 @@ class CommentControllerTest {
             .andDo(document("comment-write",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
+                requestFields(
+                    fieldWithPath("content").type(JsonFieldType.STRING).description("댓글 내용")
+                ),
                 pathParameters(
-                    parameterWithName("postId").description("댓글이 속한 판매글 id")
+                    parameterWithName("postId").description("판매글 ID")
                 ),
                 responseFields(
                     fieldWithPath("data").type(JsonFieldType.NUMBER).description("댓글 ID")
