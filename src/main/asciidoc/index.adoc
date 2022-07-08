@@ -1,0 +1,360 @@
+:toc-title: 달걀마켓 API 목록
+:toc: left
+:toclevels: 2
+:sectnums:
+:hardbreaks:
+ifndef::snippets[]
+:snippets: ../../../target/generated-snippets
+endif::[]
+
+= 달걀 마켓 API
+
+== 유저 관리
+=== 유저 생성
+
+==== POST /signup
+
+.Request
+include::{snippets}/user-signup/http-request.adoc[]
+include::{snippets}/user-signup/request-parameters.adoc[]
+include::{snippets}/user-signup/request-parts.adoc[]
+
+.Response
+include::{snippets}/user-signup/http-response.adoc[]
+include::{snippets}/user-signup/response-fields.adoc[]
+
+=== 로그인
+
+==== POST /login
+
+.Request
+include::{snippets}/user-login/http-request.adoc[]
+include::{snippets}/user-login/request-fields.adoc[]
+
+.Response
+include::{snippets}/user-login/http-response.adoc[]
+include::{snippets}/user-login/response-fields.adoc[]
+
+=== 로그아웃
+
+==== POST /logout
+
+.Request
+include::{snippets}/user-logout/http-request.adoc[]
+
+.Response
+include::{snippets}/user-logout/http-response.adoc[]
+
+
+=== 회원탈퇴
+
+==== POST /signout
+
+.Request
+include::{snippets}/user-signout/http-request.adoc[]
+
+.Response
+include::{snippets}/user-signout/http-response.adoc[]
+include::{snippets}/user-signout/response-fields.adoc[]
+
+=== 로그인 ID 찾기
+
+==== POST /user/nickName
+
+.Request
+include::{snippets}/user-findName/http-request.adoc[]
+include::{snippets}/user-findName/request-parameters.adoc[]
+
+.Response
+include::{snippets}/user-findName/http-response.adoc[]
+include::{snippets}/user-findName/response-fields.adoc[]
+
+=== 패스워드 변경
+
+==== PATCH /user/password
+
+.Request
+include::{snippets}/user-change-password/http-request.adoc[]
+include::{snippets}/user-change-password/request-fields.adoc[]
+
+.Response
+include::{snippets}/user-change-password/http-response.adoc[]
+include::{snippets}/user-change-password/response-fields.adoc[]
+
+=== 사용자 정보 변경
+
+==== PUT /user/profile
+
+.Request
+include::{snippets}/user-update/http-request.adoc[]
+include::{snippets}/user-update/request-fields.adoc[]
+
+.Response
+include::{snippets}/user-update/http-response.adoc[]
+include::{snippets}/user-update/response-fields.adoc[]
+
+
+=== 유저 프로필 변경
+
+==== POST /user/profile
+
+.Request
+include::{snippets}/user-update-profile/http-request.adoc[]
+include::{snippets}/user-update-profile/request-parts.adoc[]
+
+.Response
+include::{snippets}/user-update-profile/http-response.adoc[]
+include::{snippets}/user-update-profile/response-fields.adoc[]
+
+=== 사용자 간단 조회
+
+==== GET /users/{id}/simple
+
+.Request
+include::{snippets}/user-get-simple/http-request.adoc[]
+include::{snippets}/user-get-simple/path-parameters.adoc[]
+
+.Response
+include::{snippets}/user-get-simple/http-response.adoc[]
+include::{snippets}/user-get-simple/response-fields.adoc[]
+
+== 판매글 관리
+=== 판매글 생성
+
+==== POST /posts
+
+.Request
+include::{snippets}/post-write/http-request.adoc[]
+include::{snippets}/post-write/request-parameters.adoc[]
+include::{snippets}/post-write/request-parts.adoc[]
+
+.Response
+include::{snippets}/post-write/http-response.adoc[]
+include::{snippets}/post-write/response-fields.adoc[]
+
+=== 판매글 내용 업데이트
+
+==== PATCH /posts/{id}
+
+.Request
+include::{snippets}/post-update/http-request.adoc[]
+include::{snippets}/post-update/request-fields.adoc[]
+include::{snippets}/post-update/path-parameters.adoc[]
+
+
+.Response
+include::{snippets}/post-update/http-response.adoc[]
+include::{snippets}/post-update/response-fields.adoc[]
+
+=== 판매글 상태 업데이트
+
+==== PATCH /posts/{id}/purchase
+
+.Request
+include::{snippets}/post-update-purchase/http-request.adoc[]
+include::{snippets}/post-update-purchase/request-fields.adoc[]
+include::{snippets}/post-update-purchase/path-parameters.adoc[]
+
+.Response
+include::{snippets}/post-update-purchase/http-response.adoc[]
+include::{snippets}/post-update-purchase/response-fields.adoc[]
+
+=== 판매글 삭제
+
+==== DELETE /posts/{id}
+
+.Request
+include::{snippets}/post-delete/http-request.adoc[]
+include::{snippets}/post-delete/path-parameters.adoc[]
+
+.Response
+include::{snippets}/post-delete/http-response.adoc[]
+
+=== 판매글 단일 조회
+
+==== GET /posts/{id}
+
+.Request
+include::{snippets}/post-get-detail/http-request.adoc[]
+include::{snippets}/post-get-detail/path-parameters.adoc[]
+
+.Response
+include::{snippets}/post-get-detail/http-response.adoc[]
+include::{snippets}/post-get-detail/response-fields.adoc[]
+
+=== 판매글 최신순 조회
+
+==== GET /posts
+
+.Request
+include::{snippets}/post-get-latest/http-request.adoc[]
+
+.Response
+include::{snippets}/post-get-latest/http-response.adoc[]
+include::{snippets}/post-get-latest/response-fields.adoc[]
+
+=== 판매글 조건 조회
+
+==== GET /posts?sort={정렬기준}
+
+.Request
+include::{snippets}/post-get-sort/http-request.adoc[]
+include::{snippets}/post-get-sort/request-parameters.adoc[]
+
+.Response
+include::{snippets}/post-get-sort/http-response.adoc[]
+include::{snippets}/post-get-by-category/response-fields.adoc[]
+
+
+=== 판매글 카테고리 조회
+
+==== GET /posts?category={카테고리}
+
+.Request
+include::{snippets}/post-get-by-category/http-request.adoc[]
+include::{snippets}/post-get-by-category/request-parameters.adoc[]
+
+
+.Response
+include::{snippets}/post-get-by-category/http-response.adoc[]
+include::{snippets}/post-get-by-category/response-fields.adoc[]
+
+=== 판매글 찜하기
+
+==== POST /posts/{id}/attention
+
+.Request
+include::{snippets}/post-attention/http-request.adoc[]
+include::{snippets}/post-attention/path-parameters.adoc[]
+
+
+.Response
+include::{snippets}/post-attention/http-response.adoc[]
+include::{snippets}/post-attention/response-fields.adoc[]
+
+=== 찜한 판매글 조회
+
+==== GET /posts/attention
+
+.Request
+include::{snippets}/post-get-attention/http-request.adoc[]
+
+
+.Response
+include::{snippets}/post-get-attention/http-response.adoc[]
+include::{snippets}/post-get-attention/response-fields.adoc[]
+
+=== 판매글 제목 기준 검색
+
+==== GET /posts/search
+
+.Request
+include::{snippets}/post-search/http-request.adoc[]
+include::{snippets}/post-search/request-parameters.adoc[]
+
+
+.Response
+include::{snippets}/post-search/http-response.adoc[]
+include::{snippets}/post-search/response-fields.adoc[]
+
+== 댓글 관리
+
+=== 댓글 작성
+
+==== POST /posts/{postId}/comments
+
+.Request
+include::{snippets}/comment-write/http-request.adoc[]
+include::{snippets}/comment-write/path-parameters.adoc[]
+include::{snippets}/comment-write/request-fields.adoc[]
+
+.Response
+include::{snippets}/comment-write/http-response.adoc[]
+include::{snippets}/comment-write/response-fields.adoc[]
+
+=== 댓글 내용 수정
+
+==== PUT /posts/{postId}/comments/{commentId}
+
+.Request
+include::{snippets}/comment-update/http-request.adoc[]
+include::{snippets}/comment-update/path-parameters.adoc[]
+include::{snippets}/comment-update/request-body.adoc[]
+
+.Response
+include::{snippets}/comment-update/http-response.adoc[]
+include::{snippets}/comment-update/response-fields.adoc[]
+
+=== 댓글 삭제
+
+==== DELETE /posts/{postId}/comments/{commentId}
+
+.Request
+include::{snippets}/comment-delete/http-request.adoc[]
+include::{snippets}/comment-delete/path-parameters.adoc[]
+
+.Response
+include::{snippets}/post-delete/http-response.adoc[]
+
+=== 판매글의 댓글 목록 가져오기
+
+==== GET /posts/{postId}/comments
+
+.Request
+include::{snippets}/post-comments/http-request.adoc[]
+include::{snippets}/post-comments/path-parameters.adoc[]
+
+
+.Response
+include::{snippets}/post-comments/http-response.adoc[]
+include::{snippets}/post-comments/response-fields.adoc[]
+
+== 평가 관리
+
+=== 평가 생성
+
+==== POST /evaluation
+
+.Request
+include::{snippets}/evaluation-save/http-request.adoc[]
+include::{snippets}/evaluation-save/request-fields.adoc[]
+
+.Response
+include::{snippets}/evaluation-save/http-response.adoc[]
+include::{snippets}/evaluation-save/response-fields.adoc[]
+
+=== 평가 단일 조회
+
+==== GET /evaluation/reviewer/{id}
+
+.Request
+include::{snippets}/evaluation-reviewer-get/http-request.adoc[]
+include::{snippets}/evaluation-reviewer-get/path-parameters.adoc[]
+
+.Response
+include::{snippets}/evaluation-reviewer-get/http-response.adoc[]
+include::{snippets}/evaluation-reviewer-get/response-fields.adoc[]
+
+=== 피평가 단일 조회
+
+==== GET /evaluation/reviewee/{id}
+
+.Request
+include::{snippets}/evaluation-reviewee-get/http-request.adoc[]
+include::{snippets}/evaluation-reviewee-get/path-parameters.adoc[]
+
+.Response
+include::{snippets}/evaluation-reviewee-get/http-response.adoc[]
+include::{snippets}/evaluation-reviewee-get/response-fields.adoc[]
+
+
+=== 평가 삭제
+
+==== DELETE /evaluation/{id}
+
+.Request
+include::{snippets}/evaluation-delete/http-request.adoc[]
+include::{snippets}/evaluation-delete/path-parameters.adoc[]
+
+.Response
+include::{snippets}/evaluation-delete/http-response.adoc[]
