@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -87,9 +88,9 @@ public class UserController {
         }
     }
 
-    @GetMapping(value = "/user/nickname", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @GetMapping(value = "/user/nickname")
     public ResponseEntity<SuccessResponse<UserResponse.FindNickName>> findNickname(
-        @ModelAttribute @Valid UserRequest.FindNickname userRequest) {
+        @Valid UserRequest.FindNickname userRequest) {
         return ResponseEntity.ok(
             new SuccessResponse<>(
                 userService.getUserName(userRequest.phoneNumber())

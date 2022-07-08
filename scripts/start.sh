@@ -6,6 +6,10 @@ JAR_FILE="$PROJECT_PATH/target/$PROJECT_NAME-$PROJECT_VERSION.jar"
 
 DEPLOY_LOG="$PROJECT_PATH/deploy.log"
 
+source /home/ec2-user/.bashrc
+
+echo $DB_DRIVER
+
 NOW=$(date +%c)
 
 echo "[$NOW] 애플리케이션 실행" >>$DEPLOY_LOG
