@@ -4,7 +4,7 @@ spring:
       on-profile: prod
   sql:
     init:
-      mode: always
+      mode: never
   datasource:
     driver-class-name: ${DB_DRIVER}
     url: ${DB_URL}
