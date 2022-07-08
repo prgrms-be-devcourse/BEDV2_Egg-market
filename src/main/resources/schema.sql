@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS post_image;
 DROP TABLE IF EXISTS post;
 DROP TABLE IF EXISTS users;
 
-CREATE TABLE USERS
+CREATE TABLE users
 (
     id 						BIGINT AUTO_INCREMENT,
     phone_number 			VARCHAR(15)	NOT NULL UNIQUE,
@@ -20,7 +20,7 @@ CREATE TABLE USERS
     PRIMARY KEY(id)
 );
 
-CREATE TABLE Post
+CREATE TABLE post
 (
     id						BIGINT AUTO_INCREMENT,
     seller_id				BIGINT,
@@ -98,7 +98,7 @@ ALTER TABLE evaluation
 
 ALTER TABLE evaluation
     ADD CONSTRAINT evaluation_fk_post
-        FOREIGN KEY (post_id) REFERENCES users(id);
+        FOREIGN KEY (post_id) REFERENCES post(id);
 
 ALTER TABLE evaluation
     ADD CONSTRAINT evaluation_fk_reviewee_user
