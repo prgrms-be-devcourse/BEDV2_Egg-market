@@ -280,7 +280,6 @@ class UserControllerTest {
         //When
         MvcResult result = mockMvc.perform(
                 get("/user/nickname")
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                     .param("phoneNumber", request.phoneNumber()))
             .andExpect(status().isOk())
             .andDo(document("user-findName",
