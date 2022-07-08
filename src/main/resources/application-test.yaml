@@ -1,15 +1,16 @@
 spring:
   config:
     activate:
-      on-profile: prod
-  sql:
-    init:
-      mode: always
+      on-profile: test
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
   datasource:
-    driver-class-name: ${DB_DRIVER}
-    url: ${DB_URL}
-    username: ${DB_USER_NAME}
-    password: ${DB_PASSWORD}
+    driver-class-name: org.h2.Driver
+    url: "jdbc:h2:mem:egg_market;mode=mysql"
+    username: sa
+    password:
   jpa:
     open-in-view: false
     properties:
