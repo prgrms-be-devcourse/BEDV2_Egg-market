@@ -58,7 +58,7 @@ include::{snippets}/user-signout/response-fields.adoc[]
 
 .Request
 include::{snippets}/user-findName/http-request.adoc[]
-include::{snippets}/user-findName/request-fields.adoc[]
+include::{snippets}/user-findName/request-parameters.adoc[]
 
 .Response
 include::{snippets}/user-findName/http-response.adoc[]
@@ -107,7 +107,7 @@ include::{snippets}/user-update-profile/response-fields.adoc[]
 
 .Request
 include::{snippets}/user-get-simple/http-request.adoc[]
-include::{snippets}/user-get-temperature/path-parameters.adoc[]
+include::{snippets}/user-get-simple/path-parameters.adoc[]
 
 .Response
 include::{snippets}/user-get-simple/http-response.adoc[]

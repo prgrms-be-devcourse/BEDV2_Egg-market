@@ -12,7 +12,7 @@ endif::[]
 .Request
 include::{snippets}/comment-write/http-request.adoc[]
 include::{snippets}/comment-write/path-parameters.adoc[]
-include::{snippets}/comment-write/request-parameters.adoc[]
+include::{snippets}/comment-write/request-fields.adoc[]
 
 .Response
 include::{snippets}/comment-write/http-response.adoc[]
