@@ -15,6 +15,7 @@ import static org.mockito.Mockito.verify;
 
 import com.devcourse.eggmarket.domain.comment.model.Comment;
 import com.devcourse.eggmarket.domain.comment.repository.CommentRepository;
+import com.devcourse.eggmarket.domain.model.image.ImageUpload;
 import com.devcourse.eggmarket.domain.post.converter.PostConverter;
 import com.devcourse.eggmarket.domain.post.dto.PostRequest;
 import com.devcourse.eggmarket.domain.post.dto.PostResponse;
@@ -67,6 +68,9 @@ class PostServiceImplTest {
 
     @Mock
     PostImageRepository postImageRepository;
+
+    @Mock
+    ImageUpload imageUpload;
 
     @Test
     @DisplayName("판매글 생성 테스트")

@@ -115,7 +115,9 @@ public class PostServiceImpl implements PostService {
     @Transactional
     @Override
     public void deleteById(Long id, String loginUser) {
-        checkPostWriter(id, loginUser);
+        Post post = checkPostWriter(id, loginUser);
+
+        removeFiles(post);
         postRepository.deleteById(id);
     }
 
@@ -183,6 +185,12 @@ public class PostServiceImpl implements PostService {
                 .imagePath(imageUpload.upload(file))
                 .build()
         );
+    }
+
+    private void removeFiles(Post post) {
+        postImageRepository.findAllByPost(post).stream()
+            .map(PostImage::getImagePath)
+            .forEach(imageUpload::deleteFile);
     }
 
     private Post checkPostWriter(Long postId, String loginUser) {
